@@ -1,3 +1,4 @@
+using Data.Mapping;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Data;
@@ -20,7 +21,6 @@ public static class StartupConfig
     public static IServiceCollection ConfigureDataBaseContexts(this IServiceCollection services)
     {
         //services.AddDbContext<IDbContext>(opt => opt.UseNpgsql(...));
-
 
         return services;
     }
@@ -57,6 +57,18 @@ public static class StartupConfig
                 .Where(type => type.Name.Contains("Repository")))
             .AsSelf()
             .WithTransientLifetime());
+
+        return services;
+    }
+
+    /// <summary>
+    /// Регистрация автомаппера
+    /// </summary>
+    /// <param name="services"></param>
+    /// <returns></returns>
+    public static IServiceCollection ConfigMapper(this IServiceCollection services)
+    {
+        services.AddAutoMapper(opt => opt.AddProfile<MapperProfile>());
 
         return services;
     }

@@ -8,6 +8,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.ConfigureDataBaseContexts();
 builder.Services.ScanServices();
 builder.Services.ScanRepos();
+builder.Services.ConfigMapper();
 
 var app = builder.Build();
 
