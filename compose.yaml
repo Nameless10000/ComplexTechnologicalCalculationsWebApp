@@ -1,0 +1,7 @@
+﻿services:
+  complextechnologicalcalculationswebapp:
+    image: complextechnologicalcalculationswebapp
+    build:
+      context: .
+      dockerfile: ComplexTechnologicalCalculationsWebApp/Dockerfile
+
