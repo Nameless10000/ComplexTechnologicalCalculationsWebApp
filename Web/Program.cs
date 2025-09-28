@@ -1,7 +1,14 @@
+using Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.ConfigureDataBaseContexts();
+builder.Services.ScanServices();
+builder.Services.ScanRepos();
+builder.Services.ConfigMapper();
 
 var app = builder.Build();
 
