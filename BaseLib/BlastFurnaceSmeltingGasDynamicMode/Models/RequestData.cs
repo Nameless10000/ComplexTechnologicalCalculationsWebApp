@@ -1,0 +1,54 @@
+namespace BaseLib.Models;
+
+public class RequestData
+{
+    public double k { get; set; }
+    public double Cnel { get; set; }
+    public double _Fe { get; set; }
+    public double Rd { get; set; }
+    public double _P { get; set; }
+    public double _Mn { get; set; }
+    public double _Si { get; set; }
+    public double _S { get; set; }
+    public double C { get; set; }
+    public double Vpg { get; set; }
+    public double W { get; set; }
+    public double Fd { get; set; }
+    public double P { get; set; }
+    public double VdKIP { get; set; }
+    public double _CH4_ { get; set; }
+    public double _Cr { get; set; }
+    public double _Ti { get; set; }
+    public double CO2KG { get; set; }
+    public double COKG { get; set; }
+    public double Dg { get; set; }
+    public double Dp { get; set; }
+    public double Td { get; set; }
+    public double Ck { get; set; }
+    public double Tc { get; set; }
+    public double Wc { get; set; }
+    public double Ws { get; set; }
+    public double n { get; set; }
+    public double Df2 { get; set; }
+    public double Pd { get; set; }
+    public double L { get; set; }
+    public double DeltaRhISM { get; set; }
+    public double DeltaPh { get; set; }
+    public double h3 { get; set; }
+    public double hp { get; set; }
+    public List<double> AiKs { get; set; }
+    public List<double> DiKs { get; set; }
+    public double Ushl { get; set; }
+    public double pshl { get; set; }
+    public double mu { get; set; }
+    public double nu { get; set; }
+    public double YhK { get; set; }
+    public double Gi { get; set; }
+    public double PMPPi { get; set; }
+    public double Dk { get; set; }
+    public double Dr { get; set; }
+    public double Gjrm { get; set; }
+    public double alfaokAgl { get; set; }
+    public List<double> AiAgls { get; set; }
+    public List<double> DiAgls { get; set; }
+}
