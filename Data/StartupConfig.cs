@@ -1,4 +1,6 @@
+using Core.Contexts;
 using Data.Mapping;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Data;
@@ -18,9 +20,23 @@ public static class StartupConfig
     /// </summary>
     /// <param name="services"></param>
     /// <returns></returns>
-    public static IServiceCollection ConfigureDataBaseContexts(this IServiceCollection services)
+    public static IServiceCollection ConfigureDataBaseContexts(this IServiceCollection services, Dictionary<Type, string> connStrings)
     {
-        //services.AddDbContext<IDbContext>(opt => opt.UseNpgsql(...));
+        var agloConnStr = connStrings[typeof(AgloDBContext)];
+        var authConnStr = connStrings[typeof(AuthDBContext)];
+        var gasDynamicConnStr = connStrings[typeof(GasDynamicDBContext)];
+        var matBalConnStr = connStrings[typeof(MatBalDBContext)];
+        var slagModeConnStr = connStrings[typeof(SlagModeDBContext)];
+        var tBalConnStr = connStrings[typeof(TBalDBContext)];
+        var tModeConnStr = connStrings[typeof(TModeDBContext)];
+
+        services.AddDbContext<AgloDBContext>(opt => opt.UseNpgsql(agloConnStr));
+        services.AddDbContext<AuthDBContext>(opt => opt.UseNpgsql(authConnStr));
+        services.AddDbContext<GasDynamicDBContext>(opt => opt.UseNpgsql(gasDynamicConnStr));
+        services.AddDbContext<MatBalDBContext>(opt => opt.UseNpgsql(matBalConnStr));
+        services.AddDbContext<SlagModeDBContext>(opt => opt.UseNpgsql(slagModeConnStr));
+        services.AddDbContext<TBalDBContext>(opt => opt.UseNpgsql(tBalConnStr));
+        services.AddDbContext<TModeDBContext>(opt => opt.UseNpgsql(tModeConnStr));
 
         return services;
     }
