@@ -14,7 +14,7 @@ public static class StartupConfig
     private static readonly string _currentEnvironment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")!;
 
     /// <summary>
-    /// Метод для конфигурации контекстов полдключений БД
+    /// Метод для конфигурации контекстов подключений БД
     /// </summary>
     /// <param name="services"></param>
     /// <returns></returns>
