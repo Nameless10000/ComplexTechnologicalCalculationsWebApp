@@ -14,9 +14,10 @@ namespace Core.Contexts
         {
             base.OnModelCreating(modelBuilder);
         }
-
+        /*
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<UserRoles> UsersRoles { get; set; }
+        */
     }
 }
