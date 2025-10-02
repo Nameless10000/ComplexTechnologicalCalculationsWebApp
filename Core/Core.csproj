@@ -7,6 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Folder Include="Models\SlagMode\" />
+        <Folder Include="Models\GasDynamic\" />
+        <Folder Include="Models\TBal\" />
+        <Folder Include="Models\TMode\" />
+        <Folder Include="Models\MatBal\" />
+        <Folder Include="Models\Aglo\" />
         <Folder Include="Repos\" />
     </ItemGroup>
 
