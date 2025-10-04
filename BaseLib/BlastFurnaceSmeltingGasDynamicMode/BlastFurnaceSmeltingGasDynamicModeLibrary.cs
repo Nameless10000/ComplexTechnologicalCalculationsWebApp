@@ -242,7 +242,89 @@ public class BlastFurnaceSmeltingGasDynamicModeLibrary : IMathLibrary<RequestDat
             .Zip(request.DiAgls, (a, b) => a / b)
             .Sum();
 
-        // Тут опять дохуя параметров, я устал)
+        // Я смог
+        var eAgl = 1 - (1 - request.ej) * request.ak -
+                   request.EiAgls
+                       .Zip(request.AiAgls, request.DiAgls)
+                       .Select(x => (ei: x.First, ai: x.Second, di: x.Third))
+                       .Aggregate(0.0, (acc, cur) => acc += (1 - cur.ei) * cur.ai
+                                                                         * (1.582
+                                                                            - 2.416 * (cur.di / request.Dk)
+                                                                            + 1.485 * Math.Pow(cur.di / request.Dk, 2)
+                                                                            + 0.18 * (request.ak / cur.ai)
+                                                                            - 0.015 * Math.Pow(request.ak / cur.ai, 2)
+                                                                         ));
+
+        var eok = 0.4 - 0.25 * request.M_05;
+
+        var Gsh = Gagl + Gok * Gk;
+
+        var Vagl = Gagl / request.YhAgl;
+
+        var Vok = Gok / request.YhOk;
+
+        var Vk2 = Gk / request.YhK;
+
+        var Vsh = Vagl + Vok * Vk2;
+
+        var YhSH = Gsh / Vsh;
+
+        var alfaAgl = Vagl / Vsh;
+
+        var alfaOk = Vok / Vsh;
+
+        var alfaK = Vk2 / alfaAgl;
+
+        var eShB = (Vagl * eAgl + Vok * eok + Vk2 * ek) / Vsh;
+
+        var deB = 1 / (alfaAgl / deAgl + alfaOk / request.deOk + alfaK / deK);
+
+        var HshB = request.hsh + request.hk - request.hzas;
+
+        var _tB_ = (request.Tkg + 1e3) / 2;
+
+        var _PgB_ = ((Pg1000 + 1) + (request.Pkg + 1)) / 2;
+
+        var lambdaB = request.deltaRb / (
+            (Wv * Wv) / 2
+            * r0V
+            * (HshB / request.deBSh)
+            * ((1 - request.eb) / Math.Pow(request.eb, 3))
+            * ((_tB_ + 273) / 273)
+            * (1 / _PgB_)
+        );
+
+        var kb = 4 * request.VdKIP / (Wv * Math.PI * _Dv_ * _Dv_);
+
+        var Ab = lambdaB
+                 * (HshB / deB)
+                 * (r0V / 2)
+                 * Math.Pow(4 / (Math.PI * _Dv_ * _Dv_ * kb), 2)
+                 * ((1 - request.eb) / Math.Pow(request.eb, 3))
+                 * ((_tB_ + 273) / 273)
+                 * (1 / _PgB_);
+
+        var deltaRbRasch = Ab * Vd * Vd;
+
+        var Ha = request.hz + request.hp + request.hsh + request.hk - request.hzas + 0.5;
+
+        var SU = 1e3 * (request.Pd - deltaRvf - request.Pkg) / (Ha * YhSH);
+
+        var deltaPkp = request.SUkp * Ha * YhSH / 1e3;
+
+        var VdKP = Math.Sqrt(deltaPkp / (Ah + Ab));
+
+        var Wgorn = 4 * Qgg * request.P / (24 * 60 * 60 * Math.PI * request.Dg * request.Dg);
+
+        var WgornFact = Wgorn * (Tt + 273) / (273 * (1 + request.Pd) * ek);
+
+        var Wrasp = 4 * Vgas1000 * request.P / (24 * 60 * 60 * Math.PI * request.Dg * request.Dg);
+
+        var WraspFact = Wrasp * (1e3 + 273) / (273 * (1 + Pg1000) * ek_);
+
+        var Wkolosh = 4 * Vkg * request.P / (24 * 60 * 60 * Math.PI * request.Dk * request.Dk);
+
+        var WkoloshFact = Wkolosh * (request.Tkg + 273) / (273 * (1 + request.Pkg) * eShB);
 
         return new ResponseData();
     }

@@ -51,4 +51,21 @@ public class RequestData
     public double alfaokAgl { get; set; }
     public List<double> AiAgls { get; set; }
     public List<double> DiAgls { get; set; }
+    public double ej { get; set; }
+    public double ak { get; set; }
+    public List<double> EiAgls { get; set; }
+    public double M_05 { get; set; }
+    public double YhAgl { get; set; }
+    public double YhOk { get; set; }
+    public double deOk { get; set; }
+    public double hsh { get; set; }
+    public double hk { get; set; }
+    public double hzas { get; set; }
+    public double Tkg { get; set; }
+    public double Pkg { get; set; }
+    public double deltaRb { get; set; }
+    public double deBSh { get; set; }
+    public double eb { get; set; }
+    public double hz { get; set; }
+    public double SUkp { get; set; }
 }
