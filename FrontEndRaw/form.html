@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Login & Signup Form</title>
+    <link href="form.css" rel="stylesheet"/>
+</head>
+<body>
+<section class="wrapper">
+    <div class="form signup">
+        <header>РЕГИСТРАЦИЯ</header>
+        <form action="#">
+            <input placeholder="фамилия имя" required type="text"/>
+            <!-- добавить к этому и остальным input'ам при переносе на MVC атрибут 'name' (e.g. name='fullname', name='email' etc.)-->
+            <input placeholder="электронная почта" required type="text"/>
+            <input placeholder="номер телефона" required type="text"/>
+            <input placeholder="пароль" required type="password"/>
+            <input placeholder="подтверждение пароля" required type="password"/>
+            <div class="checkbox">
+                <input id="signupCheck" type="checkbox"/>
+                <label for="signupCheck">согласие на обработку персональных данных</label>
+            </div>
+            <input type="submit" value="Зарегистироваться"/>
+        </form>
+    </div>
+    <div class="form login">
+        <header>ВХОД</header>
+        <form action="#">
+            <input placeholder="электронная почта/номер телефона" required type="text"/>
+            <input placeholder="пароль" required type="password"/>
+            <a href="#">забыли пароль?</a>
+            <input type="submit" value="ВОЙТИ"/>
+        </form>
+    </div>
+
+    <script>
+        const wrapper = document.querySelector(".wrapper"),
+            signupHeader = document.querySelector(".signup header"),
+            loginHeader = document.querySelector(".login header");
+        loginHeader.addEventListener("click", () => {
+            wrapper.classList.add("active");
+        });
+        signupHeader.addEventListener("click", () => {
+            wrapper.classList.remove("active");
+        });
+
+    </script>
+</section>
+</body>
+</html>
