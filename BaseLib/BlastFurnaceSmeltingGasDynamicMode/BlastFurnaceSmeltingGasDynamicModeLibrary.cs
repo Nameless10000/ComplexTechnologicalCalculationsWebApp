@@ -242,7 +242,6 @@ public class BlastFurnaceSmeltingGasDynamicModeLibrary : IMathLibrary<RequestDat
             .Zip(request.DiAgls, (a, b) => a / b)
             .Sum();
 
-        // Я смог
         var eAgl = 1 - (1 - request.ej) * request.ak -
                    request.EiAgls
                        .Zip(request.AiAgls, request.DiAgls)
@@ -326,6 +325,17 @@ public class BlastFurnaceSmeltingGasDynamicModeLibrary : IMathLibrary<RequestDat
 
         var WkoloshFact = Wkolosh * (request.Tkg + 273) / (273 * (1 + request.Pkg) * eShB);
 
-        return new ResponseData();
+        return new ResponseData
+        {
+            SU = SU,
+            DeltaPkp = deltaPkp,
+            VdKP = VdKP,
+            Wgorn = Wgorn,
+            WgornFact = WgornFact,
+            Wrasp = Wrasp,
+            WraspFact = WraspFact,
+            Wkolosh = Wkolosh,
+            WkoloshFact = WkoloshFact
+        };
     }
 }
