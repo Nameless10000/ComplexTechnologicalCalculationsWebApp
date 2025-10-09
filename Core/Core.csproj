@@ -13,7 +13,6 @@
         <Folder Include="Models\TMode\" />
         <Folder Include="Models\MatBal\" />
         <Folder Include="Models\Aglo\" />
-        <Folder Include="Repos\" />
     </ItemGroup>
 
     <ItemGroup>
