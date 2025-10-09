@@ -1,4 +1,5 @@
 using Core.Contexts;
+using Core.Services;
 using Data.Mapping;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -37,6 +38,8 @@ public static class StartupConfig
         services.AddDbContext<SlagModeDBContext>(opt => opt.UseNpgsql(slagModeConnStr));
         services.AddDbContext<TBalDBContext>(opt => opt.UseNpgsql(tBalConnStr));
         services.AddDbContext<TModeDBContext>(opt => opt.UseNpgsql(tModeConnStr));
+
+        services.AddTransient<SimpleLoggerService>();
 
         return services;
     }

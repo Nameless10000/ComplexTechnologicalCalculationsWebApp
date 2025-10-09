@@ -23,8 +23,6 @@ builder.Services.ScanServices();
 builder.Services.ScanRepos();
 builder.Services.ConfigMapper();
 
-builder.Services.AddTransient<SimpleLoggerService>();
-
 var app = builder.Build();
 try
 {
