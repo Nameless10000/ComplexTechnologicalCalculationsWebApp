@@ -1,4 +1,5 @@
 using Core.Contexts;
+using Core.Services;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
@@ -21,6 +22,8 @@ builder.Services.ConfigureDataBaseContexts(conStrings);
 builder.Services.ScanServices();
 builder.Services.ScanRepos();
 builder.Services.ConfigMapper();
+
+builder.Services.AddTransient<SimpleLoggerService>();
 
 var app = builder.Build();
 try
