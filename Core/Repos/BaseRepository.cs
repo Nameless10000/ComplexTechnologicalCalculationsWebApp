@@ -41,7 +41,7 @@ namespace Core.Repos
 
                 await _dbSet.AddAsync(entity);
                 await _context.SaveChangesAsync();
-                await _logger.LogAsync($"Add new item", "Success", $"New {typeof(TDbSet).Name} added with id {entity.Id}");
+                await _logger.LogAsync($"Add new {typeof(TDbSet).Name}", "Success", $"New {typeof(TDbSet).Name} added with id {entity.Id}");
 
                 return entity;
             }
@@ -57,7 +57,7 @@ namespace Core.Repos
             var existingEntity = await _dbSet.FirstOrDefaultAsync(a => a.Id == entity.Id);
             if (existingEntity == null)
             {
-                await _logger.LogAsync($"Update item", "Null reference", $"{typeof(TDbSet).Name} with id {entity.Id} not found");
+                await _logger.LogAsync($"Update {typeof(TDbSet).Name}", "Null reference", $"{typeof(TDbSet).Name} with id {entity.Id} not found");
                 throw new NullReferenceException();
             }
 
@@ -67,7 +67,7 @@ namespace Core.Repos
             _dbSet.Update(entity);
 
             await _context.SaveChangesAsync();
-            await _logger.LogAsync($"Update item", "Success", $"{typeof(TDbSet).Name} with id {entity.Id}");
+            await _logger.LogAsync($"Update {typeof(TDbSet).Name}", "Success", $"{typeof(TDbSet).Name} with id {entity.Id}");
 
             return existingEntity;
         }
@@ -77,14 +77,14 @@ namespace Core.Repos
             var entity = await _dbSet.FirstOrDefaultAsync(a => a.Id == id);
             if (entity == null)
             {
-                await _logger.LogAsync($"Delete item", "Null reference", $"{typeof(TDbSet).Name} with id {id} not found");
+                await _logger.LogAsync($"Delete {typeof(TDbSet).Name}", "Null reference", $"{typeof(TDbSet).Name} with id {id} not found");
                 throw new NullReferenceException();
             }
 
             _dbSet.Remove(entity);
             await _context.SaveChangesAsync();
 
-            await _logger.LogAsync($"Delete item", "Success",$"{typeof(TDbSet).Name} with if {id} was deleted");
+            await _logger.LogAsync($"Delete {typeof(TDbSet).Name}", "Success",$"{typeof(TDbSet).Name} with if {id} was deleted");
             return true;
         }
 
