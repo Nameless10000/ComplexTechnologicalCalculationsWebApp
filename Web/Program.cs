@@ -1,8 +1,7 @@
+using System.Diagnostics;
 using Core.Contexts;
-using Core.Services;
 using Data;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,26 +33,28 @@ try
         app.UseHsts();
     }
 
-    if (app.Environment.IsDevelopment())
+    /*if (app.Environment.IsDevelopment())
     {
-        using var scope = app.Services.CreateScope();
 
-        var agloDB = scope.ServiceProvider.GetRequiredService<AgloDBContext>();
-        var authDb = scope.ServiceProvider.GetRequiredService<AuthDBContext>();
-        var gasDb = scope.ServiceProvider.GetRequiredService<GasDynamicDBContext>();
-        var matDb = scope.ServiceProvider.GetRequiredService<MatBalDBContext>();
-        var slagDb = scope.ServiceProvider.GetRequiredService<SlagModeDBContext>();
-        var tbalDb = scope.ServiceProvider.GetRequiredService<TBalDBContext>();
-        var tmodeDb = scope.ServiceProvider.GetRequiredService<TModeDBContext>();
+    }*/
 
-        agloDB.Database.Migrate();
-        authDb.Database.Migrate();
-        gasDb.Database.Migrate();
-        matDb.Database.Migrate();
-        slagDb.Database.Migrate();
-        tbalDb.Database.Migrate();
-        tmodeDb.Database.Migrate();
-    }
+    using var scope = app.Services.CreateScope();
+
+    var agloDB = scope.ServiceProvider.GetRequiredService<AgloDBContext>();
+    var authDb = scope.ServiceProvider.GetRequiredService<AuthDBContext>();
+    var gasDb = scope.ServiceProvider.GetRequiredService<GasDynamicDBContext>();
+    var matDb = scope.ServiceProvider.GetRequiredService<MatBalDBContext>();
+    var slagDb = scope.ServiceProvider.GetRequiredService<SlagModeDBContext>();
+    var tbalDb = scope.ServiceProvider.GetRequiredService<TBalDBContext>();
+    var tmodeDb = scope.ServiceProvider.GetRequiredService<TModeDBContext>();
+
+    agloDB.Database.Migrate();
+    authDb.Database.Migrate();
+    gasDb.Database.Migrate();
+    matDb.Database.Migrate();
+    slagDb.Database.Migrate();
+    tbalDb.Database.Migrate();
+    tmodeDb.Database.Migrate();
 
     app.UseHttpsRedirection();
     app.UseStaticFiles();
@@ -68,7 +69,7 @@ try
 
     app.Run();
 }
-catch(Exception ex)
+catch (Exception ex)
 {
     Debug.WriteLine(ex.Message);
 }
