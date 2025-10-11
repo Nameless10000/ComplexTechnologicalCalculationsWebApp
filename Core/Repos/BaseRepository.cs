@@ -8,6 +8,9 @@ namespace Core.Repos
         where TDbSet : Entity
         where TDbContext : DbContext
     {
+        /// <summary>
+        /// Базовый репозиторий для работы с базами данных
+        /// </summary>
         protected readonly TDbContext _context;
         protected readonly DbSet<TDbSet> _dbSet;
         protected readonly SimpleLoggerService _logger;
@@ -17,7 +20,13 @@ namespace Core.Repos
             _dbSet = context.Set<TDbSet>();
             _logger = logger;
         }
-
+        
+        /// <summary>
+        /// Метод для получения конкретной записи по его ID
+        /// </summary>
+        /// <param name="id">Идентификатор записи, которую нужно получить</param>
+        /// <returns>Содержимое искомой записи таблицы</returns>
+        /// <exception cref="NullReferenceException">Запись с таким ID не найдена</exception>
         public virtual async Task<TDbSet> GetByIDAsync(int id)
         {
             var res = await _dbSet.FirstOrDefaultAsync(a => a.Id == id);
@@ -32,6 +41,12 @@ namespace Core.Repos
             return res;
         }
 
+        /// <summary>
+        /// Метод для добавления
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public virtual async Task<TDbSet> AddAsync(TDbSet entity, int userId)
         {
             try

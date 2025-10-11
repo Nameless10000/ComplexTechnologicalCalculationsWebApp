@@ -1,13 +1,10 @@
-﻿using Core.Models.Auth;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Core.Contexts
 {
+    /// <summary>
+    /// Контекст для базы данных для хранения данных авторизации пользователей
+    /// </summary>
     public class AuthDBContext(DbContextOptions<AuthDBContext> opts) : DbContext(opts)
     {
         protected override void OnModelCreating(ModelBuilder modelBuilder)

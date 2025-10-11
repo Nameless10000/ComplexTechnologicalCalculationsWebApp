@@ -1,13 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Core.Contexts
 {
+    /// <summary>
+    /// Контекст для базы данных проекта расчета шлакового режима доменной плавки
+    /// </summary>
     public class SlagModeDBContext(DbContextOptions<SlagModeDBContext> opts) : DbContext(opts)
     {
         protected override void OnModelCreating(ModelBuilder modelBuilder)
