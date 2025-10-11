@@ -17,6 +17,8 @@ conStrings[typeof(SlagModeDBContext)] = builder.Configuration.GetConnectionStrin
 conStrings[typeof(TBalDBContext)] = builder.Configuration.GetConnectionString("TBalConnectionString")!;
 conStrings[typeof(TModeDBContext)] = builder.Configuration.GetConnectionString("TModeConnectionString")!;
 
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.ConfigureDataBaseContexts(conStrings);
 builder.Services.ScanServices();
 builder.Services.ScanRepos();
