@@ -73,7 +73,8 @@ public static class StartupConfig
             .WithTransientLifetime());
 
         services.AddTransient<SimpleLoggerService>();
-
+        
+        
         return services;
     }
 

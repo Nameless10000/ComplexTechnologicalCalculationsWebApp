@@ -10,7 +10,7 @@ namespace Core.Models
         public int CreatorID { get; set; }
         public DateTime? LastEditedDateTime { get; set; }
         public int? LastEditorID { get; set; }
-        public int? DeletedDateTime { get; set; }
+        public DateTime? DeletedDateTime { get; set; }
         public int? DeletedByID { get; set; }
     }
 }
