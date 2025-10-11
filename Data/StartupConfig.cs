@@ -21,8 +21,23 @@ public static class StartupConfig
     /// </summary>
     /// <param name="services"></param>
     /// <returns></returns>
-    public static IServiceCollection ConfigureDataBaseContexts(this IServiceCollection services, Dictionary<Type, string> connStrings)
+    public static IServiceCollection ConfigureDataBaseContexts(this IServiceCollection services,
+        Dictionary<Type, string>? connStrings = null,
+        bool isTest = false)
     {
+        if (isTest || connStrings == null) // Регистрация InMemory контекстов БД для тестов
+        {
+            services.AddDbContext<AgloDBContext>(opt => opt.UseInMemoryDatabase(nameof(AgloDBContext)));
+            services.AddDbContext<AuthDBContext>(opt => opt.UseInMemoryDatabase(nameof(AuthDBContext)));
+            services.AddDbContext<GasDynamicDBContext>(opt => opt.UseInMemoryDatabase(nameof(GasDynamicDBContext)));
+            services.AddDbContext<MatBalDBContext>(opt => opt.UseInMemoryDatabase(nameof(MatBalDBContext)));
+            services.AddDbContext<SlagModeDBContext>(opt => opt.UseInMemoryDatabase(nameof(SlagModeDBContext)));
+            services.AddDbContext<TBalDBContext>(opt => opt.UseInMemoryDatabase(nameof(TBalDBContext)));
+            services.AddDbContext<TModeDBContext>(opt => opt.UseInMemoryDatabase(nameof(TModeDBContext)));
+
+            return services;
+        }
+
         var agloConnStr = connStrings[typeof(AgloDBContext)];
         var authConnStr = connStrings[typeof(AuthDBContext)];
         var gasDynamicConnStr = connStrings[typeof(GasDynamicDBContext)];
@@ -38,8 +53,6 @@ public static class StartupConfig
         services.AddDbContext<SlagModeDBContext>(opt => opt.UseNpgsql(slagModeConnStr));
         services.AddDbContext<TBalDBContext>(opt => opt.UseNpgsql(tBalConnStr));
         services.AddDbContext<TModeDBContext>(opt => opt.UseNpgsql(tModeConnStr));
-
-        services.AddTransient<SimpleLoggerService>();
 
         return services;
     }
@@ -58,6 +71,8 @@ public static class StartupConfig
                 .Where(type => type.Name.Contains("Service")))
             .AsSelf()
             .WithTransientLifetime());
+
+        services.AddTransient<SimpleLoggerService>();
 
         return services;
     }

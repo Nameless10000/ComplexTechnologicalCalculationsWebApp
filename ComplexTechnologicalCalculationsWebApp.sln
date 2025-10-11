@@ -21,6 +21,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FrontEndRaw", "FrontEndRaw"
 		FrontEndRaw\form.html = FrontEndRaw\form.html
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{6A0A3BD1-73B8-4524-A237-D742280F87AE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,10 @@ Global
 		{7F83BC58-A7A7-41E1-9326-47D7FE6AA72B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F83BC58-A7A7-41E1-9326-47D7FE6AA72B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F83BC58-A7A7-41E1-9326-47D7FE6AA72B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A0A3BD1-73B8-4524-A237-D742280F87AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A0A3BD1-73B8-4524-A237-D742280F87AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A0A3BD1-73B8-4524-A237-D742280F87AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A0A3BD1-73B8-4524-A237-D742280F87AE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{7F83BC58-A7A7-41E1-9326-47D7FE6AA72B} = {E55D7638-1709-4297-B7BB-1E20E74EE326}
