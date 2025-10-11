@@ -147,7 +147,7 @@ namespace Core.Repos
             _dbSet.Update(entity);
             await _context.SaveChangesAsync();
 
-            await _logger.LogAsync($"Delete {typeof(TDbSet).Name}", "Success",$"{typeof(TDbSet).Name} with if {id} was deleted");
+            await _logger.LogAsync($"Delete {typeof(TDbSet).Name}", "Success",$"{typeof(TDbSet).Name} with id {id} was deleted");
             return true;
         }
         
