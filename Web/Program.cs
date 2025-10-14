@@ -28,41 +28,41 @@ builder.Services.ConfigMapper();
 
 builder.Services.AddIdentity<User, Role>(options =>
 {
-    // Минимальная длина пароля
+    // РњРёРЅРёРјР°Р»СЊРЅР°СЏ РґР»РёРЅР° РїР°СЂРѕР»СЏ
     options.Password.RequiredLength = 8;
 
-    // Нужно ли, чтобы пароль содержал хотя бы один неалфавитно-цифровой символ (например, !, @, #)
+    // РќСѓР¶РЅРѕ Р»Рё, С‡С‚РѕР±С‹ РїР°СЂРѕР»СЊ СЃРѕРґРµСЂР¶Р°Р» С…РѕС‚СЏ Р±С‹ РѕРґРёРЅ РЅРµР°Р»С„Р°РІРёС‚РЅРѕ-С†РёС„СЂРѕРІРѕР№ СЃРёРјРІРѕР» (РЅР°РїСЂРёРјРµСЂ, !, @, #)
     options.Password.RequireNonAlphanumeric = false;
 
-    // Нужно ли, чтобы пароль содержал хотя бы одну заглавную букву
+    // РќСѓР¶РЅРѕ Р»Рё, С‡С‚РѕР±С‹ РїР°СЂРѕР»СЊ СЃРѕРґРµСЂР¶Р°Р» С…РѕС‚СЏ Р±С‹ РѕРґРЅСѓ Р·Р°РіР»Р°РІРЅСѓСЋ Р±СѓРєРІСѓ
     options.Password.RequireUppercase = false;
 
-    // Можно добавить другие настройки:
-    // options.Password.RequireDigit = true;       // Требовать цифру
-    // options.Password.RequireLowercase = true;   // Требовать хотя бы одну строчную букву
-    // options.User.RequireUniqueEmail = true;    // Требовать уникальный email при регистрации
+    // РњРѕР¶РЅРѕ РґРѕР±Р°РІРёС‚СЊ РґСЂСѓРіРёРµ РЅР°СЃС‚СЂРѕР№РєРё:
+    // options.Password.RequireDigit = true;       // РўСЂРµР±РѕРІР°С‚СЊ С†РёС„СЂСѓ
+    // options.Password.RequireLowercase = true;   // РўСЂРµР±РѕРІР°С‚СЊ С…РѕС‚СЏ Р±С‹ РѕРґРЅСѓ СЃС‚СЂРѕС‡РЅСѓСЋ Р±СѓРєРІСѓ
+    // options.User.RequireUniqueEmail = true;    // РўСЂРµР±РѕРІР°С‚СЊ СѓРЅРёРєР°Р»СЊРЅС‹Р№ email РїСЂРё СЂРµРіРёСЃС‚СЂР°С†РёРё
 })
-.AddEntityFrameworkStores<AuthDBContext>() // Указывает, что Identity будет использовать AuthDBContext для хранения пользователей и ролей
-.AddDefaultTokenProviders();               // Добавляет провайдеры токенов для подтверждения email, сброса пароля и т.д.
+.AddEntityFrameworkStores<AuthDBContext>() // РЈРєР°Р·С‹РІР°РµС‚, С‡С‚Рѕ Identity Р±СѓРґРµС‚ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ AuthDBContext РґР»СЏ С…СЂР°РЅРµРЅРёСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№ Рё СЂРѕР»РµР№
+.AddDefaultTokenProviders();               // Р”РѕР±Р°РІР»СЏРµС‚ РїСЂРѕРІР°Р№РґРµСЂС‹ С‚РѕРєРµРЅРѕРІ РґР»СЏ РїРѕРґС‚РІРµСЂР¶РґРµРЅРёСЏ email, СЃР±СЂРѕСЃР° РїР°СЂРѕР»СЏ Рё С‚.Рґ.
 
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    // Путь, на который перенаправляется пользователь, если он не авторизован
+    // РџСѓС‚СЊ, РЅР° РєРѕС‚РѕСЂС‹Р№ РїРµСЂРµРЅР°РїСЂР°РІР»СЏРµС‚СЃСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ, РµСЃР»Рё РѕРЅ РЅРµ Р°РІС‚РѕСЂРёР·РѕРІР°РЅ
     options.LoginPath = "/Account/Login";
 
-    // Путь для выхода пользователя из системы
+    // РџСѓС‚СЊ РґР»СЏ РІС‹С…РѕРґР° РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РёР· СЃРёСЃС‚РµРјС‹
     options.LogoutPath = "/Account/Logout";
 
-    // Делает cookie доступными только для HTTP-запросов, чтобы их нельзя было прочитать через JavaScript
+    // Р”РµР»Р°РµС‚ cookie РґРѕСЃС‚СѓРїРЅС‹РјРё С‚РѕР»СЊРєРѕ РґР»СЏ HTTP-Р·Р°РїСЂРѕСЃРѕРІ, С‡С‚РѕР±С‹ РёС… РЅРµР»СЊР·СЏ Р±С‹Р»Рѕ РїСЂРѕС‡РёС‚Р°С‚СЊ С‡РµСЂРµР· JavaScript
     options.Cookie.HttpOnly = true;
 
-    // Время жизни cookie — после этого времени пользователь автоматически выйдет
+    // Р’СЂРµРјСЏ Р¶РёР·РЅРё cookie вЂ” РїРѕСЃР»Рµ СЌС‚РѕРіРѕ РІСЂРµРјРµРЅРё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё РІС‹Р№РґРµС‚
     options.ExpireTimeSpan = TimeSpan.FromHours(1);
 
-    // Можно добавить другие настройки:
-    // options.Cookie.Name = "MyAppAuthCookie";  // Имя cookie
-    // options.SlidingExpiration = true;         // Обновлять срок действия cookie при активности пользователя
+    // РњРѕР¶РЅРѕ РґРѕР±Р°РІРёС‚СЊ РґСЂСѓРіРёРµ РЅР°СЃС‚СЂРѕР№РєРё:
+    // options.Cookie.Name = "MyAppAuthCookie";  // РРјСЏ cookie
+    // options.SlidingExpiration = true;         // РћР±РЅРѕРІР»СЏС‚СЊ СЃСЂРѕРє РґРµР№СЃС‚РІРёСЏ cookie РїСЂРё Р°РєС‚РёРІРЅРѕСЃС‚Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
 });
 
 var app = builder.Build();
@@ -115,6 +115,6 @@ try
 }
 catch (Exception ex)
 {
-    Console.WriteLine(ex.ToString()); // выводим исключение в консоль
+    Console.WriteLine(ex.ToString()); // РІС‹РІРѕРґРёРј РёСЃРєР»СЋС‡РµРЅРёРµ РІ РєРѕРЅСЃРѕР»СЊ
     Debug.WriteLine(ex.Message);
 }
