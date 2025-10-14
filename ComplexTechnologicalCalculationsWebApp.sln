@@ -1,5 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36518.9 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B1BFAD55-FDEB-4BBE-8732-63E63E3548F2}"
 	ProjectSection(SolutionItems) = preProject
 		compose.yaml = compose.yaml
@@ -50,7 +53,13 @@ Global
 		{6A0A3BD1-73B8-4524-A237-D742280F87AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6A0A3BD1-73B8-4524-A237-D742280F87AE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{7F83BC58-A7A7-41E1-9326-47D7FE6AA72B} = {E55D7638-1709-4297-B7BB-1E20E74EE326}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6C5A92D1-992F-4E22-9828-78ACA41F9391}
 	EndGlobalSection
 EndGlobal

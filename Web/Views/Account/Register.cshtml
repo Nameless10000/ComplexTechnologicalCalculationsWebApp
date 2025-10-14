@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Регистрация";
+}
+
+<section class="wrapper">
+    <div class="form signup">
+        <header>РЕГИСТРАЦИЯ</header>
+        <form asp-action="Register" method="post">
+            <input name="fullName" placeholder="ФИО" required type="text" />
+            <input name="email" placeholder="электронная почта" required type="email" />
+            <input name="phoneNumber" placeholder="номер телефона" required type="text" />
+            <input name="password" placeholder="пароль" required type="password" />
+            <input name="confirmPassword" placeholder="подтверждение пароля" required type="password" />
+            <div class="checkbox">
+                <input id="signupCheck" type="checkbox" name="acceptPolicy" />
+                <label for="signupCheck">согласие на обработку персональных данных</label>
+            </div>
+            <input type="submit" value="Зарегистрироваться" />
+        </form>
+    </div>
+</section>

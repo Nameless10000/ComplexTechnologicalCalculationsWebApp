@@ -1,0 +1,15 @@
+﻿@{
+    ViewData["Title"] = "Вход";
+}
+
+<section class="wrapper">
+    <div class="form login">
+        <header>ВХОД</header>
+        <form asp-action="Login" method="post">
+            <input name="email" placeholder="электронная почта" required type="text" />
+            <input name="password" placeholder="пароль" required type="password" />
+            <a asp-action="ForgotPassword">забыли пароль?</a>
+            <input type="submit" value="ВОЙТИ" />
+        </form>
+    </div>
+</section>

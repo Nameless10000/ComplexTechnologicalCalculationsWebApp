@@ -4,6 +4,6 @@ namespace Core.Models.Auth
 {
     public class User : IdentityUser<int>
     {
-
+        public string? FullName { get; set; }
     }
 }
