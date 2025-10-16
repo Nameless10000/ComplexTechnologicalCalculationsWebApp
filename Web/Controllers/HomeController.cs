@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Core.Repos;
 using Microsoft.AspNetCore.Mvc;
 using Web.Models;
 
@@ -7,10 +8,12 @@ namespace Web.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private readonly UserRepository _repo;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, UserRepository repo)
     {
         _logger = logger;
+        _repo = repo;
     }
 
     public IActionResult Index()
@@ -21,6 +24,11 @@ public class HomeController : Controller
     public IActionResult Privacy()
     {
         return View();
+    }
+
+    public IActionResult TestCall()
+    {
+        _repo
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
