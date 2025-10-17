@@ -18,7 +18,7 @@ namespace Core.Repos
         protected readonly SimpleLoggerService _logger;
         protected readonly UserManager<User> _userManager;
 
-        protected UserRepository(
+        public UserRepository(
             AuthDBContext context,
             SimpleLoggerService logger,
             UserManager<User> userManager)
@@ -30,9 +30,29 @@ namespace Core.Repos
         }
 
         /// <summary>
+        /// Создаёт нового юзера в базе данных
+        /// </summary>
+        /// <param name="user">Объект юзера со всеми необходимыми данными</param>
+        /// <param name="password">Пароль пользователя</param>
+        /// <returns></returns>
+        public async Task<bool> Create(User user, string password)
+        {
+            if (IsPasswordValid(password))
+            {
+                await _userManager.CreateAsync(user, password);
+                _dbContext.Users.Add(user);
+                await _dbContext.SaveChangesAsync();
+                await _logger.LogAsync("Creating user", _logger.Success, "User created");
+                return true;
+            }
+            await _logger.LogAsync("Creating user", _logger.Warning, "Password is too short");
+            return false;
+        }
+        
+        /// <summary>
         /// Возвращает список всех пользователей в базе данных
         /// </summary>
-        /// <returns>Если успешно - массив польщователей, иначе - пустой массив</returns>
+        /// <returns>Если успешно - массив пользователей, иначе - пустой массив</returns>
         public async Task<List<User>> GetAll()
         {
             var res = await _dbSet.ToListAsync();
@@ -41,7 +61,7 @@ namespace Core.Repos
         }
 
         /// <summary>
-        /// ВОзвращает пользователя с указанным ID
+        /// Возвращает пользователя с указанным ID
         /// </summary>
         /// <param name="id">ID пользователя</param>
         /// <returns>Если успешно - пользователь, иначе - null</returns>
@@ -53,7 +73,7 @@ namespace Core.Repos
         }
 
         /// <summary>
-        /// ВОзвращает пользователя с указанным Email
+        /// Возвращает пользователя с указанным Email
         /// </summary>
         /// <param name="email">Почта пользователя</param>
         /// <returns>Если успешно - пользователь, иначе - null</returns>
@@ -67,7 +87,7 @@ namespace Core.Repos
         /// <summary>
         /// Меняет пароль пользователя
         /// </summary>
-        /// <param name="id">ID польщователя</param>
+        /// <param name="id">ID пользователя</param>
         /// <param name="currPassword">Актуальный пароль</param>
         /// <param name="newPassword">Новый пароль</param>
         /// <returns>Возвращает результат операции</returns>
@@ -80,9 +100,9 @@ namespace Core.Repos
                 return false;
             }
 
-            if (currPassword is not { Length: >= 10} || newPassword is not { Length: >= 10 })
+            if (!IsPasswordValid(currPassword) || !IsPasswordValid(newPassword))
             {
-                await _logger.LogAsync("Change user password", _logger.Warning, "Password too short or null");
+                await _logger.LogAsync("Change user password", _logger.Warning, "Password is not valid");
                 return false;
             }
 
@@ -129,6 +149,11 @@ namespace Core.Repos
             await _userManager.DeleteAsync(user);
             await _logger.LogAsync("Delete user", _logger.Success);
             return true;
+        }
+        
+        private static bool IsPasswordValid(string password)
+        {
+            return password is { Length: >= 10 };
         }
     }
 }
