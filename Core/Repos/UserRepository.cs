@@ -3,11 +3,6 @@ using Core.Models.Auth;
 using Core.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Core.Repos
 {
@@ -39,11 +34,12 @@ namespace Core.Repos
         {
             if (IsPasswordValid(password))
             {
-                await _userManager.CreateAsync(user, password);
-                _dbContext.Users.Add(user);
-                await _dbContext.SaveChangesAsync();
-                await _logger.LogAsync("Creating user", _logger.Success, "User created");
-                return true;
+                var res = await _userManager.CreateAsync(user, password);
+                if (res.Succeeded)
+                {
+                    await _logger.LogAsync("Creating user", _logger.Success, "User created");
+                    return true;
+                }
             }
             await _logger.LogAsync("Creating user", _logger.Warning, "Password is too short");
             return false;
@@ -55,9 +51,9 @@ namespace Core.Repos
         /// <returns>Если успешно - массив пользователей, иначе - пустой массив</returns>
         public async Task<List<User>> GetAll()
         {
-            var res = await _dbSet.ToListAsync();
-            await _logger.LogAsync("Get all users", _logger.Success, $"Returned {res.Count} records");
-            return res;
+            var result = await _dbSet.AsNoTracking().ToListAsync();
+            await _logger.LogAsync("Get all users", _logger.Success, $"Returned {result.Count} records");
+            return result;
         }
 
         /// <summary>
@@ -65,7 +61,7 @@ namespace Core.Repos
         /// </summary>
         /// <param name="id">ID пользователя</param>
         /// <returns>Если успешно - пользователь, иначе - null</returns>
-        public async Task<User?> GetByID(int id)
+        public async Task<User?> GetById(int id)
         {
             var res = await _userManager.FindByIdAsync(id.ToString());
             await _logger.LogAsync("Get user by id", _logger.Success);
@@ -80,7 +76,9 @@ namespace Core.Repos
         public async Task<User?> GetByEmail(string email)
         {
             var res = await _userManager.FindByEmailAsync(email);
-            await _logger.LogAsync("Get user by email", _logger.Success);
+            if (res != null)
+                await _logger.LogAsync("Get user by email", _logger.Success);
+            await _logger.LogAsync("Get user by email", _logger.Warning);
             return res;
         }
 
@@ -93,22 +91,21 @@ namespace Core.Repos
         /// <returns>Возвращает результат операции</returns>
         public async Task<bool> ChangePassword(int id, string currPassword, string newPassword)
         {
-            var user = await GetByID(id);
+            var user = await GetById(id);
             if (user == null)
             {
                 await _logger.LogAsync("Change user password", _logger.Warning, "User not found");
                 return false;
             }
-
-            if (!IsPasswordValid(currPassword) || !IsPasswordValid(newPassword))
+            
+            var res = await _userManager.ChangePasswordAsync(user, currPassword, newPassword);
+            if (res.Succeeded)
             {
-                await _logger.LogAsync("Change user password", _logger.Warning, "Password is not valid");
-                return false;
+                await _logger.LogAsync("Change user password", _logger.Success);
+                return true;
             }
-
-            await _userManager.ChangePasswordAsync(user, currPassword, newPassword);
-            await _logger.LogAsync("Change user password", _logger.Success);
-            return true;
+            await _logger.LogAsync("Change user password", _logger.Warning, "Password is not valid");
+            return false;
         }
 
         /// <summary>
@@ -126,9 +123,16 @@ namespace Core.Repos
                 tracked.State = EntityState.Detached;
             }
 
-            await _userManager.UpdateAsync(user);
-            await _logger.LogAsync("Update user", _logger.Success);
-            return user;
+            var res = await _userManager.UpdateAsync(user);
+            if (res.Succeeded)
+            {
+                await _logger.LogAsync("Update user", _logger.Success);
+                return user;
+            }
+            var errors = string.Join("; ", res.Errors.Select(x => x.Description));
+            await _logger.LogAsync("Update user", _logger.Warning, errors);
+
+            return null;
         }
 
         /// <summary>
@@ -138,7 +142,7 @@ namespace Core.Repos
         /// <returns>Результат операции</returns>
         public async Task<bool> Delete(int id)
         {
-            var user = await GetByID(id);
+            var user = await GetById(id);
 
             if (user is null)
             {
@@ -146,9 +150,15 @@ namespace Core.Repos
                 return false;
             }
 
-            await _userManager.DeleteAsync(user);
-            await _logger.LogAsync("Delete user", _logger.Success);
-            return true;
+            var res = await _userManager.DeleteAsync(user);
+            if (res.Succeeded)
+            {
+                await _logger.LogAsync("Delete user", _logger.Success);
+                return true;
+            }
+            var  errors = string.Join("; ", res.Errors.Select(x => x.Description));
+            await _logger.LogAsync("Delete user", _logger.Warning, errors);
+            return false;
         }
         
         private static bool IsPasswordValid(string password)
