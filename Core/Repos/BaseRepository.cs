@@ -7,13 +7,13 @@ using Microsoft.AspNetCore.Http;
 
 namespace Core.Repos
 {
+        /// <summary>
+        /// Базовый репозиторий для работы с базами данных
+        /// </summary>
     public abstract class BaseRepository<TDbSet, TDbContext>
         where TDbSet : Entity
         where TDbContext : DbContext
     {
-        /// <summary>
-        /// Базовый репозиторий для работы с базами данных
-        /// </summary>
         protected readonly TDbContext _context;
         protected readonly DbSet<TDbSet> _dbSet;
         protected readonly SimpleLoggerService _logger;
@@ -48,7 +48,7 @@ namespace Core.Repos
             
             if (entity == null)
             {
-                await _logger.LogAsync("Get by ID", "Return null", $"{typeof(TDbSet).Name} with ID = {id} not found");
+                await _logger.LogAsync("Get by ID", _logger.Warning, $"{typeof(TDbSet).Name} with ID = {id} not found");
                 return null;
             }
             
@@ -76,7 +76,7 @@ namespace Core.Repos
             }
             catch (Exception ex)
             {
-                await _logger.LogAsync($"Add new {typeof(TDbSet).Name}", "Catch exception", $"{ex.Message}");
+                await _logger.LogAsync($"Add new {typeof(TDbSet).Name}", _logger.Failure, $"{ex.Message}");
                 return null;
             }
         }
