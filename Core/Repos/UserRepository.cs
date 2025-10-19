@@ -32,14 +32,11 @@ namespace Core.Repos
         /// <returns></returns>
         public async Task<bool> Create(User user, string password)
         {
-            if (IsPasswordValid(password))
+            var res = await _userManager.CreateAsync(user, password);
+            if (res.Succeeded)
             {
-                var res = await _userManager.CreateAsync(user, password);
-                if (res.Succeeded)
-                {
-                    await _logger.LogAsync("Creating user", _logger.Success, "User created");
-                    return true;
-                }
+                await _logger.LogAsync("Creating user", _logger.Success, "User created");
+                return true;
             }
             await _logger.LogAsync("Creating user", _logger.Warning, "Password is too short");
             return false;
@@ -77,8 +74,14 @@ namespace Core.Repos
         {
             var res = await _userManager.FindByEmailAsync(email);
             if (res != null)
+            {
                 await _logger.LogAsync("Get user by email", _logger.Success);
-            await _logger.LogAsync("Get user by email", _logger.Warning);
+            }
+            else
+            {
+                await _logger.LogAsync("Get user by email", _logger.Warning);
+            }
+
             return res;
         }
 
