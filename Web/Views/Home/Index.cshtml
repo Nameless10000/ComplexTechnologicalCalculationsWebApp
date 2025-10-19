@@ -1,8 +1,44 @@
-﻿@{
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="section-header">Welcome to Web Application</h1>
+    <p class="section-subheader">A modern, responsive web application built with ASP.NET Core</p>
+
+    @if (!string.IsNullOrEmpty(Model?.Email))
+    {
+        <div class="card-modern">
+            <h3 class="text-primary-custom">User Information</h3>
+            <p>Email: @Model.Email</p>
+        </div>
+    }
+
+    <div class="row mt-4">
+        <div class="col-md-4 mb-3">
+            <div class="card-modern">
+                <h4 class="text-primary-custom">Feature 1</h4>
+                <p>Modern design with smooth animations and transitions</p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card-modern">
+                <h4 class="text-primary-custom">Feature 2</h4>
+                <p>Responsive layout that works on all devices</p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card-modern">
+                <h4 class="text-primary-custom">Feature 3</h4>
+                <p>Built with Bootstrap and jQuery for reliability</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <button class="btn-primary-custom">Get Started</button>
+    </div>
+
+    <p class="mt-4">Learn about <a href="https://learn.microsoft.com/aspnet/core" class="text-primary-custom">building
+            Web apps with ASP.NET Core</a>.</p>
 </div>
