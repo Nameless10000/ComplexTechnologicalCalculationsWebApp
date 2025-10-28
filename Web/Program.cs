@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using BaseLib.SlagMode.Models;
 using Core.Contexts;
 using Data;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,9 @@ conStrings[typeof(MatBalDBContext)] = builder.Configuration.GetConnectionString(
 conStrings[typeof(SlagModeDBContext)] = builder.Configuration.GetConnectionString("SlagModeConnectionString")!;
 conStrings[typeof(TBalDBContext)] = builder.Configuration.GetConnectionString("TBalConnectionString")!;
 conStrings[typeof(TModeDBContext)] = builder.Configuration.GetConnectionString("TModeConnectionString")!;
+
+var serverDomain = builder.Configuration.GetSection("ExternalServer");
+builder.Services.Configure<ExternalServerDomain>(serverDomain);
 
 builder.Services.AddHttpContextAccessor();
 
