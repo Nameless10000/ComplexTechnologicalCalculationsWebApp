@@ -27,8 +27,8 @@ namespace Test
                     UserName = "Login",
                     Password = "Password"
                 });
-
-            Assert.Equal("тут должен быть ключ", key);
+            var res = key.Split('.');
+            Assert.Equal(3, res.Length);
         }
     }
 }
