@@ -34,7 +34,7 @@ namespace BaseLib.SlagMode
 
             var restRequest = new RestRequest
             {
-                Resource = ($"{_serverAddress}/Calculate"),
+                Resource = ($"https://{_serverAddress}/api/SlagMode/Calculate"),
                 RequestFormat = DataFormat.Json,
                 Authenticator = auth,
                 Method = Method.Post
