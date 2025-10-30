@@ -7,13 +7,23 @@ namespace BaseLib.SlagMode
 {
     public class SlagMode : IMathLibrary<RequestData, ResponseData>
     {
-        public readonly RestClient _restClient;
-        public readonly string _serverAddress;
+        private readonly RestClient _restClient;
+        private readonly string _serverAddress;
 
         public SlagMode(IOptions<ExternalServerDomain> serverAddress)
         {
             _restClient = new RestClient();
             _serverAddress = serverAddress.Value.Domain;
+        }
+
+        /// <summary>
+        /// Существует для автотестов, потом будет удалено
+        /// </summary>
+        /// <param name="serverAddress">адрес сервера, например, localhost:12345</param>
+        public SlagMode(string serverAddress)
+        {
+            _restClient = new RestClient();
+            _serverAddress = serverAddress;
         }
 
         public ResponseData Calulate(RequestData request)
@@ -39,11 +49,11 @@ namespace BaseLib.SlagMode
             return new ResponseData();
         }
 
-        private string GetTokenFromServer(UserAuthData user)
+        public string GetTokenFromServer(UserAuthData user)
         {
             var restRequest = new RestRequest
             {
-                Resource = ($"{_serverAddress}/Login"),
+                Resource = ($"https://{_serverAddress}/api/SlagMode/Login"),
                 RequestFormat = DataFormat.Json,
                 Method = Method.Post
             };
