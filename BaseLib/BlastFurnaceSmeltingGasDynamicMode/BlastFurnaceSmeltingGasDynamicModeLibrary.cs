@@ -4,7 +4,7 @@ namespace BaseLib;
 
 public class BlastFurnaceSmeltingGasDynamicModeLibrary : IMathLibrary<RequestData, ResponseData>
 {
-    public ResponseData Calulate(RequestData request)
+    public ResponseData Calculate(RequestData request)
     {
         // Л1.1
         var Cprish = 0.01 * request.k * request.Cnel;

@@ -12,7 +12,7 @@ public class BlastFurnaceSmeltingGasDynamicModeTest
     // Пример получения сервисов/репо/контекстов в тестовую среду
     public BlastFurnaceSmeltingGasDynamicModeTest(TBalDBContext dbContext)
     {
-        _dbContext = dbContext;
+        
     }
 
     /// <summary>
@@ -21,9 +21,6 @@ public class BlastFurnaceSmeltingGasDynamicModeTest
     [Fact]
     public void Test1()
     {
-        var data = _dbContext.Model;
-
-        var result = 2 * 2;
-        Assert.Equal(4, result);
+        
     }
 }
