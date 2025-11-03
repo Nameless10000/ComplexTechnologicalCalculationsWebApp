@@ -1,3 +1,4 @@
+using BaseLib;
 using Data;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,6 +14,7 @@ public class Startup
     {
         services.ScanRepos();
         services.ScanServices();
+        services.ScanMathLibs();
 
         services.ConfigureDataBaseContexts(isTest: true);
     }

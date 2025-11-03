@@ -14,7 +14,7 @@ public class MaterialProperties
     public double Massa_koks_kg { get; set; }
 
     [DisplayName("Насыпная масса кокса, т/м³")]
-    public double Massa_koks_t { get; set; }
+    public double Massa_koks_t => Massa_koks_kg / 1e3;
 
     [DisplayName("Насыпная масса агломерата, т/м³")]
     public double Massa_aglo { get; set; }

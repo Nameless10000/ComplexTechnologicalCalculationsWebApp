@@ -107,7 +107,7 @@ public static class StartupConfig
             .FromApplicationDependencies()
             .AddClasses(classes => classes
                 .InNamespaces("BaseLib")
-                .Where(type => type.BaseType?.Name.Contains("MathLibrary") ?? false))
+                .Where(type => type.GetInterfaces().FirstOrDefault() is { Name: "IMathLibrary`2" }))
             .AsSelf()
             .WithSingletonLifetime());
 
