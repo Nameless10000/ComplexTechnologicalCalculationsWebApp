@@ -14,5 +14,5 @@ public interface IMathLibrary<TRequest, TResponse>
     /// </summary>
     /// <param name="request">Модель запроса к библиотеке</param>
     /// <returns>Модель ответа библиотеки</returns>
-    public TResponse Calulate(TRequest request);
+    public TResponse Calculate(TRequest request);
 }
