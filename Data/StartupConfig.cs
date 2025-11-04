@@ -97,7 +97,7 @@ public static class StartupConfig
     }
 
     /// <summary>
-    /// Сканирование репозиториев для добавления в DI
+    /// Сканирование мат. библиотек для добавления в DI
     /// </summary>
     /// <param name="services"></param>
     /// <returns></returns>
@@ -107,7 +107,7 @@ public static class StartupConfig
             .FromApplicationDependencies()
             .AddClasses(classes => classes
                 .InNamespaces("BaseLib")
-                .Where(type => type.GetInterfaces().FirstOrDefault() is { Name: "IMathLibrary`2" }))
+                .Where(type => type.GetInterfaces().Any(x => x is { Name: "IMathLibrary`2" })))
             .AsSelf()
             .WithSingletonLifetime());
 

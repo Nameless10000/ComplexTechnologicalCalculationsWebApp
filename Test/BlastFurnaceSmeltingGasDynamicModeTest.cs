@@ -16,14 +16,13 @@ public class BlastFurnaceSmeltingGasDynamicModeTest
     private readonly BlastFurnaceSmeltingGasDynamicModeXLLibrary _library;
     private readonly TBalDBContext _dbContext;
 
-    // Пример получения сервисов/репо/контекстов в тестовую среду
     public BlastFurnaceSmeltingGasDynamicModeTest(TBalDBContext dbContext, BlastFurnaceSmeltingGasDynamicModeXLLibrary library)
     {
         _library = library;
     }
     
     [Fact]
-    public void Test1()
+    public void BlastFurnaceSmeltingGasDynamicModeCorrectCalculationTest()
     {
         var aglomInputData = new RequestModelV2
         {
@@ -320,5 +319,7 @@ public class BlastFurnaceSmeltingGasDynamicModeTest
         Assert.Equal(6.03, blastResult.HydrodynamicsUpper.Speed_Real_Raspar, 2);
         Assert.Equal(2.503, blastResult.HydrodynamicsUpper.Speed_Filtr_Koloshnik, 2);
         Assert.Equal(5.682, blastResult.HydrodynamicsUpper.Speed_Real_Koloshnik, 1);
+        
+        
     }
 }
