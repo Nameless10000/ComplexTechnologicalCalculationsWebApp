@@ -1,25 +1,20 @@
-﻿using BaseLib.SlagMode;
+﻿
+
+using BaseLib.SlagMode;
 using BaseLib.SlagMode.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Test
 {
     /// <summary>
     /// Тесты для либы SlagMode
     /// </summary>
-    public class SlagModeTest
+    public class SlagModeTest (IOptions<ExternalServerDomain> serverAddress)
     {
         [Fact]
         public void getKey()
         {
-            var _mathLib = new SlagMode("localhost:7258");
+            var _mathLib = new SlagMode(serverAddress);
 
             var key = _mathLib.GetTokenFromServer(
                 new UserAuthData 
