@@ -1,7 +1,7 @@
 ﻿using BaseLib.SlagMode.Models;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using RestSharp;
+using RestSharp.Authenticators;
 
 namespace BaseLib.SlagMode
 {
@@ -16,11 +16,9 @@ namespace BaseLib.SlagMode
             _serverAddress = serverAddress.Value.Domain;
         }
 
-        public ResponseData Calulate(RequestData request)
+        public ResponseData Calculate(RequestData request)
         {
-            var auth = new RestSharp
-                .Authenticators
-                .JwtAuthenticator(GetTokenFromServer(request.User));
+            var auth = new JwtAuthenticator(GetTokenFromServer(request.User));
 
             var restRequest = new RestRequest
             {
