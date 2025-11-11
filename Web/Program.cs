@@ -28,6 +28,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.ConfigureDataBaseContexts(conStrings);
 builder.Services.ScanServices();
 builder.Services.ScanRepos();
+builder.Services.ScanMathLibs();
 builder.Services.ConfigMapper();
 
 builder.Services.AddIdentity<User, Role>(options =>
@@ -78,11 +79,6 @@ try
         // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
         app.UseHsts();
     }
-
-    /*if (app.Environment.IsDevelopment())
-    {
-
-    }*/
 
     using var scope = app.Services.CreateScope();
 

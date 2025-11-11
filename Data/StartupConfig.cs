@@ -97,6 +97,24 @@ public static class StartupConfig
     }
 
     /// <summary>
+    /// Сканирование мат. библиотек для добавления в DI
+    /// </summary>
+    /// <param name="services"></param>
+    /// <returns></returns>
+    public static IServiceCollection ScanMathLibs(this IServiceCollection services)
+    {
+        services.Scan(scan => scan
+            .FromApplicationDependencies()
+            .AddClasses(classes => classes
+                .InNamespaces("BaseLib")
+                .Where(type => type.GetInterfaces().Any(x => x is { Name: "IMathLibrary`2" })))
+            .AsSelf()
+            .WithSingletonLifetime());
+
+        return services;
+    }
+
+    /// <summary>
     /// Регистрация автомаппера
     /// </summary>
     /// <param name="services"></param>
