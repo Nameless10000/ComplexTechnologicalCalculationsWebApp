@@ -16,16 +16,6 @@ namespace BaseLib.SlagMode
             _serverAddress = serverAddress.Value.Domain;
         }
 
-        /// <summary>
-        /// Существует для автотестов, потом будет удалено
-        /// </summary>
-        /// <param name="serverAddress">адрес сервера, например, localhost:12345</param>
-        public SlagMode(string serverAddress)
-        {
-            _restClient = new RestClient();
-            _serverAddress = serverAddress;
-        }
-
         public ResponseData Calulate(RequestData request)
         {
             var auth = new RestSharp

@@ -10,106 +10,88 @@ namespace BaseLib.SlagMode.Models
     public class ResponseData
     {
         [DisplayName("Основность шлака CaO / SiO2")]
-        public double slagBasicity1 { get; set; }
+        public double SlagBasicity1 { get; set; }
 
         [DisplayName("Основность шлака (CaO + MgO) / SiO2")]
-        public double slagBasicity2 { get; set; }
+        public double SlagBasicity2 { get; set; }
 
         [DisplayName("Основность шлака (CaO + MgO) / (SiO2 + Al2O3)")]
-        public double slagBasicity3 { get; set; }
+        public double SlagBasicity3 { get; set; }
 
         [DisplayName("Основность шлака по Куликову")]
-        public double slagBasicityKulikov { get; set; }
+        public double SlagBasicityKulikov { get; set; }
 
         [DisplayName("Расчётный выход шлака")]
-        public double slagOut { get; set; }
+        public double SlagOut { get; set; }
 
         [DisplayName("Расход материалов")]
-        public double materialCons { get; set; }
+        public double MaterialCons { get; set; }
 
         [DisplayName("Всего агломерата с фабрик")]
-        public double totalAglo { get; set; }
+        public double TotalAglo { get; set; }
 
         [DisplayName("Доля агломерата с фабрик 2 и 3")]
-        public double propAglo23 { get; set; }
+        public double PropAglo23 { get; set; }
 
         [DisplayName("Доля агломерата с фабрики 4")]
-        public double propAglo4 { get; set; }
+        public double PropAglo4 { get; set; }
 
         [DisplayName("Доля местного агломерата")]
-        public double propAglo234
-        {
-            get => _propAglo234;
-            set
-            {
-                _propAglo234 = propAglo23 + propAglo4;
-            }
-        }
-
-        private double _propAglo234;
+        public double PropAglo234 => PropAglo23 + PropAglo4;
 
         [DisplayName("Доля окатышей ССГПО")]
-        public double propSsgpo { get; set; }
+        public double PropSsgpo { get; set; }
 
         [DisplayName("Доля окатышей Лебединского гОК")]
-        public double propLeb { get; set; }
+        public double PropLeb { get; set; }
 
         [DisplayName("Доля окатышей Качканарского ГОК")]
-        public double propKach { get; set; }
+        public double PropKach { get; set; }
 
         [DisplayName("Доля окатышей Михайловского ГОК")]
-        public double propMix { get; set; }
+        public double PropMix { get; set; }
 
         [DisplayName("Доля руды")]
-        public double propOre { get; set; }
+        public double PropOre { get; set; }
 
         [DisplayName("Доля сварочного шлака")]
-        public double propWeldSlag { get; set; }
+        public double PropWeldSlag { get; set; }
 
         [DisplayName("Доля доменного присада")]
-        public double propBFAddict { get; set; }
+        public double PropBfAddict { get; set; }
 
         [DisplayName("Доля королька")]
-        public double propMinInclude { get; set; }
+        public double PropMinInclude { get; set; }
 
-        [DisplayName("Общее количество аглометара")]
-        public double totalProp
-        {
-            get => _totalProp;
-            set
-            {
-                _totalProp = propAglo23 + propAglo4 + propSsgpo + propLeb + propKach + propMix + propOre + propWeldSlag + propBFAddict + propMinInclude;
-            }
-        }
-
-        private double _totalProp;
+        [DisplayName("Общее количество агломерата")]
+        public double TotalProp => PropAglo23 + PropAglo4 + PropSsgpo + PropLeb + PropKach + PropMix + PropOre + PropWeldSlag + PropBfAddict + PropMinInclude;
 
         [DisplayName("Вязкость шлака при 1400 °С")]
-        public double Viscosity_1400 { get; set; }
+        public double Viscosity1400 { get; set; }
 
         [DisplayName("Вязкость шлака при 1450 °С")]
-        public double Viscosity_1450 { get; set; }
+        public double Viscosity1450 { get; set; }
 
         [DisplayName("Вязкость шлака при 1500 °С")]
-        public double Viscosity_1500 { get; set; }
+        public double Viscosity1500 { get; set; }
 
         [DisplayName("Вязкость шлака при 1550 °С")]
-        public double Viscosity_1550 { get; set; }
+        public double Viscosity1550 { get; set; }
 
-        [DisplayName("Темпеоаьуоа шлака при 7 пуаз")]
-        public double Temp_7_puaz { get; set; }
+        [DisplayName("Температура шлака при 7 пуаз")]
+        public double Temp7Puaz { get; set; }
 
         [DisplayName("Градиент при 7-25 Пуаз")]
-        public double Gradient_7_25 { get; set; }
+        public double Gradient725 { get; set; }
 
         [DisplayName("Градиент при 1400-1500 °С")]
-        public double Gradient_1400_1500 { get; set; }
+        public double Gradient14001500 { get; set; }
 
         [DisplayName("Температура шлака")]
         public double SlagTemperature { get; set; }
 
         [DisplayName("Температура шлака (при 25 пуаз), °С")]
-        public double slagTemperature_25puaz { get; set; }
+        public double SlagTemperature25Puaz { get; set; }
 
         [DisplayName("Вязкость шлака при текущей температуре")]
         public double CurrSlagViscosity { get; set; }
