@@ -1,0 +1,57 @@
+﻿using BaseLib.SlagMode.Models;
+using Microsoft.Extensions.Options;
+using RestSharp;
+using RestSharp.Authenticators;
+
+namespace BaseLib.SlagMode
+{
+    public class SlagMode : IMathLibrary<RequestData, ResponseData>
+    {
+        private readonly RestClient _restClient;
+        private readonly string _serverAddress;
+
+        public SlagMode(IOptions<ExternalServerDomain> serverAddress)
+        {
+            _restClient = new RestClient();
+            _serverAddress = serverAddress.Value.Domain;
+        }
+
+        public ResponseData Calculate(RequestData request)
+        {
+            var auth = new JwtAuthenticator(GetTokenFromServer(request.User));
+
+            var restRequest = new RestRequest
+            {
+                Resource = ($"https://{_serverAddress}/api/SlagMode/Calculate"),
+                RequestFormat = DataFormat.Json,
+                Authenticator = auth,
+                Method = Method.Post
+            };
+
+            restRequest.AddJsonBody(request);
+
+            var res = _restClient.Execute<ResponseData>(restRequest);
+
+            if (res is { IsSuccessful: true, Data: not null })
+                return res.Data;
+            return new ResponseData();
+        }
+
+        public string GetTokenFromServer(UserAuthData user)
+        {
+            var restRequest = new RestRequest
+            {
+                Resource = ($"https://{_serverAddress}/api/SlagMode/Login"),
+                RequestFormat = DataFormat.Json,
+                Method = Method.Post
+            };
+
+            restRequest.AddJsonBody(user);
+
+            var res = _restClient.Execute(restRequest);
+            if (res is { Content: { Length: > 0 }, IsSuccessful: true })
+                return res.Content;
+            return null;
+        }
+    }
+}
