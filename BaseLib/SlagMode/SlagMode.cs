@@ -1,5 +1,8 @@
-﻿using BaseLib.SlagMode.Models;
+﻿using System.Reflection.Metadata;
+using System.Text.Json;
+using BaseLib.SlagMode.Models;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using RestSharp;
 using RestSharp.Authenticators;
 
@@ -18,13 +21,35 @@ namespace BaseLib.SlagMode
 
         public ResponseData Calculate(RequestData request)
         {
-            var auth = new JwtAuthenticator(GetTokenFromServer(request.User));
+            string rawResponse = GetTokenFromServer(request.User);
+            
+            string? jwtToken = null;
+            if (!string.IsNullOrWhiteSpace(rawResponse))
+            {
+                try
+                {
+                    using var doc = JsonDocument.Parse(rawResponse);
+                    jwtToken = doc.RootElement
+                        .GetProperty("token")
+                        .GetString();
+                }
+                catch
+                {
+                    // ignored
+                }
+            }
+
+            if (string.IsNullOrEmpty(jwtToken))
+                throw new InvalidOperationException("Не удалось получить JWT-токен от сервера.");
+            
+            var authenticator = new 
+                JwtAuthenticator(jwtToken);
 
             var restRequest = new RestRequest
             {
                 Resource = ($"https://{_serverAddress}/api/SlagMode/Calculate"),
                 RequestFormat = DataFormat.Json,
-                Authenticator = auth,
+                Authenticator = authenticator,
                 Method = Method.Post
             };
 

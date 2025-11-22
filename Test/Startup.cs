@@ -13,7 +13,7 @@ public class Startup
     /// <param name="services"></param>
     public void ConfigureServices(IServiceCollection services)
     {
-        var serverDomain = "localhost:7258";
+        var serverDomain = "localhost:44324";
         services.Configure<ExternalServerDomain>(options =>
         {
             options.Domain = serverDomain;
