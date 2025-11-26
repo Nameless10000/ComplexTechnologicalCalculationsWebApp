@@ -67,31 +67,31 @@ namespace BaseLib.SlagMode.Models
         public double TotalProp => PropAglo23 + PropAglo4 + PropSsgpo + PropLeb + PropKach + PropMix + PropOre + PropWeldSlag + PropBfAddict + PropMinInclude;
 
         [DisplayName("Вязкость шлака при 1400 °С")]
-        public double Viscosity1400 { get; set; }
+        public double Viscosity_1400 { get; set; }
 
         [DisplayName("Вязкость шлака при 1450 °С")]
-        public double Viscosity1450 { get; set; }
+        public double Viscosity_1450 { get; set; }
 
         [DisplayName("Вязкость шлака при 1500 °С")]
-        public double Viscosity1500 { get; set; }
+        public double Viscosity_1500 { get; set; }
 
         [DisplayName("Вязкость шлака при 1550 °С")]
-        public double Viscosity1550 { get; set; }
+        public double Viscosity_1550 { get; set; }
 
         [DisplayName("Температура шлака при 7 пуаз")]
-        public double Temp7Puaz { get; set; }
+        public double Temp_7_Puaz { get; set; }
 
         [DisplayName("Градиент при 7-25 Пуаз")]
-        public double Gradient725 { get; set; }
+        public double Gradient_7_25 { get; set; }
 
         [DisplayName("Градиент при 1400-1500 °С")]
-        public double Gradient14001500 { get; set; }
+        public double Gradient_1400_1500 { get; set; }
 
         [DisplayName("Температура шлака")]
         public double SlagTemperature { get; set; }
 
         [DisplayName("Температура шлака (при 25 пуаз), °С")]
-        public double SlagTemperature25Puaz { get; set; }
+        public double SlagTemperature_25Puaz { get; set; }
 
         [DisplayName("Вязкость шлака при текущей температуре")]
         public double CurrSlagViscosity { get; set; }
