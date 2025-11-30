@@ -1,0 +1,13 @@
+C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\BaseLib\bin\Debug\net8.0\BaseLib.deps.json
+C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\BaseLib\bin\Debug\net8.0\BaseLib.dll
+C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\BaseLib\bin\Debug\net8.0\BaseLib.pdb
+C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\BaseLib\obj\Debug\net8.0\BaseLib.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\BaseLib\obj\Debug\net8.0\BaseLib.AssemblyInfoInputs.cache
+C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\BaseLib\obj\Debug\net8.0\BaseLib.AssemblyInfo.cs
+C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\BaseLib\obj\Debug\net8.0\BaseLib.csproj.CoreCompileInputs.cache
+C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\BaseLib\obj\Debug\net8.0\BaseLib.sourcelink.json
+C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\BaseLib\obj\Debug\net8.0\BaseLib.dll
+C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\BaseLib\obj\Debug\net8.0\refint\BaseLib.dll
+C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\BaseLib\obj\Debug\net8.0\BaseLib.pdb
+C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\BaseLib\obj\Debug\net8.0\ref\BaseLib.dll
+C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\BaseLib\obj\Debug\net8.0\BaseLib.csproj.AssemblyReference.cache

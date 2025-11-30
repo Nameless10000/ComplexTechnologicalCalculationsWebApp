@@ -13,8 +13,7 @@ export const API_CONFIG = {
       LOGOUT: '/auth/logout',
     },
     GAS_DYNAMIC: {
-      CALCULATE: '/calculations/gas-dynamic/calculate',
-      PRESET: '/calculations/gas-dynamic/preset',
+      CALCULATE: '/calculations/gas-dynamic',
     },
   },
   
