@@ -23,16 +23,10 @@ async function fetchWithTimeout(
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeout);
   
-  const authToken = localStorage.getItem('access_token');
-
   try {
     const response = await fetch(url, {
       ...options,
       signal: controller.signal,
-      headers: {
-        ...options.headers,
-        'Authorization': `Bearer ${authToken}`,
-      }
     });
     clearTimeout(id);
     return response;
@@ -127,36 +121,7 @@ export const authService = {
 
 // Сервис расчетов газодинамики
 export const gasDynamicService = {
-
-  async getPreset(): Promise<any> {
-    try {
-      const response = await fetchWithTimeout(
-        `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.GAS_DYNAMIC.PRESET}`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          }
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error('Ошибка получения пресета пользователя')
-      }
-
-      const data = await response.json();
-      return data;
-    }
-    catch (error) {
-      console.error('Preset error: ', error);
-      throw new Error('Не удалось получить пресет для взодных данных расчета. Проверьте соединение с сервером.')
-    }
-  },
-
   async calculate(inputData: any): Promise<any> {
-
-    console.log(inputData);
-
     try {
       const response = await fetchWithTimeout(
         `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.GAS_DYNAMIC.CALCULATE}`,
