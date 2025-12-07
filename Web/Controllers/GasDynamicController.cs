@@ -17,7 +17,7 @@ public class GasDynamicController : Controller
         throw new NotImplementedException();
     }
 
-    [HttpGet]
+    /*[HttpGet]
     public async Task<IActionResult> GetPreset([FromQuery] int presetId)
     {
     }
@@ -35,5 +35,5 @@ public class GasDynamicController : Controller
     [HttpGet]
     public async Task<IActionResult> GetCalculationsHistory()
     {
-    }
+    }*/
 }

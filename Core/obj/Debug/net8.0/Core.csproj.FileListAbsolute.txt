@@ -13,3 +13,6 @@ C:\Users\Евгений\Documents\Учеба\Лавров групповой п�
 C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Core\obj\Debug\net8.0\Core.pdb
 C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Core\obj\Debug\net8.0\Core.genruntimeconfig.cache
 C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Core\obj\Debug\net8.0\ref\Core.dll
+C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Core\bin\Debug\net8.0\BaseLib.dll
+C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Core\bin\Debug\net8.0\BaseLib.pdb
+C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Core\obj\Debug\net8.0\Core.csproj.Up2Date

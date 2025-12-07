@@ -46,7 +46,7 @@
           "dependencies": {
             "Microsoft.Extensions.Options.ConfigurationExtensions": {
               "target": "Package",
-              "version": "[9.0.10, )"
+              "version": "[8.0.0, )"
             },
             "Newtonsoft.Json": {
               "target": "Package",
