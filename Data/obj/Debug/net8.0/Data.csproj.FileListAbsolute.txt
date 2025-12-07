@@ -1,8 +1,10 @@
 C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Data\bin\Debug\net8.0\Data.deps.json
 C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Data\bin\Debug\net8.0\Data.dll
 C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Data\bin\Debug\net8.0\Data.pdb
+C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Data\bin\Debug\net8.0\BaseLib.dll
 C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Data\bin\Debug\net8.0\Core.dll
 C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Data\bin\Debug\net8.0\Core.pdb
+C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Data\bin\Debug\net8.0\BaseLib.pdb
 C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Data\obj\Debug\net8.0\Data.csproj.AssemblyReference.cache
 C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Data\obj\Debug\net8.0\Data.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Data\obj\Debug\net8.0\Data.AssemblyInfoInputs.cache
@@ -14,5 +16,3 @@ C:\Users\Евгений\Documents\Учеба\Лавров групповой п�
 C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Data\obj\Debug\net8.0\refint\Data.dll
 C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Data\obj\Debug\net8.0\Data.pdb
 C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Data\obj\Debug\net8.0\ref\Data.dll
-C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Data\bin\Debug\net8.0\BaseLib.dll
-C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Data\bin\Debug\net8.0\BaseLib.pdb

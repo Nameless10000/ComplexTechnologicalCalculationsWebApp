@@ -34,7 +34,7 @@ builder.Services.ConfigMapper();
 builder.Services.AddIdentity<User, Role>(options =>
     {
         // ����������� ����� ������
-        options.Password.RequiredLength = 8;
+        options.Password.RequiredLength = 3;
 
         // ����� ��, ����� ������ �������� ���� �� ���� �����������-�������� ������ (��������, !, @, #)
         options.Password.RequireNonAlphanumeric = false;
@@ -61,6 +61,8 @@ builder.Services.ConfigureApplicationCookie(options =>
 
     // ������ cookie ���������� ������ ��� HTTP-��������, ����� �� ������ ���� ��������� ����� JavaScript
     options.Cookie.HttpOnly = true;
+    options.Cookie.SameSite = SameSiteMode.None;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 
     // ����� ����� cookie � ����� ����� ������� ������������ ������������� ������
     options.ExpireTimeSpan = TimeSpan.FromHours(1);

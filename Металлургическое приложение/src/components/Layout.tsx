@@ -5,7 +5,7 @@ import { LogOut, Moon, Sun, Wind, Flame, Scale, Zap, Droplets } from 'lucide-rea
 import { useTheme } from './ThemeProvider';
 
 interface User {
-  nickname: string;
+  username: string;
   email: string;
 }
 
@@ -47,7 +47,7 @@ export function Layout({ user, onLogout, children }: LayoutProps) {
             <div className="flex items-center gap-3">
               <Avatar>
                 <AvatarFallback className="bg-primary text-primary-foreground">
-                  {getInitials(user.nickname)}
+                  {getInitials(user.username)}
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">

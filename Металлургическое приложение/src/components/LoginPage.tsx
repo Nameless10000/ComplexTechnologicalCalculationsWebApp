@@ -9,7 +9,7 @@ import { authService } from '../services/api.service';
 import { Alert, AlertDescription } from './ui/alert';
 
 interface User {
-  nickname: string;
+  username: string;
   email: string;
 }
 
@@ -31,7 +31,6 @@ export function LoginPage({ onLogin }: LoginPageProps) {
     e.preventDefault();
     setError('');
     setIsLoading(true);
-    
     try {
       const user = await authService.login({
         email: loginEmail,
@@ -63,7 +62,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
     
     try {
       const user = await authService.register({
-        nickname: registerNickname,
+        username: registerNickname,
         email: registerEmail,
         password: registerPassword,
       });

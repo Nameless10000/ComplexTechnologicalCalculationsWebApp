@@ -13,14 +13,15 @@ namespace Test;
 /// </summary>
 public class BlastFurnaceSmeltingGasDynamicModeTest
 {
-    private readonly BlastFurnaceSmeltingGasDynamicModeXLLibrary _library;
     private readonly TBalDBContext _dbContext;
+    private readonly BlastFurnaceSmeltingGasDynamicModeXLLibrary _library;
 
-    public BlastFurnaceSmeltingGasDynamicModeTest(TBalDBContext dbContext, BlastFurnaceSmeltingGasDynamicModeXLLibrary library)
+    public BlastFurnaceSmeltingGasDynamicModeTest(TBalDBContext dbContext,
+        BlastFurnaceSmeltingGasDynamicModeXLLibrary library)
     {
         _library = library;
     }
-    
+
     [Fact]
     public void BlastFurnaceSmeltingGasDynamicModeCorrectCalculationTest()
     {
@@ -56,7 +57,7 @@ public class BlastFurnaceSmeltingGasDynamicModeTest
                         FractionPercentage = 2.5
                     }
                 ],
-                AglomContents = 
+                AglomContents =
                 [
                     new AglomContent
                     {
@@ -89,7 +90,7 @@ public class BlastFurnaceSmeltingGasDynamicModeTest
                         Porosity = 0.344,
                     },
                 ],
-                OkatContents = 
+                OkatContents =
                 [
                     new OkatContent
                     {
@@ -200,12 +201,12 @@ public class BlastFurnaceSmeltingGasDynamicModeTest
 
         var response = _library.Calculate(aglomInputData);
         Debug.WriteLine(JsonConvert.SerializeObject(response));
-        
+
         Assert.Equal(0.652, response.AglomOutput.AglomPorosity, 3);
         Assert.Equal(0.71, response.AglomOutput.OkatPorosity, 3);
 
-        var blastResult = response.BlastFurnanceOutputModel;
-        
+        var blastResult = response.BlastFurnance;
+
         Assert.Equal(46.543, blastResult.FurnaceGeometry.S_Sech_Niz, 0);
         Assert.Equal(1.594, blastResult.MaterialConsumption.Udeln_Aglo, 3);
         Assert.Equal(0.0, blastResult.MaterialConsumption.Udeln_Okat, 0);
@@ -251,7 +252,8 @@ public class BlastFurnaceSmeltingGasDynamicModeTest
         Assert.Equal(1492.45, blastResult.HearthGas.Temp_Sredn_Niz, 2);
         Assert.Equal(2660.254, blastResult.BlastParameters.Rashod_Dut_Minut, 3);
         Assert.Equal(182.398, blastResult.BlastParameters.Speed_Dut_Furm, 3);
-        Assert.Equal(0.000211, blastResult.BlastParameters.Vyazkost_Dut, 6); // 2.11e-4 → 6 знаков, чтобы сохранить 3 значащих
+        Assert.Equal(0.000211, blastResult.BlastParameters.Vyazkost_Dut,
+            6); // 2.11e-4 → 6 знаков, чтобы сохранить 3 значащих
         Assert.Equal(146886.0, blastResult.BlastParameters.Reinolds, 0); // 1.5e5 → целое достаточно
         Assert.Equal(0.0164, blastResult.HydrodynamicsLower.Tren_Koef, 4);
         Assert.Equal(0.0180, blastResult.HydrodynamicsLower.Tren_Sum, 4);
@@ -319,7 +321,5 @@ public class BlastFurnaceSmeltingGasDynamicModeTest
         Assert.Equal(6.03, blastResult.HydrodynamicsUpper.Speed_Real_Raspar, 2);
         Assert.Equal(2.503, blastResult.HydrodynamicsUpper.Speed_Filtr_Koloshnik, 2);
         Assert.Equal(5.682, blastResult.HydrodynamicsUpper.Speed_Real_Koloshnik, 1);
-        
-        
     }
 }

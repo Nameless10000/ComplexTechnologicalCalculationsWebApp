@@ -1,6 +1,4 @@
-using System.Diagnostics.Metrics;
 using BaseLib.Models2;
-using BaseLib.Models2.Aglom;
 using BaseLib.Models2.Aglom.Outputs;
 using BaseLib.Models2.Base.Outputs;
 
@@ -16,7 +14,7 @@ public class BlastFurnaceSmeltingGasDynamicModeXLLibrary : IMathLibrary<RequestM
         var response = new ResponseModelV2()
         {
             AglomOutput = aglomOutput,
-            BlastFurnanceOutputModel = blastFurnanceOutput
+            BlastFurnance = blastFurnanceOutput
         };
 
         return response;
@@ -32,13 +30,14 @@ public class BlastFurnaceSmeltingGasDynamicModeXLLibrary : IMathLibrary<RequestM
         var blastParameters = CalcBlastParamters(request, carbonBalance);
         var hearthGas = CalcHearthGas(request, blastParameters, carbonBalance, thermalParameters, materialConsumption);
         var intermediateGas = CalcIntermediateGas(request, carbonBalance, hearthGas);
-        var hydrodynamicsLower = CalcHydrodynamicsLower(request, blastParameters, intermediateGas, furnanceGeometry, chargeAndPacking, hearthGas);
+        var hydrodynamicsLower = CalcHydrodynamicsLower(request, blastParameters, intermediateGas, furnanceGeometry,
+            chargeAndPacking, hearthGas);
         var topGas = CalcTopGas(request, materialConsumption, intermediateGas, carbonBalance);
         var hydrodynamicsUpper = CalcHydrodynamicsUpper(request, furnanceGeometry, hydrodynamicsLower, chargeAndPacking,
             thermalParameters, hearthGas, intermediateGas, topGas, out var rashodDutKrit);
 
         blastParameters.Rashod_Dut_Krit = rashodDutKrit;
-        
+
         var blastFurnanceOutput = new BlastFurnanceOutputModel
         {
             FurnaceGeometry = furnanceGeometry,
@@ -57,8 +56,8 @@ public class BlastFurnaceSmeltingGasDynamicModeXLLibrary : IMathLibrary<RequestM
         return blastFurnanceOutput;
     }
 
-    private TopGas CalcTopGas(RequestModelV2 request, 
-        MaterialConsumption materialConsumption, 
+    private TopGas CalcTopGas(RequestModelV2 request,
+        MaterialConsumption materialConsumption,
         IntermediateGas1000 intermediateGas1000,
         CarbonBalance carbonBalance)
     {
@@ -78,27 +77,27 @@ public class BlastFurnaceSmeltingGasDynamicModeXLLibrary : IMathLibrary<RequestM
         var volume_CH4_Kolgaz = carbonBalance.C_Out_Metan * 22.4 / 12;
 
         var volume_N2_Kolgaz = intermediateGas1000.Volume_N2_1000;
-        
+
         var volume_H2_Kolgaz = intermediateGas1000.Volume_H2_1000;
 
         var udeln_Kolgaz = volume_CO2_Kolgaz + volume_CO_Kolgaz + volume_CH4_Kolgaz + volume_N2_Kolgaz +
                            volume_H2_Kolgaz;
 
         var kolgaz_CO2 = volume_CO2_Kolgaz / udeln_Kolgaz;
-        
+
         var kolgaz_CO = volume_CO_Kolgaz / udeln_Kolgaz;
 
         var kolgaz_H2 = volume_H2_Kolgaz / udeln_Kolgaz;
-        
+
         var kolgaz_CH4 = volume_CH4_Kolgaz / udeln_Kolgaz;
-        
+
         var kolgaz_N2 = 1 - (kolgaz_H2 + kolgaz_CH4 + kolgaz_CO + kolgaz_CO2);
 
         var kolgaz_Plotn = 44 / 22.4 * kolgaz_CO2 + 28 / 22.4 * kolgaz_CO + 2 / 22.4 * kolgaz_H2 +
                            16 / 22.4 * kolgaz_CH4 + 28 / 22.4 * kolgaz_N2;
-        
-        var kolgaz_Minut =udeln_Kolgaz * productionParameters.Proizvodit_chugun / (24 * 60 * 60);
-        
+
+        var kolgaz_Minut = udeln_Kolgaz * productionParameters.Proizvodit_chugun / (24 * 60 * 60);
+
         var topGas = new TopGas
         {
             Volume_CO2_Izvest = volume_CO2_Izvest,
@@ -121,7 +120,7 @@ public class BlastFurnaceSmeltingGasDynamicModeXLLibrary : IMathLibrary<RequestM
         return topGas;
     }
 
-    private HydrodynamicsUpper CalcHydrodynamicsUpper(RequestModelV2 request, 
+    private HydrodynamicsUpper CalcHydrodynamicsUpper(RequestModelV2 request,
         FurnaceGeometry outGeometry,
         HydrodynamicsLower hydrodynamicsLower,
         ChargeAndPacking chargeAndPacking,
@@ -134,7 +133,7 @@ public class BlastFurnaceSmeltingGasDynamicModeXLLibrary : IMathLibrary<RequestM
         var thermalAndPressureParameters = request.BlastFurnaceInput.ThermalAndPressure;
         var productionParameters = request.BlastFurnaceInput.Production;
         var furnaceGeometry = request.BlastFurnaceInput.Geometry;
-        
+
         var speed_Filtr_Verh = 4 * topGas.Kolgaz_Minut / (Math.PI * outGeometry.Diam_Verh * outGeometry.Diam_Verh);
 
         var davlen_Verh = ((hydrodynamicsLower.Davlen_Izb_1000 + 1) +
@@ -183,7 +182,7 @@ public class BlastFurnaceSmeltingGasDynamicModeXLLibrary : IMathLibrary<RequestM
         var speed_Real_Koloshnik = speed_Filtr_Koloshnik * (thermalAndPressureParameters.Temp_koloshnik_gaz + 273) /
                                    (273 * (1 + thermalAndPressureParameters.Davlen_izb_koloshnik_gaz) *
                                     chargeAndPacking.Shihta_Porozn_Verh);
-        
+
         var hydrodynamicsUpper = new HydrodynamicsUpper
         {
             Speed_Filtr_Verh = speed_Filtr_Verh,
@@ -204,8 +203,8 @@ public class BlastFurnaceSmeltingGasDynamicModeXLLibrary : IMathLibrary<RequestM
         return hydrodynamicsUpper;
     }
 
-    private IntermediateGas1000 CalcIntermediateGas(RequestModelV2 request, 
-        CarbonBalance carbonBalance, 
+    private IntermediateGas1000 CalcIntermediateGas(RequestModelV2 request,
+        CarbonBalance carbonBalance,
         HearthGas hearthGas)
     {
         var compositionParameters = request.BlastFurnaceInput.Composition;
@@ -227,16 +226,16 @@ public class BlastFurnaceSmeltingGasDynamicModeXLLibrary : IMathLibrary<RequestM
         var volume_Sum_1000 = volume_CO_1000 + volume_H2_1000 + volume_N2_1000;
 
         var domengaz_CO_1000 = volume_CO_1000 / volume_Sum_1000;
-        
+
         var domengaz_H2_1000 = volume_H2_1000 / volume_Sum_1000;
-        
+
         var domengaz_N2_1000 = volume_N2_1000 / volume_Sum_1000;
 
         var domengaz_Plotn_1000 =
             28 / 22.4 * domengaz_N2_1000 + 28 / 22.4 * domengaz_CO_1000 + 2 / 22.4 * domengaz_H2_1000;
 
         var domengaz_Rashod_1000 = volume_Sum_1000 * productionParameters.Proizvodit_chugun / (24 * 60 * 60);
-        
+
         var intermediateGas = new IntermediateGas1000
         {
             Volume_CO_Pvost = volume_CO_Pvost,
@@ -269,7 +268,7 @@ public class BlastFurnaceSmeltingGasDynamicModeXLLibrary : IMathLibrary<RequestM
             fuelAndBlastParameters.Vlazhn_dut * (10800 - teploemk_Voda * thermalAndPressureParameters.Temp_dut);
 
         var teplosod_Koks = thermalAndPressureParameters.Temp_koks * thermalAndPressureParameters.Teploemk_koks;
-        
+
         var thermalParameters = new ThermalParameters
         {
             Teploemk_2atom = teploemk_2atom,
@@ -282,9 +281,9 @@ public class BlastFurnaceSmeltingGasDynamicModeXLLibrary : IMathLibrary<RequestM
         return thermalParameters;
     }
 
-    private HearthGas CalcHearthGas(RequestModelV2 request, 
-        BlastParameters blastParameters, 
-        CarbonBalance carbonBalance, 
+    private HearthGas CalcHearthGas(RequestModelV2 request,
+        BlastParameters blastParameters,
+        CarbonBalance carbonBalance,
         ThermalParameters thermalParameters,
         MaterialConsumption materialConsumption)
     {
@@ -293,11 +292,13 @@ public class BlastFurnaceSmeltingGasDynamicModeXLLibrary : IMathLibrary<RequestM
 
         var furmgaz_Koks = 1.8667 + blastParameters.Rashod_Dut_Koks * (1 - 0.01 * fuelAndBlastParameters.Kislorod_dut +
                                                                        0.00124 * fuelAndBlastParameters.Vlazhn_dut);
-        
-        var furmgaz_Prir_Gaz = 3 + blastParameters.Rashod_Dut_Prir_Gaz * (1 - 0.01 * fuelAndBlastParameters.Kislorod_dut +
-                                                                               0.00124 * fuelAndBlastParameters.Vlazhn_dut);
 
-        var furmgaz_Sum =furmgaz_Koks + fuelAndBlastParameters.Udeln_prir_gaz / carbonBalance.C_Out_Furm * furmgaz_Prir_Gaz;
+        var furmgaz_Prir_Gaz = 3 + blastParameters.Rashod_Dut_Prir_Gaz *
+            (1 - 0.01 * fuelAndBlastParameters.Kislorod_dut +
+             0.00124 * fuelAndBlastParameters.Vlazhn_dut);
+
+        var furmgaz_Sum = furmgaz_Koks +
+                          fuelAndBlastParameters.Udeln_prir_gaz / carbonBalance.C_Out_Furm * furmgaz_Prir_Gaz;
 
         var furmgaz_Udeln = furmgaz_Sum * carbonBalance.C_Out_Furm;
 
@@ -315,15 +316,15 @@ public class BlastFurnaceSmeltingGasDynamicModeXLLibrary : IMathLibrary<RequestM
                            (1 - 0.01 * fuelAndBlastParameters.Kislorod_dut);
 
         var furmgaz_CO = furmgaz_CO_V / (furmgaz_CO_V + furmgaz_H2_V + furmgaz_N2_V);
-        
+
         var furmgaz_H2 = furmgaz_H2_V / (furmgaz_CO_V + furmgaz_H2_V + furmgaz_N2_V);
-        
+
         var furmgaz_N2 = furmgaz_N2_V / (furmgaz_CO_V + furmgaz_H2_V + furmgaz_N2_V);
 
-        var teplosod_Furmgaz =/*(thermalAndPressureParameters.Teplota_nepoln_koks + 
+        var teplosod_Furmgaz = /*(thermalAndPressureParameters.Teplota_nepoln_koks +
                                blastParameters.Rashod_Dut_Koks * C107+C108+C109*(База!C31+C80*C107))/(C83+C109*C84)*/
-        (thermalAndPressureParameters.Teplota_nepoln_koks +
-         blastParameters.Rashod_Dut_Koks * thermalParameters.Teplosod_Dut + thermalParameters.Teplosod_Koks +
+            (thermalAndPressureParameters.Teplota_nepoln_koks +
+             blastParameters.Rashod_Dut_Koks * thermalParameters.Teplosod_Dut + thermalParameters.Teplosod_Koks +
              materialConsumption.Rashod_Prir_Gaz * (thermalAndPressureParameters.Teplota_nepoln_prir_gaz +
                                                     blastParameters.Rashod_Dut_Prir_Gaz *
                                                     thermalParameters.Teplosod_Dut)) / (furmgaz_Koks +
@@ -332,7 +333,7 @@ public class BlastFurnaceSmeltingGasDynamicModeXLLibrary : IMathLibrary<RequestM
         var temp_Teor = 165 + 0.6113 * teplosod_Furmgaz;
 
         var temp_Sredn_Niz = (temp_Teor + 1000) / 2;
-        
+
         var hearthGas = new HearthGas
         {
             Furmgaz_Koks = furmgaz_Koks,
@@ -353,8 +354,8 @@ public class BlastFurnaceSmeltingGasDynamicModeXLLibrary : IMathLibrary<RequestM
         return hearthGas;
     }
 
-    private HydrodynamicsLower CalcHydrodynamicsLower(RequestModelV2 request, 
-        BlastParameters blastParameters, 
+    private HydrodynamicsLower CalcHydrodynamicsLower(RequestModelV2 request,
+        BlastParameters blastParameters,
         IntermediateGas1000 intermediateGas1000,
         FurnaceGeometry outGeometry,
         ChargeAndPacking chargeAndPacking,
@@ -363,7 +364,7 @@ public class BlastFurnaceSmeltingGasDynamicModeXLLibrary : IMathLibrary<RequestM
         var fuelAndBlastParameters = request.BlastFurnaceInput.FuelAndBlast;
         var geometry = request.BlastFurnaceInput.Geometry;
         var thermalAndPressureParameters = request.BlastFurnaceInput.ThermalAndPressure;
-        
+
         var tren_Koef = 0.0032 + (0.221 / Math.Pow(blastParameters.Reinolds, 0.237));
 
         var tren_Sum = tren_Koef * (100 + fuelAndBlastParameters.Poteri_dut) / 100;
@@ -398,7 +399,7 @@ public class BlastFurnaceSmeltingGasDynamicModeXLLibrary : IMathLibrary<RequestM
             Math.Pow(1 / (outGeometry.S_Sech_Niz * koef_Proporc_Dut_Filtr_Niz), 2) *
             (1 - chargeAndPacking.Porozn_Sloy_Korrekt) / Math.Pow(chargeAndPacking.Porozn_Sloy_Korrekt, 3) *
             (hearthGas.Temp_Sredn_Niz + 273) / 273 * 1 / davlen_Niz;
-        
+
         var hydrodynamicsLower = new HydrodynamicsLower
         {
             Speed_Filtr_Niz = speed_Filtr_Niz,
@@ -407,7 +408,7 @@ public class BlastFurnaceSmeltingGasDynamicModeXLLibrary : IMathLibrary<RequestM
             Poteri_Furm = poteri_Furm,
             Perepad_Niz_Itog = perepad_Niz_Itog,
             Perepad_Niz_Dolya = perepad_Niz_Dolya,
-            Davlen_Izb_1000 =  davlen_Izb_1000,
+            Davlen_Izb_1000 = davlen_Izb_1000,
             Davlen_Niz = davlen_Niz,
             Koef_Soprot_Niz = koef_Soprot_Niz,
             Koef_Proporc_Dut_Filtr_Niz = koef_Proporc_Dut_Filtr_Niz,
@@ -424,7 +425,7 @@ public class BlastFurnaceSmeltingGasDynamicModeXLLibrary : IMathLibrary<RequestM
         var aglomInputModel = request.AglomInput;
         var materialProperties = request.BlastFurnaceInput.Materials;
         var fuelAndBlastParameters = request.BlastFurnaceInput.FuelAndBlast;
-        
+
         var diam_koks = 100 / aglomInputModel.KoksContents.Aggregate(0.0, (acc, curr) =>
         {
             var coef = curr.MinFractionSize switch
@@ -480,9 +481,9 @@ public class BlastFurnaceSmeltingGasDynamicModeXLLibrary : IMathLibrary<RequestM
         var volume_Udeln_Ost = volume_Udeln_Nasadzka - volume_Udeln_Shlak;
 
         var shihta_Dolya_Aglo = volume_Aglo_1chugun / volume_Sum_1chugun;
-        
+
         var shihta_Dolya_Koks = volume_Koks_1chugun / volume_Sum_1chugun;
-        
+
         var shihta_Dolya_Okat = volume_Okat_1chugun / volume_Sum_1chugun;
 
         var shihta_Porozn_Verh =
@@ -492,8 +493,8 @@ public class BlastFurnaceSmeltingGasDynamicModeXLLibrary : IMathLibrary<RequestM
         var shihta_Diam_Verh = 1 / (shihta_Dolya_Aglo / diam_aglo + shihta_Dolya_Koks / diam_koks);
 
         var porozn_Sloy_Korrekt = volume_Udeln_Ost / volume_Udeln_Koks;
-            
-            
+
+
         var chargeAndPacking = new ChargeAndPacking
         {
             Diam_Koks = diam_koks,
@@ -527,17 +528,20 @@ public class BlastFurnaceSmeltingGasDynamicModeXLLibrary : IMathLibrary<RequestM
         var productionParameters = request.BlastFurnaceInput.Production;
         var thermalAndPressureParameters = request.BlastFurnaceInput.ThermalAndPressure;
         var furnanceGeometry = request.BlastFurnaceInput.Geometry;
-        
-        var rashod_Dut_Koks = 0.9333 / (0.01 * fuelAndBlastParameters.Kislorod_dut + 0.00063 * fuelAndBlastParameters.Vlazhn_dut);
-        
-        var rashod_Dut_Prir_Gaz = 0.5 / (0.01 * fuelAndBlastParameters.Kislorod_dut + 0.00063 * fuelAndBlastParameters.Vlazhn_dut);
+
+        var rashod_Dut_Koks = 0.9333 /
+                              (0.01 * fuelAndBlastParameters.Kislorod_dut +
+                               0.00063 * fuelAndBlastParameters.Vlazhn_dut);
+
+        var rashod_Dut_Prir_Gaz =
+            0.5 / (0.01 * fuelAndBlastParameters.Kislorod_dut + 0.00063 * fuelAndBlastParameters.Vlazhn_dut);
 
         var rashod_Dut_Sum = rashod_Dut_Koks +
                              fuelAndBlastParameters.Udeln_prir_gaz / carbonBalance.C_Out_Furm * rashod_Dut_Prir_Gaz;
 
         var rashod_Dut_Udeln = rashod_Dut_Sum * carbonBalance.C_Out_Furm;
-        
-        var rashod_Dut_Minut =rashod_Dut_Udeln * productionParameters.Proizvodit_chugun / 1440;
+
+        var rashod_Dut_Minut = rashod_Dut_Udeln * productionParameters.Proizvodit_chugun / 1440;
 
         var speed_Dut_Furm =
             ((rashod_Dut_Minut +
@@ -550,7 +554,7 @@ public class BlastFurnaceSmeltingGasDynamicModeXLLibrary : IMathLibrary<RequestM
         var vyazkost_Dut = -9.1 * 1e-5 + thermalAndPressureParameters.Temp_dut * 2.65 * 1e-7;
 
         var reinolds = 0.001 * speed_Dut_Furm * furnanceGeometry.Diam_furm / vyazkost_Dut;
-        
+
         var blastParameters = new BlastParameters
         {
             Rashod_Dut_Koks = rashod_Dut_Koks,
@@ -572,25 +576,25 @@ public class BlastFurnaceSmeltingGasDynamicModeXLLibrary : IMathLibrary<RequestM
         var composition = request.BlastFurnaceInput.Composition;
 
         var c_Input = fuelAndBlastParameters.Udeln_koks * fuelAndBlastParameters.C_neletuch * 0.01;
-        
+
         var c_Out_Vosstan = composition.Fe_chugun * 10
-                                                  * fuelAndBlastParameters.Stepen_pryamogo_vost 
-                                                  * 12 / 56 + 10 
-                                                    * composition.Mn_chugun 
-                                                    * 12 / 55 + 10 
-                                                    * composition.P_chugun 
-                                                    * 60 / 62 + 10 
-                                                    * composition.Si_chugun
-                                                    * 24 / 28 + 10
-                                                    * composition.S_shlak
-                                                    * 12 / 32;
+                                                  * fuelAndBlastParameters.Stepen_pryamogo_vost
+                                                  * 12 / 56 + 10
+            * composition.Mn_chugun
+            * 12 / 55 + 10
+            * composition.P_chugun
+            * 60 / 62 + 10
+            * composition.Si_chugun
+            * 24 / 28 + 10
+            * composition.S_shlak
+            * 12 / 32;
 
         var c_Out_Metan = 0.008 * c_Input;
 
         var c_Out_Chugun = 10 * composition.C_chugun;
 
         var c_Out_Furm = c_Input - (c_Out_Vosstan + c_Out_Chugun + c_Out_Metan);
-        
+
         var carbonBalance = new CarbonBalance
         {
             C_Input = c_Input,
@@ -617,7 +621,7 @@ public class BlastFurnaceSmeltingGasDynamicModeXLLibrary : IMathLibrary<RequestM
         var udeln_Koks_1000 = 1e-3 * fuelAndBlastParameters.Udeln_koks;
 
         var Udeln_Sum = udeln_Aglo + udeln_Okat + udeln_Koks_1000;
-        
+
         var materialConsumption = new MaterialConsumption()
         {
             Udeln_Izvest = productionParameters.Udeln_izvest,
@@ -634,7 +638,7 @@ public class BlastFurnaceSmeltingGasDynamicModeXLLibrary : IMathLibrary<RequestM
     private FurnaceGeometry CalcFurnanceGeometry(RequestModelV2 request)
     {
         var geometryParams = request.BlastFurnaceInput.Geometry;
-        
+
         var diam_niz = (geometryParams.Diam_gorn + geometryParams.Diam_raspar) /
                        2;
         var s_sech_niz = Math.PI * diam_niz * diam_niz / 4;
@@ -648,7 +652,7 @@ public class BlastFurnaceSmeltingGasDynamicModeXLLibrary : IMathLibrary<RequestM
 
         var shihta_Height_Verh = geometryParams.Height_koloshnik + geometryParams.Height_shahta -
                                  geometryParams.Uroven_zasypi;
-        
+
         var furnanceGeometry = new FurnaceGeometry()
         {
             Diam_Niz = diam_niz,
@@ -695,13 +699,16 @@ public class BlastFurnaceSmeltingGasDynamicModeXLLibrary : IMathLibrary<RequestM
                     coef1 = coef2 = 0.0;
                     break;
             }
+
             var result = (1.0 - curr.Porosity) * curr.FractionPart
-                                             * (1.582 - 2.416 * coef1 / 50.0 + 1.485 * coef2 * coef2 / (50.0 * 50.0)
-                                                                        + 0.18 * (biggestAglomFractionPart.FractionPart /
-                                                                            curr.FractionPart)
-                                                - 0.015 * (biggestAglomFractionPart.FractionPart / curr.FractionPart)
-                                                        * (biggestAglomFractionPart.FractionPart / curr.FractionPart));
-            return result+ acc;
+                                               * (1.582 - 2.416 * coef1 / 50.0 + 1.485 * coef2 * coef2 / (50.0 * 50.0)
+                                                                               + 0.18 * (biggestAglomFractionPart
+                                                                                       .FractionPart /
+                                                                                   curr.FractionPart)
+                                                  - 0.015 * (biggestAglomFractionPart.FractionPart / curr.FractionPart)
+                                                          * (biggestAglomFractionPart.FractionPart /
+                                                             curr.FractionPart));
+            return result + acc;
         });
 
         var biggestOkatFrationPart = request
@@ -709,7 +716,7 @@ public class BlastFurnaceSmeltingGasDynamicModeXLLibrary : IMathLibrary<RequestM
             .OkatContents
             .MaxBy(x => x.MinFractionSize)!
             .FractionPart;
-        
+
         var okatPorosity = request.AglomInput.OkatContents.Aggregate(0.0, (acc, curr) =>
         {
             double coef1, coef2;
@@ -738,10 +745,11 @@ public class BlastFurnaceSmeltingGasDynamicModeXLLibrary : IMathLibrary<RequestM
             }
 
             var result = (1 - curr.Porosity) * curr.FractionPart
-                                                       * (1.582 - 2.416 * coef1 / 50 + 1.485 * coef2 * coef2 / (50 * 50)
-                                                          + 0.18 * (biggestOkatFrationPart / curr.FractionPart)
-                                                          - 0.015 * (biggestOkatFrationPart / curr.FractionPart)
-                                                                  * (biggestOkatFrationPart / curr.FractionPart));
+                                             * (1.582 - 2.416 * coef1 / 50 + 1.485 * coef2 * coef2 / (50 * 50)
+                                                                           + 0.18 * (biggestOkatFrationPart /
+                                                                               curr.FractionPart)
+                                                - 0.015 * (biggestOkatFrationPart / curr.FractionPart)
+                                                        * (biggestOkatFrationPart / curr.FractionPart));
             return result + acc;
         });
 
