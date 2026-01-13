@@ -3,17 +3,21 @@ export const API_CONFIG = {
   // Базовый URL API сервера
   BASE_URL: typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_BASE_URL 
     ? import.meta.env.VITE_API_BASE_URL 
-    : 'http://localhost:5000/api',
+    : 'https://localhost:7206',
   
   // Эндпоинты
   ENDPOINTS: {
     AUTH: {
-      LOGIN: '/auth/login',
-      REGISTER: '/auth/register',
+      LOGIN: '/auth/Authorize',
+      REGISTER: '/auth/SignUo',
       LOGOUT: '/auth/logout',
     },
     GAS_DYNAMIC: {
-      CALCULATE: '/calculations/gas-dynamic',
+      CALCULATE: '/GasDynamic/Calculate',
+      GET_PRESET: '/GasDynamic/GetPreset',
+      MARK_AS_PRESET: '/GasDynamic/MarkCalculationAsPreset',
+      LOAD_CALCULATION: '/GasDynamic/LoadCalculation',
+      GET_HISTORY: '/GasDynamic/GetCalculationsHistory',
     },
   },
   
@@ -25,7 +29,7 @@ export const API_CONFIG = {
     email: 'admin@mail.ru',
     password: 'admin',
     userData: {
-      nickname: 'Admin',
+      username: 'Admin',
       email: 'admin@mail.ru',
     }
   }

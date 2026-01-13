@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
@@ -142,6 +142,23 @@ export function GasDynamicPage() {
     stepen_urav_krit: 0, dolya_okat: 0
   });
 
+  useEffect(() => {
+    gasDynamicService.getPreset()
+      .then(({input, output}) => {
+
+        setKoksContents(input.aglomInput.koksContents);
+        setAglomContents(input.aglomInput.aglomContents);
+        setOkatContents(input.aglomInput.okatContents);
+
+        setComposition(input.blastFurnaceInput.composition);
+        setFuelAndBlast(input.blastFurnaceInput.fuelAndBlast);
+        setGeometry(input.blastFurnaceInput.geometry);
+        setThermalAndPressure(input.blastFurnaceInput.thermalAndPressure);
+        setMaterials(input.blastFurnaceInput.materials);
+        setProduction(input.blastFurnaceInput.production);
+      })
+  }, []);
+
   // Состояния для результатов и UI
   const [calculationResults, setCalculationResults] = useState<any>(null);
   const [isCalculating, setIsCalculating] = useState(false);
@@ -202,15 +219,19 @@ export function GasDynamicPage() {
 
     try {
       const response = await gasDynamicService.calculate({
-        koksContents,
-        aglomContents,
-        okatContents,
-        composition,
-        fuelAndBlast,
-        geometry,
-        thermalAndPressure,
-        materials,
-        production
+        aglomInput: {
+          koksContents,
+          aglomContents,
+          okatContents
+        },
+        blastFurnaceInput: { 
+          composition,
+          fuelAndBlast,
+          geometry,
+          thermalAndPressure,
+          materials,
+          production
+        }
       });
 
       setCalculationResults(response.data);
@@ -222,9 +243,10 @@ export function GasDynamicPage() {
   };
   
   const generateResultsSummary = (results: any): string => {
-    if (!results || !results.blastFurnace) return 'Нет данных';
+
+    if (!results || !results.blastFurnance) return 'Нет данных';
     
-    const bf = results.blastFurnace;
+    const bf = results.blastFurnance;
     return `Порозность агл: ${results.aglomOutput?.aglomPorosity?.toFixed(3) || 'N/A'}, окат: ${results.aglomOutput?.okatPorosity?.toFixed(3) || 'N/A'} | Удельный расход кокса: ${bf.materialConsumption?.udeln_Koks_1000?.toFixed(2) || 'N/A'} т/т | Выход колошникового газа: ${bf.topGas?.udeln_Kolgaz?.toFixed(1) || 'N/A'} м³/т | Перепад давления: ${bf.hydrodynamicsLower?.perepad_Niz_Itog?.toFixed(3) || 'N/A'} атм`;
   };
   

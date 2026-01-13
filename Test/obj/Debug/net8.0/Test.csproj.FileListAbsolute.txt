@@ -37,6 +37,7 @@ C:\Users\Евгений\Documents\Учеба\Лавров групповой п�
 C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Test\bin\Debug\net8.0\Microsoft.Extensions.Caching.Memory.dll
 C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Test\bin\Debug\net8.0\Microsoft.Extensions.Configuration.dll
 C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Test\bin\Debug\net8.0\Microsoft.Extensions.Configuration.Abstractions.dll
+C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Test\bin\Debug\net8.0\Microsoft.Extensions.Configuration.Binder.dll
 C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Test\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.dll
 C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Test\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
 C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Test\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
@@ -51,6 +52,7 @@ C:\Users\Евгений\Documents\Учеба\Лавров групповой п�
 C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Test\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
 C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Test\bin\Debug\net8.0\Microsoft.Extensions.ObjectPool.dll
 C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Test\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
+C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Test\bin\Debug\net8.0\Microsoft.Extensions.Options.ConfigurationExtensions.dll
 C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Test\bin\Debug\net8.0\Microsoft.Extensions.Primitives.dll
 C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Test\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
 C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Test\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
@@ -68,6 +70,7 @@ C:\Users\Евгений\Documents\Учеба\Лавров групповой п�
 C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Test\bin\Debug\net8.0\Npgsql.dll
 C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Test\bin\Debug\net8.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
 C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Test\bin\Debug\net8.0\NuGet.Frameworks.dll
+C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Test\bin\Debug\net8.0\RestSharp.dll
 C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Test\bin\Debug\net8.0\Scrutor.dll
 C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Test\bin\Debug\net8.0\Scrutor.AspNetCore.dll
 C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Test\bin\Debug\net8.0\xunit.abstractions.dll
@@ -158,6 +161,3 @@ C:\Users\Евгений\Documents\Учеба\Лавров групповой п�
 C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Test\obj\Debug\net8.0\Test.pdb
 C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Test\obj\Debug\net8.0\Test.genruntimeconfig.cache
 C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Test\obj\Debug\net8.0\ref\Test.dll
-C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Test\bin\Debug\net8.0\Microsoft.Extensions.Configuration.Binder.dll
-C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Test\bin\Debug\net8.0\Microsoft.Extensions.Options.ConfigurationExtensions.dll
-C:\Users\Евгений\Documents\Учеба\Лавров групповой проект\ComplexTechnologicalCalculationsWebApp\Test\bin\Debug\net8.0\RestSharp.dll
