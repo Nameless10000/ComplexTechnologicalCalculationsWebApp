@@ -10,9 +10,9 @@ namespace BaseLib.SlagMode.Models
     {
         public UserAuthData User { get; set; }
 
-        public InputCokeForCalcs Coke { get; set; }
+        public InputCokeForCalcs InputCoke { get; set; }
 
-        public InputCastIronForCalc Iron { get; set; }
+        public InputCastIronForCalc CastIron { get; set; }
 
         public InputSlagForCalc Slag { get; set; }
 

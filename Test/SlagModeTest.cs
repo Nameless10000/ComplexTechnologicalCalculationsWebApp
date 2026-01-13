@@ -126,7 +126,7 @@ namespace Test
                     Password = "Password"
                 },
 
-                Iron = new InputCastIronForCalc
+                CastIron = new InputCastIronForCalc
                 {
                     Si = 0.512,
                     S = 0.016,
@@ -146,7 +146,7 @@ namespace Test
                     MgO = 7.392
                 },
 
-                Coke = new InputCokeForCalcs
+                InputCoke = new InputCokeForCalcs
                 {
                     Consumption = 419.8,
                     Sulfur = 0.428,
