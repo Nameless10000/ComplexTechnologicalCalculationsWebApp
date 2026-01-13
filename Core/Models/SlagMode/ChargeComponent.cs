@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Core.Models.SlagMode;
 
 public class ChargeComponent : Entity
@@ -21,6 +23,6 @@ public class ChargeComponent : Entity
     public double MnO { get; set; }
 
     public double TiO2 { get; set; }
-    
+    [JsonIgnore]
     public List<Request> Requests {get; set;}
 }

@@ -44,6 +44,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { slagModeService } from "../../services/api.service";
 
 // Типы данных на основе C# моделей
 interface UserAuthData {
@@ -101,11 +102,16 @@ interface RequestData {
 }
 
 export function SlagModePage() {
-  // Состояния для данных пользователя
-  const [userData, setUserData] = useState<UserAuthData>({
-    userName: "",
-    password: "",
-  });
+
+  useEffect(() => {
+        slagModeService.getPreset()
+          .then(({data}) => {
+            setCokeData(data.request.inputCoke);
+            setCastIronData(data.request.castIron);
+            setSlagData(data.request.slag);
+            setChargeComponents(data.request.components);
+          })
+  }, []);
 
   // Состояния для параметров кокса
   const [cokeData, setCokeData] = useState<InputCokeForCalcs>({
@@ -306,7 +312,7 @@ export function SlagModePage() {
     const fetchChargeMaterials = async () => {
       try {
         setLoadingMaterials(true);
-        const materials = await chargeMaterialService.getChargeMaterials();
+        const materials = await slagModeService.getComponents();
         setChargeMaterials(materials);
       } catch (error) {
         console.error("Ошибка при загрузке материалов шихты:", error);

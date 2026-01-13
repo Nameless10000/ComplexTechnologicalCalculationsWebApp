@@ -71,6 +71,7 @@ public class SlagModeService(
         var request = mapper.Map<RequestData,Request>(requestModel);
         var response = mapper.Map<ResponseData,Response>(responseFromLib);
         response.Request = request;
+        response.CreationDateTime = DateTime.UtcNow;
 
         await dbContext.Responses.AddAsync(response);
         await dbContext.SaveChangesAsync();

@@ -118,7 +118,7 @@ namespace Test
         
         public static RequestData PrepareData()
         {
-            return new RequestData
+            var prepdata = new RequestData
             {
                 User = new UserAuthData 
                 {
@@ -126,7 +126,7 @@ namespace Test
                     Password = "Password"
                 },
 
-                CastIron = new InputCastIronForCalc
+                Iron = new InputCastIronForCalc
                 {
                     Si = 0.512,
                     S = 0.016,
@@ -146,7 +146,7 @@ namespace Test
                     MgO = 7.392
                 },
 
-                InputCoke = new InputCokeForCalcs
+                Coke = new InputCokeForCalcs
                 {
                     Consumption = 419.8,
                     Sulfur = 0.428,
@@ -239,6 +239,7 @@ namespace Test
                     }
                 }
             };
+            return prepdata;
         }
     }
 }

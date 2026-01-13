@@ -35,13 +35,12 @@ public class SlagModeController : Controller
             return Ok(new { message = "Preset not found" });
         }
 
-        return Ok(preset);
+        return Ok(new {data = preset});
     }
 
     [HttpPost]
     public async Task<IActionResult> Calculate([FromBody] RequestData requestModel)
     {
-        
         try
         {
             var calculationResult = await _service.Calculate(requestModel);

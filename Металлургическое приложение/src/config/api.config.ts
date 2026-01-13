@@ -24,6 +24,7 @@ export const API_CONFIG = {
       GET_PRESET: '/SlagMode/GetPreset',
       LOAD_CALCULATION: '/SlagMode/LoadCalculation',
       GET_HISTORY: '/SlagMode/GetCalculationsHistory',
+      GET_COMPONENTS: '/SlagMode/GetChargeComponents',
     },
   },
   

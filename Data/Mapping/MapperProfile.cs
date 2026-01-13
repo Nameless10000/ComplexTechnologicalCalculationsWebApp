@@ -17,7 +17,12 @@ public class MapperProfile : Profile
         // Регистрация маппов
 
         #region Mapps
-        CreateMap<RequestData, Request>().ReverseMap()
+        CreateMap<RequestData, Request>()
+            .ForMember(x => x.CastIron, opt => opt.MapFrom(s => s.Iron))
+            .ForMember(x => x.InputCoke, opt => opt.MapFrom(s => s.Coke))
+            .ReverseMap()
+            .ForMember(x => x.Iron, opt => opt.MapFrom(s => s.CastIron))
+            .ForMember(x => x.Coke, opt => opt.MapFrom(s => s.InputCoke))
             .ForMember(x => x.User, opt => opt.Ignore());
         CreateMap<ResponseData, Response>().ReverseMap();
         CreateMap<InputChargeComponentsForCalc, ChargeComponent>().ReverseMap();
