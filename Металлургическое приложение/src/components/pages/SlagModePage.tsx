@@ -1,18 +1,49 @@
-import { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
-import { Button } from '../ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
-import { Plus, Trash2, Droplets, Factory, Flame, Layers, AlertCircle, Loader2, BookmarkPlus } from 'lucide-react';
-import { Separator } from '../ui/separator';
-import { ScrollArea } from '../ui/scroll-area';
-import { Alert, AlertDescription } from '../ui/alert';
-import { useCalculationHistory } from '../../hooks/useCalculationHistory';
-import { CalculationHistory } from '../CalculationHistory';
-import { SaveCalculationDialog } from '../SaveCalculationDialog';
-import { SlagModeResults, SlagModeResponseData } from './SlagModeResults';
-import { SlagModeCharts } from './SlagModeCharts';
+import { useState, useEffect } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { Button } from "../ui/button";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../ui/tabs";
+import {
+  Plus,
+  Trash2,
+  Droplets,
+  Factory,
+  Flame,
+  Layers,
+  AlertCircle,
+  Loader2,
+  BookmarkPlus,
+} from "lucide-react";
+import { Separator } from "../ui/separator";
+import { ScrollArea } from "../ui/scroll-area";
+import { Alert, AlertDescription } from "../ui/alert";
+import { useCalculationHistory } from "../../hooks/useCalculationHistory";
+import { CalculationHistory } from "../CalculationHistory";
+import { SaveCalculationDialog } from "../SaveCalculationDialog";
+import {
+  SlagModeResults,
+  SlagModeResponseData,
+} from "./SlagModeResults";
+import { SlagModeCharts } from "./SlagModeCharts";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 // Типы данных на основе C# моделей
 interface UserAuthData {
@@ -72,8 +103,8 @@ interface RequestData {
 export function SlagModePage() {
   // Состояния для данных пользователя
   const [userData, setUserData] = useState<UserAuthData>({
-    userName: '',
-    password: ''
+    userName: "",
+    password: "",
   });
 
   // Состояния для параметров кокса
@@ -84,19 +115,20 @@ export function SlagModePage() {
     ashCaOFraction: 0,
     ashSiO2Fraction: 0,
     ashAl2O3Fraction: 0,
-    ashMgOFraction: 0
+    ashMgOFraction: 0,
   });
 
   // Состояния для параметров чугуна
-  const [castIronData, setCastIronData] = useState<InputCastIronForCalc>({
-    si: 0,
-    s: 0,
-    mn: 0,
-    c: 0,
-    ti: 0,
-    cr: 0,
-    temp: 0
-  });
+  const [castIronData, setCastIronData] =
+    useState<InputCastIronForCalc>({
+      si: 0,
+      s: 0,
+      mn: 0,
+      c: 0,
+      ti: 0,
+      cr: 0,
+      temp: 0,
+    });
 
   // Состояния для параметров шлака
   const [slagData, setSlagData] = useState<InputSlagForCalc>({
@@ -104,13 +136,15 @@ export function SlagModePage() {
     sio2: 0,
     tio2: 0,
     al2o3: 0,
-    mgo: 0
+    mgo: 0,
   });
 
   // Состояния для компонентов шихты (динамический список)
-  const [chargeComponents, setChargeComponents] = useState<InputChargeComponentsForCalc[]>([
+  const [chargeComponents, setChargeComponents] = useState<
+    InputChargeComponentsForCalc[]
+  >([
     {
-      sourcename: '',
+      sourcename: "",
       consumption: 0,
       fe: 0,
       sio2: 0,
@@ -119,18 +153,24 @@ export function SlagModePage() {
       mgo: 0,
       s: 0,
       mno: 0,
-      tio2: 0
-    }
+      tio2: 0,
+    },
   ]);
 
   // Состояния для результатов и UI
-  const [calculationResults, setCalculationResults] = useState<SlagModeResponseData | null>(null);
+  const [calculationResults, setCalculationResults] =
+    useState<SlagModeResponseData | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
-  const [calculationError, setCalculationError] = useState('');
-  const [activeTab, setActiveTab] = useState('components');
+  const [calculationError, setCalculationError] = useState("");
+  const [activeTab, setActiveTab] = useState("components");
 
   // История расчетов
-  const { history, addToHistory, removeFromHistory, clearHistory } = useCalculationHistory('slag-mode');
+  const {
+    history,
+    addToHistory,
+    removeFromHistory,
+    clearHistory,
+  } = useCalculationHistory("slag-mode");
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
 
   // Функции для работы с компонентами шихты
@@ -138,7 +178,7 @@ export function SlagModePage() {
     setChargeComponents([
       ...chargeComponents,
       {
-        sourcename: '',
+        sourcename: "",
         consumption: 0,
         fe: 0,
         sio2: 0,
@@ -147,16 +187,22 @@ export function SlagModePage() {
         mgo: 0,
         s: 0,
         mno: 0,
-        tio2: 0
-      }
+        tio2: 0,
+      },
     ]);
   };
 
   const removeChargeComponent = (index: number) => {
-    setChargeComponents(chargeComponents.filter((_, i) => i !== index));
+    setChargeComponents(
+      chargeComponents.filter((_, i) => i !== index),
+    );
   };
 
-  const updateChargeComponent = (index: number, field: keyof InputChargeComponentsForCalc, value: string | number) => {
+  const updateChargeComponent = (
+    index: number,
+    field: keyof InputChargeComponentsForCalc,
+    value: string | number,
+  ) => {
     const updated = [...chargeComponents];
     updated[index] = { ...updated[index], [field]: value };
     setChargeComponents(updated);
@@ -165,7 +211,7 @@ export function SlagModePage() {
   // Пустой метод расчета (вместо реального API вызова)
   const handleCalculate = async () => {
     setIsCalculating(true);
-    setCalculationError('');
+    setCalculationError("");
     setCalculationResults(null);
 
     try {
@@ -175,11 +221,11 @@ export function SlagModePage() {
         coke: cokeData,
         iron: castIronData,
         slag: slagData,
-        components: chargeComponents
+        components: chargeComponents,
       };
 
       // Имитация задержки расчета
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Здесь будет вызов API для расчетов
       // const response = await slagModeService.calculate(requestData);
@@ -222,28 +268,74 @@ export function SlagModePage() {
         sActivity: 0.8765,
         sDistribution: 125.4,
         sContentInCastIron: 0.0158,
-        castIronTemp: 1485.0
+        castIronTemp: 1485.0,
       };
 
       setCalculationResults(mockResults);
-
     } catch (error: any) {
-      setCalculationError(error.message || 'Произошла ошибка при расчете.');
+      setCalculationError(
+        error.message || "Произошла ошибка при расчете.",
+      );
     } finally {
       setIsCalculating(false);
     }
   };
 
-  const generateResultsSummary = (results: SlagModeResponseData): string => {
-    if (!results) return 'Нет данных';
-    
-    return `Основность (CaO/SiO₂): ${results.slagBasicity1?.toFixed(2) || 'N/A'} | Выход шлака: ${results.slagOut?.toFixed(1) || 'N/A'} кг/т | Вязкость при T: ${results.currSlagViscosity?.toFixed(3) || 'N/A'} Па·с | S в чугуну: ${results.sContentInCastIron?.toFixed(4) || 'N/A'}%`;
+  const generateResultsSummary = (
+    results: SlagModeResponseData,
+  ): string => {
+    if (!results) return "Нет данных";
+
+    return `Основность (CaO/SiO₂): ${results.slagBasicity1?.toFixed(2) || "N/A"} | Выход шлака: ${results.slagOut?.toFixed(1) || "N/A"} кг/т | Вязкость при T: ${results.currSlagViscosity?.toFixed(3) || "N/A"} Па·с | S в чугуну: ${results.sContentInCastIron?.toFixed(4) || "N/A"}%`;
   };
 
   const handleSaveToHistory = (note: string) => {
     if (calculationResults) {
-      const summary = generateResultsSummary(calculationResults);
+      const summary = generateResultsSummary(
+        calculationResults,
+      );
       addToHistory(note, summary);
+    }
+  };
+
+  // Загрузка материалов шихты
+  const [chargeMaterials, setChargeMaterials] = useState<ChargeMaterial[]>([]);
+  const [loadingMaterials, setLoadingMaterials] = useState(true);
+
+  useEffect(() => {
+    const fetchChargeMaterials = async () => {
+      try {
+        setLoadingMaterials(true);
+        const materials = await chargeMaterialService.getChargeMaterials();
+        setChargeMaterials(materials);
+      } catch (error) {
+        console.error("Ошибка при загрузке материалов шихты:", error);
+      } finally {
+        setLoadingMaterials(false);
+      }
+    };
+
+    fetchChargeMaterials();
+  }, []);
+
+  // Функция для выбора материала из селектора
+  const handleSelectChargeMaterial = (index: number, materialId: string) => {
+    const selectedMaterial = chargeMaterials.find(m => m.id === materialId);
+    if (selectedMaterial) {
+      const updated = [...chargeComponents];
+      updated[index] = {
+        sourcename: selectedMaterial.sourcename,
+        consumption: selectedMaterial.consumption,
+        fe: selectedMaterial.fe,
+        sio2: selectedMaterial.sio2,
+        al2o3: selectedMaterial.al2o3,
+        cao: selectedMaterial.cao,
+        mgo: selectedMaterial.mgo,
+        s: selectedMaterial.s,
+        mno: selectedMaterial.mno,
+        tio2: selectedMaterial.tio2,
+      };
+      setChargeComponents(updated);
     }
   };
 
@@ -262,145 +354,219 @@ export function SlagModePage() {
       {calculationError && (
         <Alert variant="destructive">
           <AlertCircle className="size-4" />
-          <AlertDescription>{calculationError}</AlertDescription>
+          <AlertDescription>
+            {calculationError}
+          </AlertDescription>
         </Alert>
       )}
 
       <div className="grid gap-6 lg:grid-cols-[1fr_380px]">
         {/* Основной контент */}
         <div>
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="w-full"
+          >
             <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="components">Компоненты шихты</TabsTrigger>
-              <TabsTrigger value="coke-iron">Кокс и чугун</TabsTrigger>
+              <TabsTrigger value="components">
+                Компоненты шихты
+              </TabsTrigger>
+              <TabsTrigger value="coke-iron">
+                Кокс и чугун
+              </TabsTrigger>
               <TabsTrigger value="slag">Шлак</TabsTrigger>
-              <TabsTrigger value="results">Результаты</TabsTrigger>
+              <TabsTrigger value="results">
+                Результаты
+              </TabsTrigger>
             </TabsList>
 
             {/* Вкладка 1: Компоненты шихты */}
-            <TabsContent value="components" className="space-y-6">
+            <TabsContent
+              value="components"
+              className="space-y-6"
+            >
               <Card>
                 <CardHeader>
                   <CardTitle>Компоненты шихты</CardTitle>
                   <CardDescription>
-                    Динамический список сырьевых материалов и их характеристики
+                    Динамический список сырьевых материалов и их
+                    характеристики
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <ScrollArea className="h-[600px] pr-4">
                     <div className="space-y-4">
-                      {chargeComponents.map((component, index) => (
-                        <div key={index} className="p-6 border border-border rounded-lg bg-card">
-                          <div className="flex items-center justify-between mb-4">
-                            <h3 className="font-semibold">Компонент {index + 1}</h3>
-                            <Button
-                              variant="destructive"
-                              size="icon"
-                              onClick={() => removeChargeComponent(index)}
-                              disabled={chargeComponents.length === 1}
-                            >
-                              <Trash2 className="size-4" />
-                            </Button>
+                      {chargeComponents.map(
+                        (component, index) => (
+                          <div
+                            key={index}
+                            className="p-6 border border-border rounded-lg bg-card"
+                          >
+                            <div className="flex items-center justify-between mb-4">
+                              <h3 className="font-semibold">
+                                Компонент {index + 1}
+                              </h3>
+                              <Button
+                                variant="destructive"
+                                size="icon"
+                                onClick={() =>
+                                  removeChargeComponent(index)
+                                }
+                                disabled={
+                                  chargeComponents.length === 1
+                                }
+                              >
+                                <Trash2 className="size-4" />
+                              </Button>
+                            </div>
+
+                            <div className="grid gap-4 md:grid-cols-2">
+                              <div className="space-y-2 md:col-span-2">
+                                <Label>
+                                  Название источника
+                                </Label>
+                                <Select
+                                  value={component.sourcename}
+                                  onValueChange={(value) =>
+                                    handleSelectChargeMaterial(index, value)
+                                  }
+                                >
+                                  <SelectTrigger className="bg-accent/50">
+                                    <SelectValue placeholder="Выберите источник">
+                                      {component.sourcename || "Выберите источник"}
+                                    </SelectValue>
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {loadingMaterials ? (
+                                      <div className="p-2 text-center text-sm text-muted-foreground">
+                                        Загрузка...
+                                      </div>
+                                    ) : (
+                                      chargeMaterials.map(
+                                        (material) => (
+                                          <SelectItem
+                                            key={material.id}
+                                            value={material.id}
+                                          >
+                                            {material.sourcename}
+                                          </SelectItem>
+                                        ),
+                                      )
+                                    )}
+                                  </SelectContent>
+                                </Select>
+                              </div>
+
+                              <div className="space-y-2">
+                                <Label>
+                                  Расход, кг/т чугуна
+                                </Label>
+                                <Input
+                                  type="number"
+                                  value={component.consumption}
+                                  readOnly
+                                  className="bg-muted/50 cursor-not-allowed"
+                                />
+                              </div>
+
+                              <div className="space-y-2">
+                                <Label>Содержание Fe, %</Label>
+                                <Input
+                                  type="number"
+                                  value={component.fe}
+                                  readOnly
+                                  className="bg-muted/50 cursor-not-allowed"
+                                />
+                              </div>
+
+                              <div className="space-y-2">
+                                <Label>
+                                  Содержание SiO₂, %
+                                </Label>
+                                <Input
+                                  type="number"
+                                  value={component.sio2}
+                                  readOnly
+                                  className="bg-muted/50 cursor-not-allowed"
+                                />
+                              </div>
+
+                              <div className="space-y-2">
+                                <Label>
+                                  Содержание Al₂O₃, %
+                                </Label>
+                                <Input
+                                  type="number"
+                                  value={component.al2o3}
+                                  readOnly
+                                  className="bg-muted/50 cursor-not-allowed"
+                                />
+                              </div>
+
+                              <div className="space-y-2">
+                                <Label>Содержание CaO, %</Label>
+                                <Input
+                                  type="number"
+                                  value={component.cao}
+                                  readOnly
+                                  className="bg-muted/50 cursor-not-allowed"
+                                />
+                              </div>
+
+                              <div className="space-y-2">
+                                <Label>Содержание MgO, %</Label>
+                                <Input
+                                  type="number"
+                                  value={component.mgo}
+                                  readOnly
+                                  className="bg-muted/50 cursor-not-allowed"
+                                />
+                              </div>
+
+                              <div className="space-y-2">
+                                <Label>Содержание S, %</Label>
+                                <Input
+                                  type="number"
+                                  value={component.s}
+                                  readOnly
+                                  className="bg-muted/50 cursor-not-allowed"
+                                />
+                              </div>
+
+                              <div className="space-y-2">
+                                <Label>Содержание MnO, %</Label>
+                                <Input
+                                  type="number"
+                                  value={component.mno}
+                                  readOnly
+                                  className="bg-muted/50 cursor-not-allowed"
+                                />
+                              </div>
+
+                              <div className="space-y-2">
+                                <Label>
+                                  Содержание TiO₂, %
+                                </Label>
+                                <Input
+                                  type="number"
+                                  value={component.tio2}
+                                  readOnly
+                                  className="bg-muted/50 cursor-not-allowed"
+                                />
+                              </div>
+                            </div>
                           </div>
-
-                          <div className="grid gap-4 md:grid-cols-2">
-                            <div className="space-y-2 md:col-span-2">
-                              <Label>Название источника</Label>
-                              <Input
-                                type="text"
-                                value={component.sourcename}
-                                onChange={(e) => updateChargeComponent(index, 'sourcename', e.target.value)}
-                                placeholder="Например: Агломерат, Окатыши и т.д."
-                              />
-                            </div>
-
-                            <div className="space-y-2">
-                              <Label>Расход, кг/т чугуна</Label>
-                              <Input
-                                type="number"
-                                value={component.consumption}
-                                onChange={(e) => updateChargeComponent(index, 'consumption', parseFloat(e.target.value) || 0)}
-                              />
-                            </div>
-
-                            <div className="space-y-2">
-                              <Label>Содержание Fe, %</Label>
-                              <Input
-                                type="number"
-                                value={component.fe}
-                                onChange={(e) => updateChargeComponent(index, 'fe', parseFloat(e.target.value) || 0)}
-                              />
-                            </div>
-
-                            <div className="space-y-2">
-                              <Label>Содержание SiO₂, %</Label>
-                              <Input
-                                type="number"
-                                value={component.sio2}
-                                onChange={(e) => updateChargeComponent(index, 'sio2', parseFloat(e.target.value) || 0)}
-                              />
-                            </div>
-
-                            <div className="space-y-2">
-                              <Label>Содержание Al₂O₃, %</Label>
-                              <Input
-                                type="number"
-                                value={component.al2o3}
-                                onChange={(e) => updateChargeComponent(index, 'al2o3', parseFloat(e.target.value) || 0)}
-                              />
-                            </div>
-
-                            <div className="space-y-2">
-                              <Label>Содержание CaO, %</Label>
-                              <Input
-                                type="number"
-                                value={component.cao}
-                                onChange={(e) => updateChargeComponent(index, 'cao', parseFloat(e.target.value) || 0)}
-                              />
-                            </div>
-
-                            <div className="space-y-2">
-                              <Label>Содержание MgO, %</Label>
-                              <Input
-                                type="number"
-                                value={component.mgo}
-                                onChange={(e) => updateChargeComponent(index, 'mgo', parseFloat(e.target.value) || 0)}
-                              />
-                            </div>
-
-                            <div className="space-y-2">
-                              <Label>Содержание S, %</Label>
-                              <Input
-                                type="number"
-                                value={component.s}
-                                onChange={(e) => updateChargeComponent(index, 's', parseFloat(e.target.value) || 0)}
-                              />
-                            </div>
-
-                            <div className="space-y-2">
-                              <Label>Содержание MnO, %</Label>
-                              <Input
-                                type="number"
-                                value={component.mno}
-                                onChange={(e) => updateChargeComponent(index, 'mno', parseFloat(e.target.value) || 0)}
-                              />
-                            </div>
-
-                            <div className="space-y-2">
-                              <Label>Содержание TiO₂, %</Label>
-                              <Input
-                                type="number"
-                                value={component.tio2}
-                                onChange={(e) => updateChargeComponent(index, 'tio2', parseFloat(e.target.value) || 0)}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      ))}
+                        ),
+                      )}
                     </div>
                   </ScrollArea>
 
-                  <Button onClick={addChargeComponent} variant="outline" className="w-full">
+                  <Button
+                    onClick={addChargeComponent}
+                    variant="outline"
+                    className="w-full"
+                  >
                     <Plus className="size-4 mr-2" />
                     Добавить компонент шихты
                   </Button>
@@ -409,7 +575,10 @@ export function SlagModePage() {
             </TabsContent>
 
             {/* Вкладка 2: Кокс и чугун */}
-            <TabsContent value="coke-iron" className="space-y-6">
+            <TabsContent
+              value="coke-iron"
+              className="space-y-6"
+            >
               {/* Параметры кокса */}
               <Card>
                 <CardHeader>
@@ -428,7 +597,13 @@ export function SlagModePage() {
                       <Input
                         type="number"
                         value={cokeData.consumption}
-                        onChange={(e) => setCokeData({ ...cokeData, consumption: parseFloat(e.target.value) || 0 })}
+                        onChange={(e) =>
+                          setCokeData({
+                            ...cokeData,
+                            consumption:
+                              parseFloat(e.target.value) || 0,
+                          })
+                        }
                       />
                     </div>
 
@@ -437,7 +612,13 @@ export function SlagModePage() {
                       <Input
                         type="number"
                         value={cokeData.sulfur}
-                        onChange={(e) => setCokeData({ ...cokeData, sulfur: parseFloat(e.target.value) || 0 })}
+                        onChange={(e) =>
+                          setCokeData({
+                            ...cokeData,
+                            sulfur:
+                              parseFloat(e.target.value) || 0,
+                          })
+                        }
                       />
                     </div>
 
@@ -446,7 +627,13 @@ export function SlagModePage() {
                       <Input
                         type="number"
                         value={cokeData.ashAmount}
-                        onChange={(e) => setCokeData({ ...cokeData, ashAmount: parseFloat(e.target.value) || 0 })}
+                        onChange={(e) =>
+                          setCokeData({
+                            ...cokeData,
+                            ashAmount:
+                              parseFloat(e.target.value) || 0,
+                          })
+                        }
                       />
                     </div>
 
@@ -455,7 +642,13 @@ export function SlagModePage() {
                       <Input
                         type="number"
                         value={cokeData.ashCaOFraction}
-                        onChange={(e) => setCokeData({ ...cokeData, ashCaOFraction: parseFloat(e.target.value) || 0 })}
+                        onChange={(e) =>
+                          setCokeData({
+                            ...cokeData,
+                            ashCaOFraction:
+                              parseFloat(e.target.value) || 0,
+                          })
+                        }
                       />
                     </div>
 
@@ -464,7 +657,13 @@ export function SlagModePage() {
                       <Input
                         type="number"
                         value={cokeData.ashSiO2Fraction}
-                        onChange={(e) => setCokeData({ ...cokeData, ashSiO2Fraction: parseFloat(e.target.value) || 0 })}
+                        onChange={(e) =>
+                          setCokeData({
+                            ...cokeData,
+                            ashSiO2Fraction:
+                              parseFloat(e.target.value) || 0,
+                          })
+                        }
                       />
                     </div>
 
@@ -473,7 +672,13 @@ export function SlagModePage() {
                       <Input
                         type="number"
                         value={cokeData.ashAl2O3Fraction}
-                        onChange={(e) => setCokeData({ ...cokeData, ashAl2O3Fraction: parseFloat(e.target.value) || 0 })}
+                        onChange={(e) =>
+                          setCokeData({
+                            ...cokeData,
+                            ashAl2O3Fraction:
+                              parseFloat(e.target.value) || 0,
+                          })
+                        }
                       />
                     </div>
 
@@ -482,7 +687,13 @@ export function SlagModePage() {
                       <Input
                         type="number"
                         value={cokeData.ashMgOFraction}
-                        onChange={(e) => setCokeData({ ...cokeData, ashMgOFraction: parseFloat(e.target.value) || 0 })}
+                        onChange={(e) =>
+                          setCokeData({
+                            ...cokeData,
+                            ashMgOFraction:
+                              parseFloat(e.target.value) || 0,
+                          })
+                        }
                       />
                     </div>
                   </div>
@@ -507,7 +718,12 @@ export function SlagModePage() {
                       <Input
                         type="number"
                         value={castIronData.si}
-                        onChange={(e) => setCastIronData({ ...castIronData, si: parseFloat(e.target.value) || 0 })}
+                        onChange={(e) =>
+                          setCastIronData({
+                            ...castIronData,
+                            si: parseFloat(e.target.value) || 0,
+                          })
+                        }
                       />
                     </div>
 
@@ -516,7 +732,12 @@ export function SlagModePage() {
                       <Input
                         type="number"
                         value={castIronData.s}
-                        onChange={(e) => setCastIronData({ ...castIronData, s: parseFloat(e.target.value) || 0 })}
+                        onChange={(e) =>
+                          setCastIronData({
+                            ...castIronData,
+                            s: parseFloat(e.target.value) || 0,
+                          })
+                        }
                       />
                     </div>
 
@@ -525,7 +746,12 @@ export function SlagModePage() {
                       <Input
                         type="number"
                         value={castIronData.mn}
-                        onChange={(e) => setCastIronData({ ...castIronData, mn: parseFloat(e.target.value) || 0 })}
+                        onChange={(e) =>
+                          setCastIronData({
+                            ...castIronData,
+                            mn: parseFloat(e.target.value) || 0,
+                          })
+                        }
                       />
                     </div>
 
@@ -534,7 +760,12 @@ export function SlagModePage() {
                       <Input
                         type="number"
                         value={castIronData.c}
-                        onChange={(e) => setCastIronData({ ...castIronData, c: parseFloat(e.target.value) || 0 })}
+                        onChange={(e) =>
+                          setCastIronData({
+                            ...castIronData,
+                            c: parseFloat(e.target.value) || 0,
+                          })
+                        }
                       />
                     </div>
 
@@ -543,7 +774,12 @@ export function SlagModePage() {
                       <Input
                         type="number"
                         value={castIronData.ti}
-                        onChange={(e) => setCastIronData({ ...castIronData, ti: parseFloat(e.target.value) || 0 })}
+                        onChange={(e) =>
+                          setCastIronData({
+                            ...castIronData,
+                            ti: parseFloat(e.target.value) || 0,
+                          })
+                        }
                       />
                     </div>
 
@@ -552,7 +788,12 @@ export function SlagModePage() {
                       <Input
                         type="number"
                         value={castIronData.cr}
-                        onChange={(e) => setCastIronData({ ...castIronData, cr: parseFloat(e.target.value) || 0 })}
+                        onChange={(e) =>
+                          setCastIronData({
+                            ...castIronData,
+                            cr: parseFloat(e.target.value) || 0,
+                          })
+                        }
                       />
                     </div>
 
@@ -561,7 +802,13 @@ export function SlagModePage() {
                       <Input
                         type="number"
                         value={castIronData.temp}
-                        onChange={(e) => setCastIronData({ ...castIronData, temp: parseFloat(e.target.value) || 0 })}
+                        onChange={(e) =>
+                          setCastIronData({
+                            ...castIronData,
+                            temp:
+                              parseFloat(e.target.value) || 0,
+                          })
+                        }
                       />
                     </div>
                   </div>
@@ -588,7 +835,13 @@ export function SlagModePage() {
                       <Input
                         type="number"
                         value={slagData.cao}
-                        onChange={(e) => setSlagData({ ...slagData, cao: parseFloat(e.target.value) || 0 })}
+                        onChange={(e) =>
+                          setSlagData({
+                            ...slagData,
+                            cao:
+                              parseFloat(e.target.value) || 0,
+                          })
+                        }
                       />
                     </div>
 
@@ -597,7 +850,13 @@ export function SlagModePage() {
                       <Input
                         type="number"
                         value={slagData.sio2}
-                        onChange={(e) => setSlagData({ ...slagData, sio2: parseFloat(e.target.value) || 0 })}
+                        onChange={(e) =>
+                          setSlagData({
+                            ...slagData,
+                            sio2:
+                              parseFloat(e.target.value) || 0,
+                          })
+                        }
                       />
                     </div>
 
@@ -606,7 +865,13 @@ export function SlagModePage() {
                       <Input
                         type="number"
                         value={slagData.tio2}
-                        onChange={(e) => setSlagData({ ...slagData, tio2: parseFloat(e.target.value) || 0 })}
+                        onChange={(e) =>
+                          setSlagData({
+                            ...slagData,
+                            tio2:
+                              parseFloat(e.target.value) || 0,
+                          })
+                        }
                       />
                     </div>
 
@@ -615,7 +880,13 @@ export function SlagModePage() {
                       <Input
                         type="number"
                         value={slagData.al2o3}
-                        onChange={(e) => setSlagData({ ...slagData, al2o3: parseFloat(e.target.value) || 0 })}
+                        onChange={(e) =>
+                          setSlagData({
+                            ...slagData,
+                            al2o3:
+                              parseFloat(e.target.value) || 0,
+                          })
+                        }
                       />
                     </div>
 
@@ -624,7 +895,13 @@ export function SlagModePage() {
                       <Input
                         type="number"
                         value={slagData.mgo}
-                        onChange={(e) => setSlagData({ ...slagData, mgo: parseFloat(e.target.value) || 0 })}
+                        onChange={(e) =>
+                          setSlagData({
+                            ...slagData,
+                            mgo:
+                              parseFloat(e.target.value) || 0,
+                          })
+                        }
                       />
                     </div>
                   </div>
@@ -641,7 +918,8 @@ export function SlagModePage() {
                       <div className="text-center space-y-3">
                         <Droplets className="size-12 mx-auto text-muted-foreground" />
                         <p className="text-muted-foreground">
-                          Выполните расчет, чтобы увидеть результаты
+                          Выполните расчет, чтобы увидеть
+                          результаты
                         </p>
                       </div>
                     </div>
@@ -655,7 +933,9 @@ export function SlagModePage() {
                     <div className="min-h-[400px] flex items-center justify-center">
                       <div className="text-center space-y-4">
                         <Loader2 className="size-12 mx-auto animate-spin text-primary" />
-                        <p className="text-muted-foreground">Выполняется расчет...</p>
+                        <p className="text-muted-foreground">
+                          Выполняется расчет...
+                        </p>
                       </div>
                     </div>
                   </CardContent>
@@ -666,8 +946,12 @@ export function SlagModePage() {
                 <div className="space-y-6">
                   <div className="flex items-center justify-between mb-4">
                     <div>
-                      <h2 className="text-2xl font-semibold">Результаты расчета</h2>
-                      <p className="text-muted-foreground">Рассчитанные параметры шлакового режима</p>
+                      <h2 className="text-2xl font-semibold">
+                        Результаты расчета
+                      </h2>
+                      <p className="text-muted-foreground">
+                        Рассчитанные параметры шлакового режима
+                      </p>
                     </div>
                     <Button
                       variant="outline"
@@ -678,7 +962,7 @@ export function SlagModePage() {
                       Сохранить
                     </Button>
                   </div>
-                  
+
                   <SlagModeResults data={calculationResults} />
                   <SlagModeCharts data={calculationResults} />
                 </div>
@@ -700,7 +984,7 @@ export function SlagModePage() {
                   Расчет...
                 </>
               ) : (
-                'Выполнить расчет'
+                "Выполнить расчет"
               )}
             </Button>
           </div>
@@ -720,7 +1004,11 @@ export function SlagModePage() {
         open={saveDialogOpen}
         onOpenChange={setSaveDialogOpen}
         onSave={handleSaveToHistory}
-        resultsPreview={calculationResults ? generateResultsSummary(calculationResults) : 'Нет данных'}
+        resultsPreview={
+          calculationResults
+            ? generateResultsSummary(calculationResults)
+            : "Нет данных"
+        }
       />
     </div>
   );

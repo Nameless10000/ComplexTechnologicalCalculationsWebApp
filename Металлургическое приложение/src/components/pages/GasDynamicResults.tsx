@@ -50,7 +50,107 @@ export function GasDynamicResults({ results }: GasDynamicResultsProps) {
 
   return (
     <div className="space-y-6">
-      {/* Порозность */}
+      {/* Ключевые показатели с яркими акцентами */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card className="border-blue-500/20 bg-blue-500/5">
+          <CardContent className="pt-6">
+            <div className="space-y-2">
+              <p className="text-sm text-muted-foreground">Порозность агломерата</p>
+              <p className="text-3xl font-bold text-blue-500">
+                {data.aglomOutput.aglomPorosity.toFixed(3)}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-purple-500/20 bg-purple-500/5">
+          <CardContent className="pt-6">
+            <div className="space-y-2">
+              <p className="text-sm text-muted-foreground">Порозность окатышей</p>
+              <p className="text-3xl font-bold text-purple-500">
+                {data.aglomOutput.okatPorosity.toFixed(3)}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-orange-500/20 bg-orange-500/5">
+          <CardContent className="pt-6">
+            <div className="space-y-2">
+              <p className="text-sm text-muted-foreground">Удельный расход кокса</p>
+              <p className="text-3xl font-bold text-orange-500">
+                {data.blastFurnance.materialConsumption.udeln_Koks_1000.toFixed(2)}
+              </p>
+              <p className="text-xs text-muted-foreground">т/т чугуна</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-emerald-500/20 bg-emerald-500/5">
+          <CardContent className="pt-6">
+            <div className="space-y-2">
+              <p className="text-sm text-muted-foreground">Выход колошникового газа</p>
+              <p className="text-3xl font-bold text-emerald-500">
+                {data.blastFurnance.topGas.udeln_Kolgaz.toFixed(1)}
+              </p>
+              <p className="text-xs text-muted-foreground">м³/т чугуна</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Дополнительные ключевые показатели */}
+      <div className="grid gap-4 md:grid-cols-3">
+        <Card className="border-red-500/20 bg-red-500/5">
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-lg bg-red-500/20">
+                <Flame className="size-6 text-red-500" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-sm text-muted-foreground">Температура горения</p>
+                <p className="text-2xl font-bold text-red-500">
+                  {data.blastFurnance.hearthGas.temp_Teor.toFixed(0)}°C
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-cyan-500/20 bg-cyan-500/5">
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-lg bg-cyan-500/20">
+                <Gauge className="size-6 text-cyan-500" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-sm text-muted-foreground">Перепад давления (нижн.)</p>
+                <p className="text-2xl font-bold text-cyan-500">
+                  {data.blastFurnance.hydrodynamicsLower.perepad_Niz_Itog.toFixed(3)} атм
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-amber-500/20 bg-amber-500/5">
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-lg bg-amber-500/20">
+                <Factory className="size-6 text-amber-500" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-sm text-muted-foreground">Масса шихты</p>
+                <p className="text-2xl font-bold text-amber-500">
+                  {data.blastFurnance.materialConsumption.udeln_Sum.toFixed(2)} т/т
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Порозность - старая карточка для совместимости */}
       <Card className="border-primary/20">
         <CardHeader>
           <div className="flex items-center gap-2">
