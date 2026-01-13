@@ -237,45 +237,7 @@ export function SlagModePage() {
       // setCalculationResults(response.data);
 
       // Моковые данные для результатов (соответствующие модели ResponseData)
-      const mockResults: SlagModeResponseData = {
-        slagBasicity1: 1.125,
-        slagBasicity2: 1.287,
-        slagBasicity3: 0.965,
-        slagBasicityKulikov: 1.456,
-        slagOut: 512.5,
-        materialCons: 1654.3,
-        totalAglo: 78.5,
-        propAglo23: 45.2,
-        propAglo4: 33.3,
-        propAglo234: 78.5,
-        propSsgpo: 12.4,
-        propLeb: 5.8,
-        propKach: 2.1,
-        propMix: 0.9,
-        propOre: 0.3,
-        propWeldSlag: 0.0,
-        propBfAddict: 0.0,
-        propMinInclude: 0.0,
-        totalProp: 100.0,
-        viscosity_1400: 2.456,
-        viscosity_1450: 1.234,
-        viscosity_1500: 0.678,
-        viscosity_1550: 0.389,
-        temp_7_Puaz: 1425.5,
-        gradient_7_25: 0.0125,
-        gradient_1400_1500: 0.0178,
-        slagTemperature: 1462.0,
-        slagTemperature_25Puaz: 1387.5,
-        currSlagViscosity: 1.156,
-        balSlagMass: 518.7,
-        caOBalSlagMass: 515.2,
-        totalSInOre: 2.145,
-        sActivity: 0.8765,
-        sDistribution: 125.4,
-        sContentInCastIron: 0.0158,
-        castIronTemp: 1485.0,
-      };
-
+      
       setCalculationResults(response.data);
     } catch (error: any) {
       setCalculationError(

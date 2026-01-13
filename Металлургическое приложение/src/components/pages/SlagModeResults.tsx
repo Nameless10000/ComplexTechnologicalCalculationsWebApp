@@ -145,12 +145,12 @@ export function SlagModeResults({ data }: SlagModeResultsProps) {
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
                   <span className="text-sm">Всего агломерата с фабрик</span>
-                  <Badge variant="secondary">{data.totalAglo.toFixed(2)}%</Badge>
+                  <Badge variant="secondary">{data.totalAglo.toFixed(2)} кг.</Badge>
                 </div>
                 <div className="h-2 bg-muted rounded-full overflow-hidden">
                   <div 
                     className="h-full bg-green-500" 
-                    style={{ width: `${Math.min(data.totalAglo, 100)}%` }}
+                    style={{ width: `${data.totalAglo, 100}кг` }}
                   />
                 </div>
               </div>
@@ -158,12 +158,12 @@ export function SlagModeResults({ data }: SlagModeResultsProps) {
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
                   <span className="text-sm">Агломерат фабрик 2 и 3</span>
-                  <Badge variant="outline">{data.propAglo23.toFixed(2)}%</Badge>
+                  <Badge variant="outline">{(data.propAglo23 * 100).toFixed(2)}%</Badge>
                 </div>
                 <div className="h-2 bg-muted rounded-full overflow-hidden">
                   <div 
                     className="h-full bg-blue-500" 
-                    style={{ width: `${Math.min(data.propAglo23, 100)}%` }}
+                    style={{ width: `${Math.min((data.propAglo23 * 100), 100)}%` }}
                   />
                 </div>
               </div>
@@ -171,12 +171,12 @@ export function SlagModeResults({ data }: SlagModeResultsProps) {
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
                   <span className="text-sm">Агломерат фабрики 4</span>
-                  <Badge variant="outline">{data.propAglo4.toFixed(2)}%</Badge>
+                  <Badge variant="outline">{(data.propAglo4 * 100).toFixed(2)}%</Badge>
                 </div>
                 <div className="h-2 bg-muted rounded-full overflow-hidden">
                   <div 
                     className="h-full bg-indigo-500" 
-                    style={{ width: `${Math.min(data.propAglo4, 100)}%` }}
+                    style={{ width: `${Math.min((data.propAglo4 * 100), 100)}%` }}
                   />
                 </div>
               </div>
@@ -184,12 +184,12 @@ export function SlagModeResults({ data }: SlagModeResultsProps) {
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
                   <span className="text-sm">Окатыши ССГПО</span>
-                  <Badge variant="outline">{data.propSsgpo.toFixed(2)}%</Badge>
+                  <Badge variant="outline">{(data.propSsgpo * 100).toFixed(2)}%</Badge>
                 </div>
                 <div className="h-2 bg-muted rounded-full overflow-hidden">
                   <div 
                     className="h-full bg-purple-500" 
-                    style={{ width: `${Math.min(data.propSsgpo, 100)}%` }}
+                    style={{ width: `${Math.min((data.propSsgpo * 100), 100)}%` }}
                   />
                 </div>
               </div>
@@ -197,12 +197,12 @@ export function SlagModeResults({ data }: SlagModeResultsProps) {
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
                   <span className="text-sm">Окатыши Лебединский ГОК</span>
-                  <Badge variant="outline">{data.propLeb.toFixed(2)}%</Badge>
+                  <Badge variant="outline">{(data.propLeb * 100).toFixed(2)}%</Badge>
                 </div>
                 <div className="h-2 bg-muted rounded-full overflow-hidden">
                   <div 
                     className="h-full bg-pink-500" 
-                    style={{ width: `${Math.min(data.propLeb, 100)}%` }}
+                    style={{ width: `${Math.min((data.propLeb * 100), 100)}%` }}
                   />
                 </div>
               </div>
@@ -210,12 +210,12 @@ export function SlagModeResults({ data }: SlagModeResultsProps) {
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
                   <span className="text-sm">Окатыши Качканарский ГОК</span>
-                  <Badge variant="outline">{data.propKach.toFixed(2)}%</Badge>
+                  <Badge variant="outline">{(data.propKach * 100).toFixed(2)}%</Badge>
                 </div>
                 <div className="h-2 bg-muted rounded-full overflow-hidden">
                   <div 
                     className="h-full bg-orange-500" 
-                    style={{ width: `${Math.min(data.propKach, 100)}%` }}
+                    style={{ width: `${Math.min((data.propKach * 100), 100)}%` }}
                   />
                 </div>
               </div>
@@ -223,12 +223,12 @@ export function SlagModeResults({ data }: SlagModeResultsProps) {
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
                   <span className="text-sm">Окатыши Михайловский ГОК</span>
-                  <Badge variant="outline">{data.propMix.toFixed(2)}%</Badge>
+                  <Badge variant="outline">{(data.propMix * 100).toFixed(2)}%</Badge>
                 </div>
                 <div className="h-2 bg-muted rounded-full overflow-hidden">
                   <div 
                     className="h-full bg-red-500" 
-                    style={{ width: `${Math.min(data.propMix, 100)}%` }}
+                    style={{ width: `${Math.min((data.propMix * 100), 100)}%` }}
                   />
                 </div>
               </div>
@@ -236,12 +236,12 @@ export function SlagModeResults({ data }: SlagModeResultsProps) {
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
                   <span className="text-sm">Руда</span>
-                  <Badge variant="outline">{data.propOre.toFixed(2)}%</Badge>
+                  <Badge variant="outline">{(data.propOre * 100).toFixed(2)}%</Badge>
                 </div>
                 <div className="h-2 bg-muted rounded-full overflow-hidden">
                   <div 
                     className="h-full bg-yellow-500" 
-                    style={{ width: `${Math.min(data.propOre, 100)}%` }}
+                    style={{ width: `${Math.min((data.propOre * 100), 100)}%` }}
                   />
                 </div>
               </div>
@@ -249,12 +249,12 @@ export function SlagModeResults({ data }: SlagModeResultsProps) {
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
                   <span className="text-sm">Сварочный шлак</span>
-                  <Badge variant="outline">{data.propWeldSlag.toFixed(2)}%</Badge>
+                  <Badge variant="outline">{(data.propWeldSlag * 100).toFixed(2)}%</Badge>
                 </div>
                 <div className="h-2 bg-muted rounded-full overflow-hidden">
                   <div 
                     className="h-full bg-teal-500" 
-                    style={{ width: `${Math.min(data.propWeldSlag, 100)}%` }}
+                    style={{ width: `${Math.min((data.propWeldSlag * 100), 100)}%` }}
                   />
                 </div>
               </div>
@@ -262,12 +262,12 @@ export function SlagModeResults({ data }: SlagModeResultsProps) {
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
                   <span className="text-sm">Доменный присад</span>
-                  <Badge variant="outline">{data.propBfAddict.toFixed(2)}%</Badge>
+                  <Badge variant="outline">{(data.propBfAddict * 100).toFixed(2)}%</Badge>
                 </div>
                 <div className="h-2 bg-muted rounded-full overflow-hidden">
                   <div 
                     className="h-full bg-cyan-500" 
-                    style={{ width: `${Math.min(data.propBfAddict, 100)}%` }}
+                    style={{ width: `${Math.min((data.propBfAddict * 100), 100)}%` }}
                   />
                 </div>
               </div>
@@ -275,12 +275,12 @@ export function SlagModeResults({ data }: SlagModeResultsProps) {
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
                   <span className="text-sm">Королёк</span>
-                  <Badge variant="outline">{data.propMinInclude.toFixed(2)}%</Badge>
+                  <Badge variant="outline">{(data.propMinInclude * 100).toFixed(2)}%</Badge>
                 </div>
                 <div className="h-2 bg-muted rounded-full overflow-hidden">
                   <div 
                     className="h-full bg-slate-500" 
-                    style={{ width: `${Math.min(data.propMinInclude, 100)}%` }}
+                    style={{ width: `${Math.min((data.propMinInclude * 100), 100)}%` }}
                   />
                 </div>
               </div>
@@ -288,12 +288,12 @@ export function SlagModeResults({ data }: SlagModeResultsProps) {
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
                   <span className="text-sm font-semibold">Местный агломерат (2+3+4)</span>
-                  <Badge>{data.propAglo234.toFixed(2)}%</Badge>
+                  <Badge>{(data.propAglo234 * 100).toFixed(2)}%</Badge>
                 </div>
                 <div className="h-2 bg-muted rounded-full overflow-hidden">
                   <div 
                     className="h-full bg-emerald-500" 
-                    style={{ width: `${Math.min(data.propAglo234, 100)}%` }}
+                    style={{ width: `${Math.min((data.propAglo234 * 100), 100)}%` }}
                   />
                 </div>
               </div>
@@ -305,7 +305,7 @@ export function SlagModeResults({ data }: SlagModeResultsProps) {
               <div className="flex justify-between items-center">
                 <span className="font-semibold">Общая доля всех компонентов</span>
                 <Badge variant="default" className="text-base px-3 py-1">
-                  {data.totalProp.toFixed(2)}%
+                  {(data.totalProp * 100).toFixed(2)}%
                 </Badge>
               </div>
             </div>
