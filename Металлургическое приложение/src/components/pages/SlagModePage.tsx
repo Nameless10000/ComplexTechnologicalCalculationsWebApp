@@ -73,24 +73,24 @@ interface InputCastIronForCalc {
 }
 
 interface InputSlagForCalc {
-  cao: number;
-  sio2: number;
-  tio2: number;
-  al2o3: number;
-  mgo: number;
+  caO: number;
+  siO2: number;
+  tiO2: number;
+  al2O3: number;
+  mgO: number;
 }
 
 interface InputChargeComponentsForCalc {
   sourcename: string;
   consumption: number;
   fe: number;
-  sio2: number;
-  al2o3: number;
-  cao: number;
-  mgo: number;
+  siO2: number;
+  al2O3: number;
+  caO: number;
+  mgO: number;
   s: number;
-  mno: number;
-  tio2: number;
+  mnO: number;
+  tiO2: number;
 }
 
 interface RequestData {
@@ -106,6 +106,7 @@ export function SlagModePage() {
   useEffect(() => {
         slagModeService.getPreset()
           .then(({data}) => {
+            
             setCokeData(data.request.inputCoke);
             setCastIronData(data.request.castIron);
             setSlagData(data.request.slag);
@@ -138,11 +139,11 @@ export function SlagModePage() {
 
   // Состояния для параметров шлака
   const [slagData, setSlagData] = useState<InputSlagForCalc>({
-    cao: 0,
-    sio2: 0,
-    tio2: 0,
-    al2o3: 0,
-    mgo: 0,
+    caO: 0,
+    siO2: 0,
+    tiO2: 0,
+    al2O3: 0,
+    mgO: 0,
   });
 
   // Состояния для компонентов шихты (динамический список)
@@ -153,13 +154,13 @@ export function SlagModePage() {
       sourcename: "",
       consumption: 0,
       fe: 0,
-      sio2: 0,
-      al2o3: 0,
-      cao: 0,
-      mgo: 0,
+      siO2: 0,
+      al2O3: 0,
+      caO: 0,
+      mgO: 0,
       s: 0,
-      mno: 0,
-      tio2: 0,
+      mnO: 0,
+      tiO2: 0,
     },
   ]);
 
@@ -187,13 +188,13 @@ export function SlagModePage() {
         sourcename: "",
         consumption: 0,
         fe: 0,
-        sio2: 0,
-        al2o3: 0,
-        cao: 0,
-        mgo: 0,
+        siO2: 0,
+        al2O3: 0,
+        caO: 0,
+        mgO: 0,
         s: 0,
-        mno: 0,
-        tio2: 0,
+        mnO: 0,
+        tiO2: 0,
       },
     ]);
   };
@@ -313,6 +314,7 @@ export function SlagModePage() {
       try {
         setLoadingMaterials(true);
         const materials = await slagModeService.getComponents();
+        
         setChargeMaterials(materials);
       } catch (error) {
         console.error("Ошибка при загрузке материалов шихты:", error);
@@ -326,20 +328,21 @@ export function SlagModePage() {
 
   // Функция для выбора материала из селектора
   const handleSelectChargeMaterial = (index: number, materialId: string) => {
-    const selectedMaterial = chargeMaterials.find(m => m.id === materialId);
+    
+    const selectedMaterial = chargeMaterials.find(m => m.sourcename === materialId);
     if (selectedMaterial) {
       const updated = [...chargeComponents];
       updated[index] = {
         sourcename: selectedMaterial.sourcename,
         consumption: selectedMaterial.consumption,
         fe: selectedMaterial.fe,
-        sio2: selectedMaterial.sio2,
-        al2o3: selectedMaterial.al2o3,
-        cao: selectedMaterial.cao,
-        mgo: selectedMaterial.mgo,
+        siO2: selectedMaterial.siO2,
+        al2O3: selectedMaterial.al2O3,
+        caO: selectedMaterial.caO,
+        mgO: selectedMaterial.mgO,
         s: selectedMaterial.s,
-        mno: selectedMaterial.mno,
-        tio2: selectedMaterial.tio2,
+        mnO: selectedMaterial.mnO,
+        tiO2: selectedMaterial.tiO2,
       };
       setChargeComponents(updated);
     }
@@ -434,8 +437,10 @@ export function SlagModePage() {
                                 </Label>
                                 <Select
                                   value={component.sourcename}
-                                  onValueChange={(value) =>
-                                    handleSelectChargeMaterial(index, value)
+                                  onValueChange={(value) =>{
+
+                                    
+                                    handleSelectChargeMaterial(index, value)}
                                   }
                                 >
                                   <SelectTrigger className="bg-accent/50">
@@ -449,11 +454,12 @@ export function SlagModePage() {
                                         Загрузка...
                                       </div>
                                     ) : (
+                                      
                                       chargeMaterials.map(
                                         (material) => (
                                           <SelectItem
-                                            key={material.id}
-                                            value={material.id}
+                                            key={material.sourcename}
+                                            value={material.sourcename}
                                           >
                                             {material.sourcename}
                                           </SelectItem>
@@ -492,7 +498,7 @@ export function SlagModePage() {
                                 </Label>
                                 <Input
                                   type="number"
-                                  value={component.sio2}
+                                  value={component.siO2}
                                   readOnly
                                   className="bg-muted/50 cursor-not-allowed"
                                 />
@@ -504,7 +510,7 @@ export function SlagModePage() {
                                 </Label>
                                 <Input
                                   type="number"
-                                  value={component.al2o3}
+                                  value={component.al2O3}
                                   readOnly
                                   className="bg-muted/50 cursor-not-allowed"
                                 />
@@ -514,7 +520,7 @@ export function SlagModePage() {
                                 <Label>Содержание CaO, %</Label>
                                 <Input
                                   type="number"
-                                  value={component.cao}
+                                  value={component.caO}
                                   readOnly
                                   className="bg-muted/50 cursor-not-allowed"
                                 />
@@ -524,7 +530,7 @@ export function SlagModePage() {
                                 <Label>Содержание MgO, %</Label>
                                 <Input
                                   type="number"
-                                  value={component.mgo}
+                                  value={component.mgO}
                                   readOnly
                                   className="bg-muted/50 cursor-not-allowed"
                                 />
@@ -544,7 +550,7 @@ export function SlagModePage() {
                                 <Label>Содержание MnO, %</Label>
                                 <Input
                                   type="number"
-                                  value={component.mno}
+                                  value={component.mnO}
                                   readOnly
                                   className="bg-muted/50 cursor-not-allowed"
                                 />
@@ -556,7 +562,7 @@ export function SlagModePage() {
                                 </Label>
                                 <Input
                                   type="number"
-                                  value={component.tio2}
+                                  value={component.tiO2}
                                   readOnly
                                   className="bg-muted/50 cursor-not-allowed"
                                 />
@@ -840,11 +846,11 @@ export function SlagModePage() {
                       <Label>Содержание CaO, %</Label>
                       <Input
                         type="number"
-                        value={slagData.cao}
+                        value={slagData.caO}
                         onChange={(e) =>
                           setSlagData({
                             ...slagData,
-                            cao:
+                            caO:
                               parseFloat(e.target.value) || 0,
                           })
                         }
@@ -855,11 +861,11 @@ export function SlagModePage() {
                       <Label>Содержание SiO₂, %</Label>
                       <Input
                         type="number"
-                        value={slagData.sio2}
+                        value={slagData.siO2}
                         onChange={(e) =>
                           setSlagData({
                             ...slagData,
-                            sio2:
+                            siO2:
                               parseFloat(e.target.value) || 0,
                           })
                         }
@@ -870,11 +876,11 @@ export function SlagModePage() {
                       <Label>Содержание TiO₂, %</Label>
                       <Input
                         type="number"
-                        value={slagData.tio2}
+                        value={slagData.tiO2}
                         onChange={(e) =>
                           setSlagData({
                             ...slagData,
-                            tio2:
+                            tiO2:
                               parseFloat(e.target.value) || 0,
                           })
                         }
@@ -885,11 +891,11 @@ export function SlagModePage() {
                       <Label>Содержание Al₂O₃, %</Label>
                       <Input
                         type="number"
-                        value={slagData.al2o3}
+                        value={slagData.al2O3}
                         onChange={(e) =>
                           setSlagData({
                             ...slagData,
-                            al2o3:
+                            al2O3:
                               parseFloat(e.target.value) || 0,
                           })
                         }
@@ -900,11 +906,11 @@ export function SlagModePage() {
                       <Label>Содержание MgO, %</Label>
                       <Input
                         type="number"
-                        value={slagData.mgo}
+                        value={slagData.mgO}
                         onChange={(e) =>
                           setSlagData({
                             ...slagData,
-                            mgo:
+                            mgO:
                               parseFloat(e.target.value) || 0,
                           })
                         }
