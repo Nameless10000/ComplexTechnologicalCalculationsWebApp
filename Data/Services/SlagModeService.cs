@@ -31,6 +31,16 @@ public class SlagModeService(
         return calculations;
     }
 
+
+    public async Task<List<InputChargeComponentsForCalc>> GetChargeComponents()
+    {
+        var components = await dbContext.ChargeComponents.ToListAsync();
+        var res = components
+            .Select(x => mapper.Map<ChargeComponent, InputChargeComponentsForCalc>(x))
+            .ToList();
+        return res;
+    }
+    
     public async Task<Response?> GetCalculationAsync(int id)
     {
         var calulation = await GetCalculationsQueryable()

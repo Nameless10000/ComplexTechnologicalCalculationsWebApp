@@ -19,6 +19,12 @@ export const API_CONFIG = {
       LOAD_CALCULATION: '/GasDynamic/LoadCalculation',
       GET_HISTORY: '/GasDynamic/GetCalculationsHistory',
     },
+    SLAG_MODE: {
+      CALCULATE: '/SlagMode/Calculate',
+      GET_PRESET: '/SlagMode/GetPreset',
+      LOAD_CALCULATION: '/SlagMode/LoadCalculation',
+      GET_HISTORY: '/SlagMode/GetCalculationsHistory',
+    },
   },
   
   // Таймауты

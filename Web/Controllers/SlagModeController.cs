@@ -15,6 +15,15 @@ public class SlagModeController : Controller
         _logger = logger;
         _service = service;
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetChargeComponents()
+    {
+        var components = await _service.GetChargeComponents();
+        return Ok(components.Count == 0
+            ? new { message = "No charge components found" }
+            : components);
+    }
     
     [HttpGet]
     public async Task<IActionResult> GetPreset()
