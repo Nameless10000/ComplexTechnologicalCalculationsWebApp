@@ -94,7 +94,6 @@ interface InputChargeComponentsForCalc {
 }
 
 interface RequestData {
-  user: UserAuthData;
   coke: InputCokeForCalcs;
   iron: InputCastIronForCalc;
   slag: InputSlagForCalc;
@@ -224,7 +223,6 @@ export function SlagModePage() {
     try {
       // Формируем данные запроса
       const requestData: RequestData = {
-        user: userData,
         coke: cokeData,
         iron: castIronData,
         slag: slagData,
@@ -232,7 +230,7 @@ export function SlagModePage() {
       };
 
       // Имитация задержки расчета
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await slagModeService.calculate(requestData);
 
       // Здесь будет вызов API для расчетов
       // const response = await slagModeService.calculate(requestData);
@@ -278,7 +276,7 @@ export function SlagModePage() {
         castIronTemp: 1485.0,
       };
 
-      setCalculationResults(mockResults);
+      setCalculationResults(response.data);
     } catch (error: any) {
       setCalculationError(
         error.message || "Произошла ошибка при расчете.",
