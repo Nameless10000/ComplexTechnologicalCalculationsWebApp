@@ -24,3 +24,16 @@ C:\Users\Quaz\Documents\GitHub\ComplexTechnologicalCalculationsWebApp\BaseLib\ob
 C:\Users\Quaz\Documents\GitHub\ComplexTechnologicalCalculationsWebApp\BaseLib\obj\Debug\net8.0\refint\BaseLib.dll
 C:\Users\Quaz\Documents\GitHub\ComplexTechnologicalCalculationsWebApp\BaseLib\obj\Debug\net8.0\BaseLib.pdb
 C:\Users\Quaz\Documents\GitHub\ComplexTechnologicalCalculationsWebApp\BaseLib\obj\Debug\net8.0\ref\BaseLib.dll
+D:\Zozinko\LavrovGroup\ComplexTechnologicalCalculationsWebApp\BaseLib\bin\Debug\net8.0\BaseLib.deps.json
+D:\Zozinko\LavrovGroup\ComplexTechnologicalCalculationsWebApp\BaseLib\bin\Debug\net8.0\BaseLib.dll
+D:\Zozinko\LavrovGroup\ComplexTechnologicalCalculationsWebApp\BaseLib\bin\Debug\net8.0\BaseLib.pdb
+D:\Zozinko\LavrovGroup\ComplexTechnologicalCalculationsWebApp\BaseLib\obj\Debug\net8.0\BaseLib.csproj.AssemblyReference.cache
+D:\Zozinko\LavrovGroup\ComplexTechnologicalCalculationsWebApp\BaseLib\obj\Debug\net8.0\BaseLib.GeneratedMSBuildEditorConfig.editorconfig
+D:\Zozinko\LavrovGroup\ComplexTechnologicalCalculationsWebApp\BaseLib\obj\Debug\net8.0\BaseLib.AssemblyInfoInputs.cache
+D:\Zozinko\LavrovGroup\ComplexTechnologicalCalculationsWebApp\BaseLib\obj\Debug\net8.0\BaseLib.AssemblyInfo.cs
+D:\Zozinko\LavrovGroup\ComplexTechnologicalCalculationsWebApp\BaseLib\obj\Debug\net8.0\BaseLib.csproj.CoreCompileInputs.cache
+D:\Zozinko\LavrovGroup\ComplexTechnologicalCalculationsWebApp\BaseLib\obj\Debug\net8.0\BaseLib.sourcelink.json
+D:\Zozinko\LavrovGroup\ComplexTechnologicalCalculationsWebApp\BaseLib\obj\Debug\net8.0\BaseLib.dll
+D:\Zozinko\LavrovGroup\ComplexTechnologicalCalculationsWebApp\BaseLib\obj\Debug\net8.0\refint\BaseLib.dll
+D:\Zozinko\LavrovGroup\ComplexTechnologicalCalculationsWebApp\BaseLib\obj\Debug\net8.0\BaseLib.pdb
+D:\Zozinko\LavrovGroup\ComplexTechnologicalCalculationsWebApp\BaseLib\obj\Debug\net8.0\ref\BaseLib.dll

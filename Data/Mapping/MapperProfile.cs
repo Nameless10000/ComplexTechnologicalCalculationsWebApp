@@ -1,6 +1,11 @@
 using AutoMapper;
+using BaseLib.AglomMode.Models;
 using BaseLib.SlagMode.Models;
+using Console;
+using Console.DTO;
+using Core.Models.AglomMode;
 using Core.Models.SlagMode;
+using System.ComponentModel;
 
 namespace Data.Mapping;
 
@@ -28,7 +33,19 @@ public class MapperProfile : Profile
         CreateMap<InputChargeComponentsForCalc, ChargeComponent>().ReverseMap();
         CreateMap<InputCokeForCalcs, InputCoke>().ReverseMap();
         CreateMap<InputCastIronForCalc, CastIron>().ReverseMap();
-        CreateMap<InputSlagForCalc, Slag>().ReverseMap();
+
+        CreateMap<AglomRequestData, AglomRequestDB>().ReverseMap();
+        CreateMap<AglomResponseData, AglomResponseDB>().ReverseMap();
+        CreateMap<CalcLES, CalcLESDB>().ReverseMap();
+        CreateMap<Cocksick, CocksickDB>().ReverseMap();
+        CreateMap<END, ENDDB>().ReverseMap();
+        CreateMap<FluxAdditions, FluxAdditionsDB>().ReverseMap();
+        CreateMap<Shihta, ShihtaDB>().ReverseMap();
+        CreateMap<ShihtaComponent, ShihtaComponentDB>().ReverseMap();
+        CreateMap<StartEnter, StartEnterDB>().ReverseMap();
+        CreateMap<ZolaOfCocksick, ZolaOfCocksickDB>().ReverseMap();
+        CreateMap<ComponentInfo, ComponentInfoDB>().ReverseMap();
+
         #endregion
     }
 }
