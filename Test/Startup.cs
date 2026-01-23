@@ -14,9 +14,11 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         var serverDomain = "localhost:44324";
+        var AglomserverDomain = "localhost:5296";
         services.Configure<ExternalServerDomain>(options =>
         {
             options.Domain = serverDomain;
+            options.AglomDomain = AglomserverDomain;
         });
         
         services.ScanRepos();
