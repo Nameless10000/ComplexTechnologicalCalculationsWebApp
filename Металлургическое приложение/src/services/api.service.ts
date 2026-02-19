@@ -251,3 +251,55 @@ export const slagModeService = {
     }
   }
 };
+
+export const aglomModeService = {
+  async calculate(inputData: any): Promise<any> {
+    try {
+      const response = await fetchWithTimeout(
+        `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AGLOM_MODE.CALCULATE}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(inputData),
+        }
+      );
+      
+      if (!response.ok) {
+        throw new Error('Ошибка расчета');
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Calculation error:', error);
+      throw new Error('Не удалось выполнить расчет. Проверьте соединение с сервером.');
+    }
+  },
+
+  async getPreset() :Promise<any> {
+    try {
+      debugger
+      const response = await fetchWithTimeout(
+        `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AGLOM_MODE.GET_PRESET}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        }
+      );
+      
+      if (!response.ok) {
+        throw new Error('Ошибка получения пресета');
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Preset error:', error);
+      throw new Error('Не удалось получить пресет. Проверьте соединение с сервером.');
+    }
+  }
+};

@@ -408,3 +408,4 @@ D:\Zozinko\LavrovGroup\ComplexTechnologicalCalculationsWebApp\Web\obj\Debug\net8
 D:\Zozinko\LavrovGroup\ComplexTechnologicalCalculationsWebApp\Web\obj\Debug\net8.0\refint\Web.dll
 D:\Zozinko\LavrovGroup\ComplexTechnologicalCalculationsWebApp\Web\obj\Debug\net8.0\Web.genruntimeconfig.cache
 D:\Zozinko\LavrovGroup\ComplexTechnologicalCalculationsWebApp\Web\obj\Debug\net8.0\ref\Web.dll
+D:\Zozinko\LavrovGroup\ComplexTechnologicalCalculationsWebApp\Web\obj\Debug\net8.0\Web.MvcApplicationPartsAssemblyInfo.cs

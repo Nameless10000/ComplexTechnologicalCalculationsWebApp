@@ -26,6 +26,12 @@ export const API_CONFIG = {
       GET_HISTORY: '/SlagMode/GetCalculationsHistory',
       GET_COMPONENTS: '/SlagMode/GetChargeComponents',
     },
+    AGLOM_MODE: {
+      CALCULATE: '/AglomMode/Calculate',
+      GET_PRESET: '/AglomMode/GetPreset',
+      LOAD_CALCULATION: '/AglomMode/LoadCalculation',
+      GET_HISTORY: '/SlagMode/GetCalculationsHistory',
+    },
   },
   
   // Таймауты

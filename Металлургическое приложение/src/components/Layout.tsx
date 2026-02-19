@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { Avatar, AvatarFallback } from './ui/avatar';
 import { Button } from './ui/button';
-import { LogOut, Moon, Sun, Wind, Flame, Scale, Zap, Droplets } from 'lucide-react';
+import { LogOut, Moon, Sun, Wind, Flame, Scale, Zap, Droplets, Layers } from 'lucide-react';
 import { useTheme } from './ThemeProvider';
 
 interface User {
@@ -21,14 +21,15 @@ const navItems = [
   { path: '/mass-balance', label: 'Массовый баланс', icon: Scale },
   { path: '/reduction', label: 'Восстановительные процессы', icon: Zap },
   { path: '/slag-mode', label: 'Шлаковый режим', icon: Droplets },
+  { path: '/sinter-charge', label: 'Агломерационная шихта', icon: Layers },
 ];
 
 export function Layout({ user, onLogout, children }: LayoutProps) {
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
 
-  const getInitials = (nickname: string) => {
-    return nickname.slice(0, 2).toUpperCase();
+  const getInitials = (username: string) => {
+    return username.slice(0, 2).toUpperCase();
   };
 
   return (
@@ -51,7 +52,7 @@ export function Layout({ user, onLogout, children }: LayoutProps) {
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
-                <p className="text-sm truncate">{user.nickname}</p>
+                <p className="text-sm truncate">{user.username}</p>
                 <p className="text-xs text-muted-foreground truncate">{user.email}</p>
               </div>
             </div>

@@ -7,10 +7,11 @@ import { HeatBalancePage } from './components/pages/HeatBalancePage';
 import { MassBalancePage } from './components/pages/MassBalancePage';
 import { ReductionPage } from './components/pages/ReductionPage';
 import { SlagModePage } from './components/pages/SlagModePage';
+import { SinterChargePage } from './components/pages/SinterChargePage';
 import { ThemeProvider } from './components/ThemeProvider';
 
 interface User {
-  nickname: string;
+  username: string;
   email: string;
 }
 
@@ -71,6 +72,7 @@ export default function App() {
                     <Route path="/mass-balance" element={<MassBalancePage />} />
                     <Route path="/reduction" element={<ReductionPage />} />
                     <Route path="/slag-mode" element={<SlagModePage />} />
+                    <Route path="/sinter-charge" element={<SinterChargePage />} />
                   </Routes>
                 </Layout>
               ) : (
