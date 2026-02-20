@@ -280,7 +280,6 @@ export const aglomModeService = {
 
   async getPreset() :Promise<any> {
     try {
-      debugger
       const response = await fetchWithTimeout(
         `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AGLOM_MODE.GET_PRESET}`,
         {

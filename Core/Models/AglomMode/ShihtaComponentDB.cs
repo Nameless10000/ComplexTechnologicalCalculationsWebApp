@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Core.Models.AglomMode
@@ -35,6 +36,7 @@ namespace Core.Models.AglomMode
         #endregion
         [ForeignKey(nameof(AglomRequest))]
         public int AglomRequestID { get; set; }
+        [JsonIgnore]
         public AglomRequestDB AglomRequest { get; set; }
     }
 }

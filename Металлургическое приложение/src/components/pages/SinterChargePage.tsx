@@ -234,9 +234,9 @@ export function SinterChargePage() {
 
         console.log("Calculation Request:", requestData);
 
-        const response: AglomResponseData = await aglomModeService.calculate(requestData);
+        const response = await aglomModeService.calculate(requestData);
 
-        setCalculationResults(response);
+        setCalculationResults(response.data);
         setActiveTab("results");
 
     } catch (error: any) {

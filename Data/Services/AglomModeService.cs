@@ -75,6 +75,7 @@ public class AglomModeService(
             .Include(x => x.FluxAdditions)
             .Include(x => x.ShihtaComponents)
             .Include(x => x.AglomResponse)
+            .Include(x => x.StartEnter)
             .Where(x => x.CreatorID == _currentUserId)
             .OrderByDescending(x => x.CreationDateTime)
             .AsQueryable();
