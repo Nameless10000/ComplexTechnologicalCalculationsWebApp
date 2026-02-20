@@ -47,10 +47,10 @@ import { aglomModeService } from "../../services/api.service";
 
 export interface ZolaOfCocksick {
   fe: number;
-  cao: number;
-  sio2: number;
-  al2o3: number;
-  mgo: number;
+  caO: number;
+  siO2: number;
+  al2O3: number;
+  mgO: number;
   p: number;
 }
 
@@ -103,7 +103,7 @@ export interface ShihtaComponent {
 
 export interface StartEnter {
   osnovnost: number;
-  feoInAgl: number;
+  feOinAgl: number;
   dolomyteInAgl: number;
 }
 
@@ -120,10 +120,10 @@ export interface AglomRequestData {
 
 const initialZola: ZolaOfCocksick = {
   fe: 0,
-  cao: 0,
-  sio2: 0,
-  al2o3: 0,
-  mgo: 0,
+  caO: 0,
+  siO2: 0,
+  al2O3: 0,
+  mgO: 0,
   p: 0,
 };
 
@@ -150,7 +150,7 @@ const initialFlux: FluxAdditions = {
 
 const initialStartEnter: StartEnter = {
   osnovnost: 0,
-  feoInAgl: 0,
+  feOinAgl: 0,
   dolomyteInAgl: 0,
 };
 
@@ -231,61 +231,12 @@ export function SinterChargePage() {
             fluxAdditions: flux,
             shihtaComponents: components,
         };
+
         console.log("Calculation Request:", requestData);
 
-        // Simulate API delay
-        await new Promise((resolve) => setTimeout(resolve, 800));
+        const response: AglomResponseData = await aglomModeService.calculate(requestData);
 
-        // Mock Results Generation based on inputs
-        const mockComponents: ComponentInfo[] = components.map(c => ({
-            componentName: c.name || "Unnamed",
-            reportComponentOfShihta: c.weight * 0.95, // mock logic
-            reportFe: c.fe * 1.05,
-            reportS: c.s,
-            reportP: c.p,
-            reportFeO: c.feo,
-            reportCaO: c.cao,
-            reportSiO2: c.sio2,
-            reportAl2O3: c.al2o3,
-            reportMgO: c.mgo,
-            reportMnO: c.mno,
-            reportTiO2: c.tio2,
-            reportZn: c.zn,
-            reportPMPP: c.pmpp,
-            reportFe2O3: (c.fe - c.feo * 0.777) * 1.43, // rough chem logic
-            reportOxideSum: c.fe + c.sio2 + c.cao + c.mgo + c.al2o3,
-            reportCaO_SiO2: c.sio2 > 0 ? c.cao / c.sio2 : 0,
-        }));
-
-        // Add a "Total" row
-        const totalWeight = mockComponents.reduce((sum, c) => sum + c.reportComponentOfShihta, 0);
-        const totalFe = mockComponents.reduce((sum, c) => sum + c.reportFe * c.reportComponentOfShihta, 0) / totalWeight;
-
-        mockComponents.push({
-            componentName: "ИТОГО АГЛОМЕРАТ",
-            reportComponentOfShihta: totalWeight,
-            reportFe: totalFe,
-            reportS: 0.05,
-            reportP: 0.08,
-            reportFeO: 12.5,
-            reportCaO: 10.2,
-            reportSiO2: 8.5,
-            reportAl2O3: 1.5,
-            reportMgO: 2.1,
-            reportMnO: 0.5,
-            reportTiO2: 0.1,
-            reportZn: 0.01,
-            reportPMPP: 0,
-            reportFe2O3: 75.2,
-            reportOxideSum: 95.4,
-            reportCaO_SiO2: 1.2, // Target basicity
-        });
-
-        const mockResponse: AglomResponseData = {
-            components: mockComponents
-        };
-
-        setCalculationResults(mockResponse);
+        setCalculationResults(response);
         setActiveTab("results");
 
     } catch (error: any) {
@@ -413,11 +364,11 @@ export function SinterChargePage() {
                             <Label>FeO в агломерате (%)</Label>
                             <Input
                             type="number"
-                            value={startEnter.feoInAgl}
+                            value={startEnter.feOinAgl}
                             onChange={(e) =>
                                 setStartEnter({
                                 ...startEnter,
-                                feoInAgl: parseFloat(e.target.value) || 0,
+                                feOinAgl: parseFloat(e.target.value) || 0,
                                 })
                             }
                             />
@@ -595,23 +546,23 @@ export function SinterChargePage() {
                             />
                             <NumberInput
                                 label="CaO"
-                                value={zola.cao}
-                                onChange={(v) => setZola({ ...zola, cao: v })}
+                                value={zola.caO}
+                                onChange={(v) => setZola({ ...zola, caO: v })}
                             />
                             <NumberInput
                                 label="SiO2"
-                                value={zola.sio2}
-                                onChange={(v) => setZola({ ...zola, sio2: v })}
+                                value={zola.siO2}
+                                onChange={(v) => setZola({ ...zola, siO2: v })}
                             />
                             <NumberInput
                                 label="Al2O3"
-                                value={zola.al2o3}
-                                onChange={(v) => setZola({ ...zola, al2o3: v })}
+                                value={zola.al2O3}
+                                onChange={(v) => setZola({ ...zola, al2O3: v })}
                             />
                             <NumberInput
                                 label="MgO"
-                                value={zola.mgo}
-                                onChange={(v) => setZola({ ...zola, mgo: v })}
+                                value={zola.mgO}
+                                onChange={(v) => setZola({ ...zola, mgO: v })}
                             />
                             <NumberInput
                                 label="P"
@@ -728,44 +679,44 @@ export function SinterChargePage() {
                                             />
                                             <NumberInput
                                             label="FeO"
-                                            value={comp.feo}
+                                            value={comp.feO}
                                             onChange={(v) =>
-                                                updateComponent(comp.id, "feo", v)
+                                                updateComponent(comp.id, "feO", v)
                                             }
                                             />
                                             <NumberInput
                                             label="CaO"
-                                            value={comp.cao}
+                                            value={comp.caO}
                                             onChange={(v) =>
-                                                updateComponent(comp.id, "cao", v)
+                                                updateComponent(comp.id, "caO", v)
                                             }
                                             />
                                             <NumberInput
                                             label="SiO2"
-                                            value={comp.sio2}
+                                            value={comp.siO2}
                                             onChange={(v) =>
-                                                updateComponent(comp.id, "sio2", v)
+                                                updateComponent(comp.id, "siO2", v)
                                             }
                                             />
                                             <NumberInput
                                             label="MgO"
-                                            value={comp.mgo}
+                                            value={comp.mgO}
                                             onChange={(v) =>
-                                                updateComponent(comp.id, "mgo", v)
+                                                updateComponent(comp.id, "mgO", v)
                                             }
                                             />
                                             <NumberInput
                                             label="Al2O3"
-                                            value={comp.al2o3}
+                                            value={comp.al2O3}
                                             onChange={(v) =>
-                                                updateComponent(comp.id, "al2o3", v)
+                                                updateComponent(comp.id, "al2O3", v)
                                             }
                                             />
                                             <NumberInput
                                             label="TiO2"
-                                            value={comp.tio2}
+                                            value={comp.tiO2}
                                             onChange={(v) =>
-                                                updateComponent(comp.id, "tio2", v)
+                                                updateComponent(comp.id, "tiO2", v)
                                             }
                                             />
                                             <NumberInput
@@ -790,9 +741,9 @@ export function SinterChargePage() {
                                             />
                                             <NumberInput
                                             label="MnO"
-                                            value={comp.mno}
+                                            value={comp.mnO}
                                             onChange={(v) =>
-                                                updateComponent(comp.id, "mno", v)
+                                                updateComponent(comp.id, "mnO", v)
                                             }
                                             />
                                         </div>
