@@ -814,6 +814,7 @@ export function SinterChargePage() {
                 }}
                 onDelete={removeFromHistory}
                 onClear={clearHistory}
+                onRemove={removeFromHistory}
             />
         </div>
       </div>
