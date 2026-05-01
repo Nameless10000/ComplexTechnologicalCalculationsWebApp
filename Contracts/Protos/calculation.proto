@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option csharp_namespace = "Contracts.Grpc";
+
+package calculations;
+
+service AglomCalculator {
+  rpc Calculate (CalculationRequest) returns (CalculationReply);
+}
+
+service GasDynamicCalculator {
+  rpc Calculate (CalculationRequest) returns (CalculationReply);
+}
+
+service SlagCalculator {
+  rpc Calculate (CalculationRequest) returns (CalculationReply);
+}
+
+message CalculationRequest {
+  string json = 1;
+}
+
+message CalculationReply {
+  string json = 1;
+}

@@ -1,0 +1,115 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./docker/postgres/init-multiple-databases.sql:/docker-entrypoint-initdb.d/init-multiple-databases.sql:ro
+
+  kafka:
+    image: bitnami/kafka:3.7
+    environment:
+      KAFKA_CFG_NODE_ID: 1
+      KAFKA_CFG_PROCESS_ROLES: broker,controller
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: "true"
+      ALLOW_PLAINTEXT_LISTENER: "yes"
+    ports:
+      - "9092:9092"
+    volumes:
+      - kafka-data:/bitnami/kafka
+
+  aglom-mode-service:
+    build:
+      context: .
+      dockerfile: AglomModeService/Dockerfile
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+      Kestrel__Endpoints__Grpc__Url: http://+:8080
+      Kestrel__EndpointDefaults__Protocols: Http2
+      ExternalServer__AglomDomain: host.docker.internal:5296
+    ports:
+      - "5101:8080"
+
+  gas-dynamic-service:
+    build:
+      context: .
+      dockerfile: GasDynamicService/Dockerfile
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+      Kestrel__Endpoints__Grpc__Url: http://+:8080
+      Kestrel__EndpointDefaults__Protocols: Http2
+    ports:
+      - "5102:8080"
+
+  slag-mode-service:
+    build:
+      context: .
+      dockerfile: SlagModeService/Dockerfile
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+      Kestrel__Endpoints__Grpc__Url: http://+:8080
+      Kestrel__EndpointDefaults__Protocols: Http2
+      ExternalServer__Domain: host.docker.internal:44324
+      Authorization__UserName: Login
+      Authorization__Password: Password
+    ports:
+      - "5103:8080"
+
+  history-writer:
+    build:
+      context: .
+      dockerfile: CalculationHistoryWriter/Dockerfile
+    depends_on:
+      - kafka
+      - postgres
+    environment:
+      ConnectionStrings__AgloConnectionString: Server=postgres; Port=5432; Database=AgloDB; username=postgres; password=mysecretpassword
+      ConnectionStrings__AuthConnectionString: Server=postgres; Port=5432; Database=AuthDB; username=postgres; password=mysecretpassword
+      ConnectionStrings__GasDynamicConnectionString: Server=postgres; Port=5432; Database=GasDynamicDB; username=postgres; password=mysecretpassword
+      ConnectionStrings__MatBalConnectionString: Server=postgres; Port=5432; Database=MatBalDB; username=postgres; password=mysecretpassword
+      ConnectionStrings__SlagModeConnectionString: Server=postgres; Port=5432; Database=SlagModeDB; username=postgres; password=mysecretpassword
+      ConnectionStrings__TBalConnectionString: Server=postgres; Port=5432; Database=TBalDB; username=postgres; password=mysecretpassword
+      ConnectionStrings__TModeConnectionString: Server=postgres; Port=5432; Database=TModeDB; username=postgres; password=mysecretpassword
+      Kafka__BootstrapServers: kafka:9092
+      Kafka__CalculationHistoryTopic: calculation-history
+
+  web:
+    build:
+      context: .
+      dockerfile: Web/Dockerfile
+    depends_on:
+      - postgres
+      - kafka
+      - aglom-mode-service
+      - gas-dynamic-service
+      - slag-mode-service
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__AgloConnectionString: Server=postgres; Port=5432; Database=AgloDB; username=postgres; password=mysecretpassword
+      ConnectionStrings__AuthConnectionString: Server=postgres; Port=5432; Database=AuthDB; username=postgres; password=mysecretpassword
+      ConnectionStrings__GasDynamicConnectionString: Server=postgres; Port=5432; Database=GasDynamicDB; username=postgres; password=mysecretpassword
+      ConnectionStrings__MatBalConnectionString: Server=postgres; Port=5432; Database=MatBalDB; username=postgres; password=mysecretpassword
+      ConnectionStrings__SlagModeConnectionString: Server=postgres; Port=5432; Database=SlagModeDB; username=postgres; password=mysecretpassword
+      ConnectionStrings__TBalConnectionString: Server=postgres; Port=5432; Database=TBalDB; username=postgres; password=mysecretpassword
+      ConnectionStrings__TModeConnectionString: Server=postgres; Port=5432; Database=TModeDB; username=postgres; password=mysecretpassword
+      GrpcServices__AglomMode: http://aglom-mode-service:8080
+      GrpcServices__GasDynamic: http://gas-dynamic-service:8080
+      GrpcServices__SlagMode: http://slag-mode-service:8080
+      Kafka__BootstrapServers: kafka:9092
+      Kafka__CalculationHistoryTopic: calculation-history
+    ports:
+      - "5000:8080"
+
+volumes:
+  postgres-data:
+  kafka-data:
