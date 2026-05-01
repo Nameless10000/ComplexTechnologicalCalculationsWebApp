@@ -1,8 +1,10 @@
 using Core.Contexts;
 using Core.Services;
+using Data.Infrastructure;
 using Data.Mapping;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 
 namespace Data;
 
@@ -57,6 +59,13 @@ public static class StartupConfig
         return services;
     }
 
+    public static IServiceCollection ConfigureKafka(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.Configure<KafkaOptions>(configuration.GetSection("Kafka"));
+
+        return services;
+    }
+
     /// <summary>
     /// Сканирование сервисов для добавления в DI
     /// </summary>
@@ -73,6 +82,7 @@ public static class StartupConfig
             .WithTransientLifetime());
 
         services.AddTransient<SimpleLoggerService>();
+        services.AddSingleton<Services.CalculationHistoryProducerService>();
         
         
         return services;

@@ -5,9 +5,23 @@ __pycache__/
 *.obj
 *.exe
 *.dll
+*.pdb
+*.deps.json
+*.runtimeconfig.json
+*.cache
+*.sourcelink.json
 *.so
 *.class
 *.out
+
+# .NET build artifacts
+bin/
+obj/
+TestResults/
+*.user
+*.suo
+*.rsuser
+*.DotSettings.user
 
 # Dependencies
 node_modules/
@@ -26,6 +40,7 @@ venv/
 # Editors
 .vscode/
 .idea/
+.vs/
 
 # Build directories
 dist/
@@ -37,6 +52,25 @@ target/
 coverage/
 htmlcov/
 *.coverage
+coverage.cobertura.xml
+
+# Frontend package managers
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Docker and local data
+.docker/
+docker-data/
+*.pid
+
+# ASP.NET generated static assets
+*.staticwebassets.runtime.json
+*.staticwebassets.endpoints.json
+staticwebassets.build.json
+staticwebassets.build.json.cache
+staticwebassets.development.json
 
 # System files
 .DS_Store

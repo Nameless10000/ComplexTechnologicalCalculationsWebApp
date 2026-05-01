@@ -1,16 +1,10 @@
-using AutoMapper;
-using BaseLib;
-using BaseLib.AglomMode;
 using BaseLib.AglomMode.Models;
-using BaseLib.SlagMode;
-using BaseLib.SlagMode.Models;
+using Contracts.Grpc;
+using Contracts.History;
 using Core.Contexts;
 using Core.Models.AglomMode;
-using Core.Models.GasDynamic;
-using Core.Models.SlagMode;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System.Security.Claims;
 
@@ -19,9 +13,8 @@ namespace Data.Services;
 public class AglomModeService(
     AgloDBContext dbContext,
     IHttpContextAccessor httpContextAccessor,
-    AglomMode library,
-    IMapper mapper,
-    IConfiguration configuration)
+    AglomCalculator.AglomCalculatorClient calculatorClient,
+    CalculationHistoryProducerService historyProducer)
 {
     private HttpContext _httpContext => httpContextAccessor.HttpContext;
     private int _currentUserId => int.Parse(_httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "0");
@@ -53,16 +46,19 @@ public class AglomModeService(
 
     public async Task<AglomResponseData> Calculate(AglomRequestData requestModel)
     {
-      
-//TODO: в случае ошибки по отдельности добавлять записи в базу
-        var responseFromLib = library.Calculate(requestModel);
-        var request = mapper.Map<AglomRequestData, AglomRequestDB>(requestModel);
-        var response = mapper.Map<AglomResponseData, AglomResponseDB>(responseFromLib);
-        request.AglomResponse = response;
-        request.CreationDateTime = DateTime.UtcNow;
+        requestModel.UserId = _currentUserId;
+        var requestJson = JsonConvert.SerializeObject(requestModel);
+        var grpcResponse = await calculatorClient.CalculateAsync(new CalculationRequest { Json = requestJson });
+        var responseFromLib = JsonConvert.DeserializeObject<AglomResponseData>(grpcResponse.Json) ?? new AglomResponseData();
 
-        await dbContext.AglomRequests.AddAsync(request);
-        await dbContext.SaveChangesAsync();
+        await historyProducer.PublishAsync(new CalculationHistoryEvent
+        {
+            Module = CalculationModules.AglomMode,
+            UserId = _currentUserId,
+            CreationDateTime = DateTime.UtcNow,
+            RequestJson = requestJson,
+            ResponseJson = JsonConvert.SerializeObject(responseFromLib)
+        });
 
         return responseFromLib;
     }

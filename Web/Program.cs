@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using BaseLib.SlagMode.Models;
+using Contracts.Grpc;
 using Core.Contexts;
 using Core.Models.Auth;
 using Data;
@@ -26,10 +27,23 @@ builder.Services.Configure<ExternalServerDomain>(serverDomain);
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.ConfigureDataBaseContexts(conStrings);
+builder.Services.ConfigureKafka(builder.Configuration);
 builder.Services.ScanServices();
 builder.Services.ScanRepos();
-builder.Services.ScanMathLibs();
 builder.Services.ConfigMapper();
+
+builder.Services.AddGrpcClient<AglomCalculator.AglomCalculatorClient>(options =>
+{
+    options.Address = new Uri(builder.Configuration["GrpcServices:AglomMode"]!);
+});
+builder.Services.AddGrpcClient<GasDynamicCalculator.GasDynamicCalculatorClient>(options =>
+{
+    options.Address = new Uri(builder.Configuration["GrpcServices:GasDynamic"]!);
+});
+builder.Services.AddGrpcClient<SlagCalculator.SlagCalculatorClient>(options =>
+{
+    options.Address = new Uri(builder.Configuration["GrpcServices:SlagMode"]!);
+});
 
 builder.Services.AddIdentity<User, Role>(options =>
     {

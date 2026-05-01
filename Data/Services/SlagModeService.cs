@@ -1,14 +1,12 @@
 using System.Security.Claims;
 using AutoMapper;
-using BaseLib;
-using BaseLib.SlagMode;
 using BaseLib.SlagMode.Models;
+using Contracts.Grpc;
+using Contracts.History;
 using Core.Contexts;
-using Core.Models.GasDynamic;
 using Core.Models.SlagMode;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
 namespace Data.Services;
@@ -16,9 +14,9 @@ namespace Data.Services;
 public class SlagModeService(
     SlagModeDBContext dbContext,
     IHttpContextAccessor httpContextAccessor,
-    SlagMode library,
     IMapper mapper,
-    IConfiguration configuration)
+    SlagCalculator.SlagCalculatorClient calculatorClient,
+    CalculationHistoryProducerService historyProducer)
 {
     private HttpContext _httpContext => httpContextAccessor.HttpContext;
     private int _currentUserId => int.Parse(_httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "0");
@@ -60,21 +58,18 @@ public class SlagModeService(
 
     public async Task<ResponseData> Calculate(RequestData requestModel)
     {
-        requestModel.User = new UserAuthData
-        {
-            UserName = configuration["Authorization:UserName"],
-            Password = configuration["Authorization:Password"],
-        };
-        
-//TODO: в случае ошибки по отдельности добавлять записи в базу
-        var responseFromLib = library.Calculate(requestModel);
-        var request = mapper.Map<RequestData,Request>(requestModel);
-        var response = mapper.Map<ResponseData,Response>(responseFromLib);
-        response.Request = request;
-        response.CreationDateTime = DateTime.UtcNow;
+        var requestJson = JsonConvert.SerializeObject(requestModel);
+        var grpcResponse = await calculatorClient.CalculateAsync(new CalculationRequest { Json = requestJson });
+        var responseFromLib = JsonConvert.DeserializeObject<ResponseData>(grpcResponse.Json) ?? new ResponseData();
 
-        await dbContext.Responses.AddAsync(response);
-        await dbContext.SaveChangesAsync();
+        await historyProducer.PublishAsync(new CalculationHistoryEvent
+        {
+            Module = CalculationModules.SlagMode,
+            UserId = _currentUserId,
+            CreationDateTime = DateTime.UtcNow,
+            RequestJson = requestJson,
+            ResponseJson = JsonConvert.SerializeObject(responseFromLib)
+        });
 
         return responseFromLib;
     }

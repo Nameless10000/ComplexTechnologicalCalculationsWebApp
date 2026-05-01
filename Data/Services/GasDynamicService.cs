@@ -1,6 +1,7 @@
 using System.Security.Claims;
-using BaseLib;
 using BaseLib.Models2;
+using Contracts.Grpc;
+using Contracts.History;
 using Core.Contexts;
 using Core.Models.GasDynamic;
 using Microsoft.AspNetCore.Http;
@@ -12,7 +13,8 @@ namespace Data.Services;
 public class GasDynamicService(
     GasDynamicDBContext dbContext,
     IHttpContextAccessor httpContextAccessor,
-    BlastFurnaceSmeltingGasDynamicModeXLLibrary library)
+    GasDynamicCalculator.GasDynamicCalculatorClient calculatorClient,
+    CalculationHistoryProducerService historyProducer)
 {
     private HttpContext _httpContext => httpContextAccessor.HttpContext;
     private int _currentUserId => int.Parse(_httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "0");
@@ -45,19 +47,18 @@ public class GasDynamicService(
 
     public async Task<ResponseModelV2> Calculate(RequestModelV2 requestModel)
     {
-        var response = library.Calculate(requestModel);
+        var requestJson = JsonConvert.SerializeObject(requestModel);
+        var grpcResponse = await calculatorClient.CalculateAsync(new CalculationRequest { Json = requestJson });
+        var response = JsonConvert.DeserializeObject<ResponseModelV2>(grpcResponse.Json) ?? new ResponseModelV2();
 
-        var calculation = new CalculationModel
+        await historyProducer.PublishAsync(new CalculationHistoryEvent
         {
-            OwnerId = _currentUserId,
+            Module = CalculationModules.GasDynamic,
+            UserId = _currentUserId,
             CreationDateTime = DateTime.UtcNow,
-            CreatorID = _currentUserId,
-            SerializedInput = JsonConvert.SerializeObject(requestModel),
-            SerializedOutput = JsonConvert.SerializeObject(response)
-        };
-
-        await dbContext.CalculationModels.AddAsync(calculation);
-        await dbContext.SaveChangesAsync();
+            RequestJson = requestJson,
+            ResponseJson = JsonConvert.SerializeObject(response)
+        });
 
         return response;
     }
