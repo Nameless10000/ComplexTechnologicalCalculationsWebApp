@@ -35,7 +35,8 @@ public class AglomModeController : Controller
     {
         try
         {
-            var calculationResult = await _service.Calculate(requestModel);
+            var calculationResult = new AglomResponseData()/*await _service.Calculate(requestModel)*/;
+            
             return Ok(new { data = calculationResult });
         }
         catch (Exception ex)

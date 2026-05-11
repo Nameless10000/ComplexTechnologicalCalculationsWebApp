@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using AutoMapper;
 using BaseLib.SlagMode.Models;
 using Contracts.Grpc;
 using Core.Contexts;
@@ -6,6 +7,7 @@ using Core.Models.Auth;
 using Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Web.Seed;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -68,18 +70,42 @@ builder.Services.AddIdentity<User, Role>(options =>
 builder.Services.ConfigureApplicationCookie(options =>
 {
     // ����, �� ������� ���������������� ������������, ���� �� �� �����������
-    options.LoginPath = "/Account/Login";
+    options.LoginPath = "/Auth/Authorize";
 
     // ���� ��� ������ ������������ �� �������
-    options.LogoutPath = "/Account/Logout";
+    options.LogoutPath = "/Auth/Logout";
 
     // ������ cookie ���������� ������ ��� HTTP-��������, ����� �� ������ ���� ��������� ����� JavaScript
     options.Cookie.HttpOnly = true;
-    options.Cookie.SameSite = SameSiteMode.None;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
 
     // ����� ����� cookie � ����� ����� ������� ������������ ������������� ������
     options.ExpireTimeSpan = TimeSpan.FromHours(1);
+
+    options.Events.OnRedirectToLogin = context =>
+    {
+        if (IsApiRequest(context.Request))
+        {
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            return Task.CompletedTask;
+        }
+
+        context.Response.Redirect(context.RedirectUri);
+        return Task.CompletedTask;
+    };
+
+    options.Events.OnRedirectToAccessDenied = context =>
+    {
+        if (IsApiRequest(context.Request))
+        {
+            context.Response.StatusCode = StatusCodes.Status403Forbidden;
+            return Task.CompletedTask;
+        }
+
+        context.Response.Redirect(context.RedirectUri);
+        return Task.CompletedTask;
+    };
 
     // ����� �������� ������ ���������:
     // options.Cookie.Name = "MyAppAuthCookie";  // ��� cookie
@@ -114,12 +140,16 @@ try
     var slagDb = scope.ServiceProvider.GetRequiredService<SlagModeDBContext>();
     var tbalDb = scope.ServiceProvider.GetRequiredService<TBalDBContext>();
     var tmodeDb = scope.ServiceProvider.GetRequiredService<TModeDBContext>();
+    var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
 
     agloDB.Database.Migrate();
+    await AglomDefaultPresetSeeder.SeedAsync(agloDB, mapper);
     authDb.Database.Migrate();
     gasDb.Database.Migrate();
+    await GasDynamicDefaultPresetSeeder.SeedAsync(gasDb);
     matDb.Database.Migrate();
     slagDb.Database.Migrate();
+    await SlagModeDefaultPresetSeeder.SeedAsync(slagDb, mapper);
     tbalDb.Database.Migrate();
     tmodeDb.Database.Migrate();
 
@@ -128,6 +158,7 @@ try
 
     app.UseRouting();
 
+    app.UseAuthentication();
     app.UseAuthorization();
 
     app.MapControllerRoute(
@@ -139,4 +170,18 @@ try
 catch (Exception ex)
 {
     Debug.WriteLine(ex.Message);
+}
+
+static bool IsApiRequest(HttpRequest request)
+{
+    if (request.Headers.TryGetValue("X-Forwarded-Prefix", out var prefix)
+        && prefix.Any(value => string.Equals(value, "/api", StringComparison.OrdinalIgnoreCase)))
+    {
+        return true;
+    }
+
+    return request.Path.StartsWithSegments("/Auth")
+           || request.Path.StartsWithSegments("/GasDynamic")
+           || request.Path.StartsWithSegments("/AglomMode")
+           || request.Path.StartsWithSegments("/SlagMode");
 }

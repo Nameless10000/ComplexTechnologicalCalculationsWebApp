@@ -3,13 +3,13 @@ export const API_CONFIG = {
   // Базовый URL API сервера
   BASE_URL: typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_BASE_URL 
     ? import.meta.env.VITE_API_BASE_URL 
-    : 'https://localhost:7206',
+    : '/api',
   
   // Эндпоинты
   ENDPOINTS: {
     AUTH: {
       LOGIN: '/auth/Authorize',
-      REGISTER: '/auth/SignUo',
+      REGISTER: '/auth/SignUp',
       LOGOUT: '/auth/logout',
     },
     GAS_DYNAMIC: {

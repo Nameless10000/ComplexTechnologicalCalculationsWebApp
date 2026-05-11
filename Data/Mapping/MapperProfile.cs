@@ -33,6 +33,7 @@ public class MapperProfile : Profile
         CreateMap<InputChargeComponentsForCalc, ChargeComponent>().ReverseMap();
         CreateMap<InputCokeForCalcs, InputCoke>().ReverseMap();
         CreateMap<InputCastIronForCalc, CastIron>().ReverseMap();
+        CreateMap<InputSlagForCalc, Slag>().ReverseMap();
 
         CreateMap<AglomRequestData, AglomRequestDB>().ReverseMap();
         CreateMap<AglomResponseData, AglomResponseDB>().ReverseMap();

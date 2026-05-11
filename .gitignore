@@ -15,8 +15,8 @@ __pycache__/
 *.out
 
 # .NET build artifacts
-bin/
-obj/
+**/[Bb]in/
+**/[Oo]bj/
 TestResults/
 *.user
 *.suo
@@ -43,8 +43,10 @@ venv/
 .vs/
 
 # Build directories
-dist/
-build/
+/dist/
+/build/
+Металлургическое приложение/dist/
+Металлургическое приложение/build/
 target/
 .gradle/
 .mypy_cache/
@@ -99,3 +101,5 @@ Thumbs.db
 *.tar.bz2
 *.tar.xz
 *.tar.zst
+/BaseLib/bin
+/BaseLib/obj
