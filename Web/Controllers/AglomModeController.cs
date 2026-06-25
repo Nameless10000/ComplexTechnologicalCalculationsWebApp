@@ -1,14 +1,13 @@
 using BaseLib.AglomMode.Models;
-using BaseLib.SlagMode.Models;
 using Data.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web.Controllers;
+
 //[Authorize]
 public class AglomModeController : Controller
 {
-        private readonly AglomModeService _service;
+    private readonly AglomModeService _service;
     private ILogger<AglomModeController> _logger;
 
     public AglomModeController(ILogger<AglomModeController> logger, AglomModeService service)
@@ -16,7 +15,7 @@ public class AglomModeController : Controller
         _logger = logger;
         _service = service;
     }
-  
+
     [HttpGet]
     public async Task<IActionResult> GetPreset()
     {
@@ -27,7 +26,7 @@ public class AglomModeController : Controller
             return Ok(new { message = "Preset not found" });
         }
 
-        return Ok(new {data = preset});
+        return Ok(new { data = preset });
     }
 
     [HttpPost]
@@ -35,8 +34,8 @@ public class AglomModeController : Controller
     {
         try
         {
-            var calculationResult = new AglomResponseData()/*await _service.Calculate(requestModel)*/;
-            
+            var calculationResult = await _service.Calculate(requestModel);
+
             return Ok(new { data = calculationResult });
         }
         catch (Exception ex)
