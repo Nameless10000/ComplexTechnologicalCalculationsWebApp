@@ -5,10 +5,6 @@ class IntermediateCalculations:
     def __init__(self, bf_input: BlastFurnaceInput):
         self.d = bf_input
 
-    # -----------------------------
-    # Основные промежуточные расчеты
-    # -----------------------------
-
     # C5
     def Fe_content(self) -> float:
         """Содержание Fe в чугуне [%]."""
@@ -110,10 +106,6 @@ class IntermediateCalculations:
         """Расчетный удельный расход дутья [м3/т чугуна]."""
         return self.total_dry_blast() * self.C_burned()
 
-    # -----------------------------
-    # Состав фурменного газа
-    # -----------------------------
-
     # C18
     def CO_blast_gas(self) -> float:
         """Состав CO в горновом газе [м3/кг Cf]."""
@@ -165,9 +157,6 @@ class IntermediateCalculations:
             (1 - 0.01 * self.d.oxygen_content)
         )
 
-    # -----------------------------
-    # CO при восстановлении оксидов
-    # -----------------------------
 
     # C21
     def CO_from_oxides(self) -> float:
@@ -198,9 +187,6 @@ class IntermediateCalculations:
         """Степень использования H2 в печи."""
         return 0.88 * self.CO_usage_degree() + 0.1
 
-    # -----------------------------
-    # Объёмы газов при t=1000
-    # -----------------------------
 
     # C24
     def CO_volume_1000(self) -> float:
@@ -241,9 +227,6 @@ class IntermediateCalculations:
             self.CO_usage_degree()
         )
 
-    # -----------------------------
-    # Колошниковый газ
-    # -----------------------------
 
     # C29
     def top_gas_CO2(self) -> float:

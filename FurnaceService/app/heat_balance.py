@@ -21,10 +21,6 @@ class HeatBalanceFull:
         bf_input = self.bf_input
         calc = self.calc
 
-        # -----------------------------
-        # Приходная часть
-        # -----------------------------
-
         self.values["C4"] = (
             calc.C_burned() *
             9800 *
@@ -143,10 +139,6 @@ class HeatBalanceFull:
         bf_input = self.bf_input
         calc = self.calc
 
-        # -----------------------------
-        # Расход тепла
-        # -----------------------------
-
         self.values["C19"] = (
             0.01 *
             calc.Fe_content() *
@@ -236,10 +228,6 @@ class HeatBalanceFull:
             )
         )
 
-        # -----------------------------
-        # Газовые свойства
-        # -----------------------------
-
         self.values["C37"] = (
             1.2938 +
             0.0000895 *
@@ -261,11 +249,6 @@ class HeatBalanceFull:
         )
 
         self.values["C41"] = 1.308
-
-        # -----------------------------
-        # C42 — тепло, уносимое
-        # колошниковым газом
-        # -----------------------------
 
         self.values["C42"] = (
             0.00001 *
@@ -311,10 +294,6 @@ class HeatBalanceFull:
             bf_input.top_gas_temp
         )
 
-        # -----------------------------
-        # C44 — остаток
-        # -----------------------------
-
         self.values["C44"] = (
             self.values["C15"]
             -
@@ -331,10 +310,6 @@ class HeatBalanceFull:
                 self.values["C42"]
             )
         )
-
-        # -----------------------------
-        # C46 — общий расход
-        # -----------------------------
 
         self.values["C46"] = sum([
             self.values["C19"],
