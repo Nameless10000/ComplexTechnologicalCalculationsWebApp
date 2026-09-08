@@ -32,6 +32,9 @@ export const API_CONFIG = {
       LOAD_CALCULATION: '/AglomMode/LoadCalculation',
       GET_HISTORY: '/SlagMode/GetCalculationsHistory',
     },
+    FURNACE: {
+      CALCULATE: '/Furnace/Calculate',
+    },
   },
   
   // Таймауты

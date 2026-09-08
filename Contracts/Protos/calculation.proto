@@ -16,6 +16,10 @@ service SlagCalculator {
   rpc Calculate (CalculationRequest) returns (CalculationReply);
 }
 
+service FurnaceService {
+  rpc Calculate (CalculationRequest) returns (CalculationReply);
+}
+
 message CalculationRequest {
   string json = 1;
 }

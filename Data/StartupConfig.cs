@@ -34,6 +34,7 @@ public static class StartupConfig
             services.AddDbContext<GasDynamicDBContext>(opt => opt.UseInMemoryDatabase(nameof(GasDynamicDBContext)));
             services.AddDbContext<MatBalDBContext>(opt => opt.UseInMemoryDatabase(nameof(MatBalDBContext)));
             services.AddDbContext<SlagModeDBContext>(opt => opt.UseInMemoryDatabase(nameof(SlagModeDBContext)));
+            services.AddDbContext<FurnaceDBContext>(opt => opt.UseInMemoryDatabase(nameof(FurnaceDBContext)));
             services.AddDbContext<TBalDBContext>(opt => opt.UseInMemoryDatabase(nameof(TBalDBContext)));
             services.AddDbContext<TModeDBContext>(opt => opt.UseInMemoryDatabase(nameof(TModeDBContext)));
 
@@ -47,6 +48,7 @@ public static class StartupConfig
         var slagModeConnStr = connStrings[typeof(SlagModeDBContext)];
         var tBalConnStr = connStrings[typeof(TBalDBContext)];
         var tModeConnStr = connStrings[typeof(TModeDBContext)];
+        var furnaceConnStr = connStrings[typeof(FurnaceDBContext)];
 
         services.AddDbContext<AgloDBContext>(opt => opt.UseNpgsql(agloConnStr));
         services.AddDbContext<AuthDBContext>(opt => opt.UseNpgsql(authConnStr));
@@ -55,6 +57,7 @@ public static class StartupConfig
         services.AddDbContext<SlagModeDBContext>(opt => opt.UseNpgsql(slagModeConnStr));
         services.AddDbContext<TBalDBContext>(opt => opt.UseNpgsql(tBalConnStr));
         services.AddDbContext<TModeDBContext>(opt => opt.UseNpgsql(tModeConnStr));
+        services.AddDbContext<FurnaceDBContext>(opt => opt.UseNpgsql(furnaceConnStr));
 
         return services;
     }

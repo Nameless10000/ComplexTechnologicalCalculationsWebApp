@@ -20,6 +20,7 @@ conStrings[typeof(AuthDBContext)] = builder.Configuration.GetConnectionString("A
 conStrings[typeof(GasDynamicDBContext)] = builder.Configuration.GetConnectionString("GasDynamicConnectionString")!;
 conStrings[typeof(MatBalDBContext)] = builder.Configuration.GetConnectionString("MatBalConnectionString")!;
 conStrings[typeof(SlagModeDBContext)] = builder.Configuration.GetConnectionString("SlagModeConnectionString")!;
+conStrings[typeof(FurnaceDBContext)] = builder.Configuration.GetConnectionString("FurnaceConnectionString")!;
 conStrings[typeof(TBalDBContext)] = builder.Configuration.GetConnectionString("TBalConnectionString")!;
 conStrings[typeof(TModeDBContext)] = builder.Configuration.GetConnectionString("TModeConnectionString")!;
 
@@ -45,6 +46,11 @@ builder.Services.AddGrpcClient<GasDynamicCalculator.GasDynamicCalculatorClient>(
 builder.Services.AddGrpcClient<SlagCalculator.SlagCalculatorClient>(options =>
 {
     options.Address = new Uri(builder.Configuration["GrpcServices:SlagMode"]!);
+});
+
+builder.Services.AddGrpcClient<FurnaceService.FurnaceServiceClient>(options =>
+{
+    options.Address = new Uri(builder.Configuration["GrpcServices:FurnaceService"]!);
 });
 
 builder.Services.AddIdentity<User, Role>(options =>
@@ -183,5 +189,6 @@ static bool IsApiRequest(HttpRequest request)
     return request.Path.StartsWithSegments("/Auth")
            || request.Path.StartsWithSegments("/GasDynamic")
            || request.Path.StartsWithSegments("/AglomMode")
-           || request.Path.StartsWithSegments("/SlagMode");
+           || request.Path.StartsWithSegments("/SlagMode")
+           || request.Path.StartsWithSegments("/Furnace");
 }

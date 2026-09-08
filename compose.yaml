@@ -11,7 +11,7 @@ services:
       timeout: 5s
       retries: 10
     ports:
-      - "5432:5432"
+      - "15432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./docker/postgres/init-multiple-databases.sql:/docker-entrypoint-initdb.d/init-multiple-databases.sql:ro
@@ -80,6 +80,15 @@ services:
     ports:
       - "5103:8080"
 
+  furnace-service:
+    build:
+      context: ./FurnaceService
+      dockerfile: Dockerfile
+    environment:
+      PYTHONUNBUFFERED: "1"
+    ports:
+      - "5104:8080"
+
   history-writer:
     build:
       context: .
@@ -95,6 +104,7 @@ services:
       ConnectionStrings__GasDynamicConnectionString: Server=postgres; Port=5432; Database=GasDynamicDB; username=postgres; password=mysecretpassword
       ConnectionStrings__MatBalConnectionString: Server=postgres; Port=5432; Database=MatBalDB; username=postgres; password=mysecretpassword
       ConnectionStrings__SlagModeConnectionString: Server=postgres; Port=5432; Database=SlagModeDB; username=postgres; password=mysecretpassword
+      ConnectionStrings__FurnaceConnectionString: Server=postgres; Port=5432; Database=furnacedb; username=postgres; password=mysecretpassword
       ConnectionStrings__TBalConnectionString: Server=postgres; Port=5432; Database=TBalDB; username=postgres; password=mysecretpassword
       ConnectionStrings__TModeConnectionString: Server=postgres; Port=5432; Database=TModeDB; username=postgres; password=mysecretpassword
       Kafka__BootstrapServers: kafka:9092
@@ -115,6 +125,8 @@ services:
         condition: service_started
       slag-mode-service:
         condition: service_started
+      furnace-service:
+        condition: service_started  
     environment:
       ASPNETCORE_URLS: http://+:8080
       ConnectionStrings__AgloConnectionString: Server=postgres; Port=5432; Database=AgloDB; username=postgres; password=mysecretpassword
@@ -122,11 +134,13 @@ services:
       ConnectionStrings__GasDynamicConnectionString: Server=postgres; Port=5432; Database=GasDynamicDB; username=postgres; password=mysecretpassword
       ConnectionStrings__MatBalConnectionString: Server=postgres; Port=5432; Database=MatBalDB; username=postgres; password=mysecretpassword
       ConnectionStrings__SlagModeConnectionString: Server=postgres; Port=5432; Database=SlagModeDB; username=postgres; password=mysecretpassword
+      ConnectionStrings__FurnaceConnectionString: Server=postgres; Port=5432; Database=furnacedb; username=postgres; password=mysecretpassword
       ConnectionStrings__TBalConnectionString: Server=postgres; Port=5432; Database=TBalDB; username=postgres; password=mysecretpassword
       ConnectionStrings__TModeConnectionString: Server=postgres; Port=5432; Database=TModeDB; username=postgres; password=mysecretpassword
       GrpcServices__AglomMode: http://aglom-mode-service:8080
       GrpcServices__GasDynamic: http://gas-dynamic-service:8080
       GrpcServices__SlagMode: http://slag-mode-service:8080
+      GrpcServices__FurnaceService: http://furnace-service:8080
       Kafka__BootstrapServers: kafka:9092
       Kafka__CalculationHistoryTopic: calculation-history
     ports:

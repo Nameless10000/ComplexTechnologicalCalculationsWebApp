@@ -5,6 +5,7 @@ public static class CalculationModules
     public const string AglomMode = "aglom-mode";
     public const string GasDynamic = "gas-dynamic";
     public const string SlagMode = "slag-mode";
+    public const string Furnace = "furnace";
 }
 
 public sealed class CalculationHistoryEvent
