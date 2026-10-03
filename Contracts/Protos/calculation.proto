@@ -6,18 +6,22 @@ package calculations;
 
 service AglomCalculator {
   rpc Calculate (CalculationRequest) returns (CalculationReply);
+  rpc CheckHealth (HealthRequest) returns (HealthReply);
 }
 
 service GasDynamicCalculator {
   rpc Calculate (CalculationRequest) returns (CalculationReply);
+  rpc CheckHealth (HealthRequest) returns (HealthReply);
 }
 
 service SlagCalculator {
   rpc Calculate (CalculationRequest) returns (CalculationReply);
+  rpc CheckHealth (HealthRequest) returns (HealthReply);
 }
 
 service FurnaceService {
   rpc Calculate (CalculationRequest) returns (CalculationReply);
+  rpc CheckHealth (HealthRequest) returns (HealthReply);
 }
 
 message CalculationRequest {
@@ -36,3 +40,6 @@ message CalculationReply {
   string error_message = 6;
   string correlation_id = 7;
 }
+
+message HealthRequest {}
+message HealthReply { string status = 1; string module = 2; }

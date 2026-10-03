@@ -39,12 +39,23 @@ class AglomCalculatorStub(object):
                 request_serializer=calculation__pb2.CalculationRequest.SerializeToString,
                 response_deserializer=calculation__pb2.CalculationReply.FromString,
                 _registered_method=True)
+        self.CheckHealth = channel.unary_unary(
+                '/calculations.AglomCalculator/CheckHealth',
+                request_serializer=calculation__pb2.HealthRequest.SerializeToString,
+                response_deserializer=calculation__pb2.HealthReply.FromString,
+                _registered_method=True)
 
 
 class AglomCalculatorServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def Calculate(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CheckHealth(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -57,6 +68,11 @@ def add_AglomCalculatorServicer_to_server(servicer, server):
                     servicer.Calculate,
                     request_deserializer=calculation__pb2.CalculationRequest.FromString,
                     response_serializer=calculation__pb2.CalculationReply.SerializeToString,
+            ),
+            'CheckHealth': grpc.unary_unary_rpc_method_handler(
+                    servicer.CheckHealth,
+                    request_deserializer=calculation__pb2.HealthRequest.FromString,
+                    response_serializer=calculation__pb2.HealthReply.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -96,6 +112,33 @@ class AglomCalculator(object):
             metadata,
             _registered_method=True)
 
+    @staticmethod
+    def CheckHealth(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/calculations.AglomCalculator/CheckHealth',
+            calculation__pb2.HealthRequest.SerializeToString,
+            calculation__pb2.HealthReply.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
 
 class GasDynamicCalculatorStub(object):
     """Missing associated documentation comment in .proto file."""
@@ -111,12 +154,23 @@ class GasDynamicCalculatorStub(object):
                 request_serializer=calculation__pb2.CalculationRequest.SerializeToString,
                 response_deserializer=calculation__pb2.CalculationReply.FromString,
                 _registered_method=True)
+        self.CheckHealth = channel.unary_unary(
+                '/calculations.GasDynamicCalculator/CheckHealth',
+                request_serializer=calculation__pb2.HealthRequest.SerializeToString,
+                response_deserializer=calculation__pb2.HealthReply.FromString,
+                _registered_method=True)
 
 
 class GasDynamicCalculatorServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def Calculate(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CheckHealth(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -129,6 +183,11 @@ def add_GasDynamicCalculatorServicer_to_server(servicer, server):
                     servicer.Calculate,
                     request_deserializer=calculation__pb2.CalculationRequest.FromString,
                     response_serializer=calculation__pb2.CalculationReply.SerializeToString,
+            ),
+            'CheckHealth': grpc.unary_unary_rpc_method_handler(
+                    servicer.CheckHealth,
+                    request_deserializer=calculation__pb2.HealthRequest.FromString,
+                    response_serializer=calculation__pb2.HealthReply.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -168,6 +227,33 @@ class GasDynamicCalculator(object):
             metadata,
             _registered_method=True)
 
+    @staticmethod
+    def CheckHealth(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/calculations.GasDynamicCalculator/CheckHealth',
+            calculation__pb2.HealthRequest.SerializeToString,
+            calculation__pb2.HealthReply.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
 
 class SlagCalculatorStub(object):
     """Missing associated documentation comment in .proto file."""
@@ -183,12 +269,23 @@ class SlagCalculatorStub(object):
                 request_serializer=calculation__pb2.CalculationRequest.SerializeToString,
                 response_deserializer=calculation__pb2.CalculationReply.FromString,
                 _registered_method=True)
+        self.CheckHealth = channel.unary_unary(
+                '/calculations.SlagCalculator/CheckHealth',
+                request_serializer=calculation__pb2.HealthRequest.SerializeToString,
+                response_deserializer=calculation__pb2.HealthReply.FromString,
+                _registered_method=True)
 
 
 class SlagCalculatorServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def Calculate(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CheckHealth(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -201,6 +298,11 @@ def add_SlagCalculatorServicer_to_server(servicer, server):
                     servicer.Calculate,
                     request_deserializer=calculation__pb2.CalculationRequest.FromString,
                     response_serializer=calculation__pb2.CalculationReply.SerializeToString,
+            ),
+            'CheckHealth': grpc.unary_unary_rpc_method_handler(
+                    servicer.CheckHealth,
+                    request_deserializer=calculation__pb2.HealthRequest.FromString,
+                    response_serializer=calculation__pb2.HealthReply.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -240,6 +342,33 @@ class SlagCalculator(object):
             metadata,
             _registered_method=True)
 
+    @staticmethod
+    def CheckHealth(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/calculations.SlagCalculator/CheckHealth',
+            calculation__pb2.HealthRequest.SerializeToString,
+            calculation__pb2.HealthReply.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
 
 class FurnaceServiceStub(object):
     """Missing associated documentation comment in .proto file."""
@@ -255,12 +384,23 @@ class FurnaceServiceStub(object):
                 request_serializer=calculation__pb2.CalculationRequest.SerializeToString,
                 response_deserializer=calculation__pb2.CalculationReply.FromString,
                 _registered_method=True)
+        self.CheckHealth = channel.unary_unary(
+                '/calculations.FurnaceService/CheckHealth',
+                request_serializer=calculation__pb2.HealthRequest.SerializeToString,
+                response_deserializer=calculation__pb2.HealthReply.FromString,
+                _registered_method=True)
 
 
 class FurnaceServiceServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def Calculate(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CheckHealth(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -273,6 +413,11 @@ def add_FurnaceServiceServicer_to_server(servicer, server):
                     servicer.Calculate,
                     request_deserializer=calculation__pb2.CalculationRequest.FromString,
                     response_serializer=calculation__pb2.CalculationReply.SerializeToString,
+            ),
+            'CheckHealth': grpc.unary_unary_rpc_method_handler(
+                    servicer.CheckHealth,
+                    request_deserializer=calculation__pb2.HealthRequest.FromString,
+                    response_serializer=calculation__pb2.HealthReply.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -302,6 +447,33 @@ class FurnaceService(object):
             '/calculations.FurnaceService/Calculate',
             calculation__pb2.CalculationRequest.SerializeToString,
             calculation__pb2.CalculationReply.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def CheckHealth(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/calculations.FurnaceService/CheckHealth',
+            calculation__pb2.HealthRequest.SerializeToString,
+            calculation__pb2.HealthReply.FromString,
             options,
             channel_credentials,
             insecure,

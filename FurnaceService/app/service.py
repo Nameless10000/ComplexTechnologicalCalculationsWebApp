@@ -6,6 +6,9 @@ from app.calculation import calculate
 
 
 class FurnaceCalculationGrpcService(calculation_pb2_grpc.FurnaceServiceServicer):
+    def CheckHealth(self, request, context):
+        return calculation_pb2.HealthReply(status="Serving", module="furnace")
+
     def Calculate(self, request, context):
         reply = calculation_pb2.CalculationReply(request_id=request.request_id, module="furnace", correlation_id=request.correlation_id)
         try:

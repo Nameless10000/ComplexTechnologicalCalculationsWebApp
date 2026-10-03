@@ -16,7 +16,7 @@
 | 7. Сравнение сохранённых расчётов | Реализовано | /calculations/compare: различия входов/результатов, B−A и %, нулевая база → null. Только собственные расчёты одного типа; 4 теста прошли. |
 | 8. Связанные расчёты Aglom → Slag | Реализовано | Mapper итогового состава и endpoint transition/slag-mode; сохраняет целевой расход и остальные вводы, не запускает расчёт. Два теста прошли. UI следующим этапом. |
 | 9. PDF/Excel export | Реализовано | /calculations/{id}/export?format=pdf|xlsx. Пользователь, дата UTC, модуль, ID, входы, результаты и correlationId. Реальные PDF/XLSX проверены целевым тестом. |
-| 10. Health Checks PostgreSQL, Kafka, gRPC | Запланировано | Liveness/readiness и тесты отказов. |
+| 10. Health Checks PostgreSQL, Kafka, gRPC | Реализовано | /health/live, /health/ready, /health; JSON с состояниями. Kafka unavailable → Degraded (Outbox), БД/gRPC unavailable → Unhealthy. Реальная проверка следующим этапом. |
 | 11. Транзакционный Outbox и worker с retry/backoff | Реализовано | История + событие одной транзакцией; SKIP LOCKED, подтверждение Kafka, retry/backoff; EventId уникален в БД модулей; consumer повторяет тот же offset. |
 | 12. Unit/integration tests и стабилизация | Запланировано | Существующий xUnit; реальные БД/Kafka по доступности среды. |
 | 13. Docker Compose: сборка, запуск, миграции, health/gRPC | Запланировано | Не удалять пользовательские volumes. |

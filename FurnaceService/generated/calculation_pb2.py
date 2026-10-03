@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11\x63\x61lculation.proto\x12\x0c\x63\x61lculations\"^\n\x12\x43\x61lculationRequest\x12\x0c\n\x04json\x18\x01 \x01(\t\x12\x12\n\nrequest_id\x18\x02 \x01(\t\x12\x0e\n\x06module\x18\x03 \x01(\t\x12\x16\n\x0e\x63orrelation_id\x18\x04 \x01(\t\"\x97\x01\n\x10\x43\x61lculationReply\x12\x0c\n\x04json\x18\x01 \x01(\t\x12\x12\n\nrequest_id\x18\x02 \x01(\t\x12\x0e\n\x06module\x18\x03 \x01(\t\x12\x0e\n\x06status\x18\x04 \x01(\t\x12\x12\n\nerror_code\x18\x05 \x01(\t\x12\x15\n\rerror_message\x18\x06 \x01(\t\x12\x16\n\x0e\x63orrelation_id\x18\x07 \x01(\t2`\n\x0f\x41glomCalculator\x12M\n\tCalculate\x12 .calculations.CalculationRequest\x1a\x1e.calculations.CalculationReply2e\n\x14GasDynamicCalculator\x12M\n\tCalculate\x12 .calculations.CalculationRequest\x1a\x1e.calculations.CalculationReply2_\n\x0eSlagCalculator\x12M\n\tCalculate\x12 .calculations.CalculationRequest\x1a\x1e.calculations.CalculationReply2_\n\x0e\x46urnaceService\x12M\n\tCalculate\x12 .calculations.CalculationRequest\x1a\x1e.calculations.CalculationReplyB\x11\xaa\x02\x0e\x43ontracts.Grpcb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11\x63\x61lculation.proto\x12\x0c\x63\x61lculations\"^\n\x12\x43\x61lculationRequest\x12\x0c\n\x04json\x18\x01 \x01(\t\x12\x12\n\nrequest_id\x18\x02 \x01(\t\x12\x0e\n\x06module\x18\x03 \x01(\t\x12\x16\n\x0e\x63orrelation_id\x18\x04 \x01(\t\"\x97\x01\n\x10\x43\x61lculationReply\x12\x0c\n\x04json\x18\x01 \x01(\t\x12\x12\n\nrequest_id\x18\x02 \x01(\t\x12\x0e\n\x06module\x18\x03 \x01(\t\x12\x0e\n\x06status\x18\x04 \x01(\t\x12\x12\n\nerror_code\x18\x05 \x01(\t\x12\x15\n\rerror_message\x18\x06 \x01(\t\x12\x16\n\x0e\x63orrelation_id\x18\x07 \x01(\t\"\x0f\n\rHealthRequest\"-\n\x0bHealthReply\x12\x0e\n\x06status\x18\x01 \x01(\t\x12\x0e\n\x06module\x18\x02 \x01(\t2\xa7\x01\n\x0f\x41glomCalculator\x12M\n\tCalculate\x12 .calculations.CalculationRequest\x1a\x1e.calculations.CalculationReply\x12\x45\n\x0b\x43heckHealth\x12\x1b.calculations.HealthRequest\x1a\x19.calculations.HealthReply2\xac\x01\n\x14GasDynamicCalculator\x12M\n\tCalculate\x12 .calculations.CalculationRequest\x1a\x1e.calculations.CalculationReply\x12\x45\n\x0b\x43heckHealth\x12\x1b.calculations.HealthRequest\x1a\x19.calculations.HealthReply2\xa6\x01\n\x0eSlagCalculator\x12M\n\tCalculate\x12 .calculations.CalculationRequest\x1a\x1e.calculations.CalculationReply\x12\x45\n\x0b\x43heckHealth\x12\x1b.calculations.HealthRequest\x1a\x19.calculations.HealthReply2\xa6\x01\n\x0e\x46urnaceService\x12M\n\tCalculate\x12 .calculations.CalculationRequest\x1a\x1e.calculations.CalculationReply\x12\x45\n\x0b\x43heckHealth\x12\x1b.calculations.HealthRequest\x1a\x19.calculations.HealthReplyB\x11\xaa\x02\x0e\x43ontracts.Grpcb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -36,12 +36,16 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_CALCULATIONREQUEST']._serialized_end=129
   _globals['_CALCULATIONREPLY']._serialized_start=132
   _globals['_CALCULATIONREPLY']._serialized_end=283
-  _globals['_AGLOMCALCULATOR']._serialized_start=285
-  _globals['_AGLOMCALCULATOR']._serialized_end=381
-  _globals['_GASDYNAMICCALCULATOR']._serialized_start=383
-  _globals['_GASDYNAMICCALCULATOR']._serialized_end=484
-  _globals['_SLAGCALCULATOR']._serialized_start=486
-  _globals['_SLAGCALCULATOR']._serialized_end=581
-  _globals['_FURNACESERVICE']._serialized_start=583
-  _globals['_FURNACESERVICE']._serialized_end=678
+  _globals['_HEALTHREQUEST']._serialized_start=285
+  _globals['_HEALTHREQUEST']._serialized_end=300
+  _globals['_HEALTHREPLY']._serialized_start=302
+  _globals['_HEALTHREPLY']._serialized_end=347
+  _globals['_AGLOMCALCULATOR']._serialized_start=350
+  _globals['_AGLOMCALCULATOR']._serialized_end=517
+  _globals['_GASDYNAMICCALCULATOR']._serialized_start=520
+  _globals['_GASDYNAMICCALCULATOR']._serialized_end=692
+  _globals['_SLAGCALCULATOR']._serialized_start=695
+  _globals['_SLAGCALCULATOR']._serialized_end=861
+  _globals['_FURNACESERVICE']._serialized_start=864
+  _globals['_FURNACESERVICE']._serialized_end=1030
 # @@protoc_insertion_point(module_scope)

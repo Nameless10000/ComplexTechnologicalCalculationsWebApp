@@ -10,6 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using Web.Seed;
 using Web.Infrastructure;
 using Data.Infrastructure;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
 QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community; // Educational project.
@@ -18,6 +20,10 @@ QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community; // Ed
 builder.Services.AddControllersWithViews(options => options.Filters.Add<ApiResultFilter>());
 builder.Services.AddExceptionHandler<ApiExceptionHandler>();
 builder.Services.AddProblemDetails();
+builder.Services.AddHealthChecks()
+    .AddCheck<PostgreSqlHealthCheck>("postgresql", tags: ["ready"], timeout: TimeSpan.FromSeconds(5))
+    .AddCheck<KafkaHealthCheck>("kafka", tags: ["ready"], timeout: TimeSpan.FromSeconds(5))
+    .AddCheck<CalculationGrpcHealthCheck>("grpc", tags: ["ready"], timeout: TimeSpan.FromSeconds(15));
 
 var conStrings = new Dictionary<Type, string>();
 conStrings[typeof(AgloDBContext)] = builder.Configuration.GetConnectionString("AgloConnectionString")!;
@@ -161,6 +167,7 @@ try
     var gasDb = scope.ServiceProvider.GetRequiredService<GasDynamicDBContext>();
     var matDb = scope.ServiceProvider.GetRequiredService<MatBalDBContext>();
     var slagDb = scope.ServiceProvider.GetRequiredService<SlagModeDBContext>();
+    var furnaceDb = scope.ServiceProvider.GetRequiredService<FurnaceDBContext>();
     var tbalDb = scope.ServiceProvider.GetRequiredService<TBalDBContext>();
     var tmodeDb = scope.ServiceProvider.GetRequiredService<TModeDBContext>();
     var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
@@ -175,6 +182,7 @@ try
     await SlagModeDefaultPresetSeeder.SeedAsync(slagDb, mapper);
     tbalDb.Database.Migrate();
     tmodeDb.Database.Migrate();
+    furnaceDb.Database.Migrate();
 
     app.UseHttpsRedirection();
     app.UseStaticFiles();
@@ -183,6 +191,18 @@ try
 
     app.UseAuthentication();
     app.UseAuthorization();
+    HealthCheckOptions HealthOptions(bool live) => new()
+    {
+        Predicate = live ? _ => false : registration => registration.Tags.Contains("ready"),
+        ResponseWriter = async (context, report) => await context.Response.WriteAsJsonAsync(new
+        {
+            status = report.Status.ToString(),
+            checks = report.Entries.Select(x => new { name = x.Key, status = x.Value.Status.ToString(), description = x.Value.Description, durationMs = x.Value.Duration.TotalMilliseconds })
+        })
+    };
+    app.MapHealthChecks("/health", HealthOptions(false));
+    app.MapHealthChecks("/health/ready", HealthOptions(false));
+    app.MapHealthChecks("/health/live", HealthOptions(true));
 
     app.MapControllerRoute(
         name: "default",
@@ -208,5 +228,7 @@ static bool IsApiRequest(HttpRequest request)
            || request.Path.StartsWithSegments("/GasDynamic")
            || request.Path.StartsWithSegments("/AglomMode")
            || request.Path.StartsWithSegments("/SlagMode")
-           || request.Path.StartsWithSegments("/Furnace");
+           || request.Path.StartsWithSegments("/Furnace")
+           || request.Path.StartsWithSegments("/calculations")
+           || request.Path.StartsWithSegments("/presets");
 }
