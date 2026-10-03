@@ -117,8 +117,6 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      kafka:
-        condition: service_healthy
       aglom-mode-service:
         condition: service_started
       gas-dynamic-service:

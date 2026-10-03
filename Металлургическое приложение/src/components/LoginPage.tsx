@@ -83,9 +83,6 @@ export function LoginPage({ onLogin }: LoginPageProps) {
           </div>
           <h1 className="text-3xl text-white mb-2">Металлургические расчеты</h1>
           <p className="text-slate-400">Инженерная платформа для профессионалов</p>
-          <p className="text-xs text-slate-500 mt-2">
-            Тестовый аккаунт: admin@mail.ru / admin
-          </p>
         </div>
 
         {error && (

@@ -34,6 +34,8 @@ class CalculationTest(unittest.TestCase):
         try:
             with grpc.insecure_channel(f"127.0.0.1:{port}") as channel:
                 client = calculation_pb2_grpc.FurnaceServiceStub(channel)
+                health = client.CheckHealth(calculation_pb2.HealthRequest(), timeout=5)
+                self.assertEqual((health.status, health.module), ("Serving", "furnace"))
                 reply = client.Calculate(calculation_pb2.CalculationRequest(json=json.dumps(self.data), request_id="req", correlation_id="cor", module="furnace"), timeout=5)
                 self.assertEqual((reply.status, reply.request_id, reply.correlation_id), ("Succeeded", "req", "cor"))
                 reply = client.Calculate(calculation_pb2.CalculationRequest(json="{}", request_id="bad"), timeout=5)

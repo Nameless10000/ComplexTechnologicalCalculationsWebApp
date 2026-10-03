@@ -14,11 +14,11 @@
 | 5. История: correlationId, статус сохранения, sourceCalculationId | Реализовано | Общий журнал в AuthDB, API calculations, сохранение Pending/Saved и метаданных в headers без изменения успешных ответов. |
 | 6. Presets: модель, миграции, CRUD, ownership | Реализовано | /presets CRUD, имя/описание/JSON; уникальность имени внутри пользователя и модуля, ownership. Один целевой тест прошёл. |
 | 7. Сравнение сохранённых расчётов | Реализовано | /calculations/compare: различия входов/результатов, B−A и %, нулевая база → null. Только собственные расчёты одного типа; 4 теста прошли. |
-| 8. Связанные расчёты Aglom → Slag | Реализовано | Mapper итогового состава и endpoint transition/slag-mode; сохраняет целевой расход и остальные вводы, не запускает расчёт. Два теста прошли. UI следующим этапом. |
+| 8. Связанные расчёты Aglom → Slag | Реализовано | Mapper итогового состава и endpoint transition/slag-mode; сохраняет целевой расход и остальные вводы, не запускает расчёт. Два теста и реальный endpoint на сохранённом fixture прошли; переход подключён к UI. |
 | 9. PDF/Excel export | Реализовано | /calculations/{id}/export?format=pdf|xlsx. Пользователь, дата UTC, модуль, ID, входы, результаты и correlationId. Реальные PDF/XLSX проверены целевым тестом. |
-| 10. Health Checks PostgreSQL, Kafka, gRPC | Реализовано | /health/live, /health/ready, /health; JSON с состояниями. Kafka unavailable → Degraded (Outbox), БД/gRPC unavailable → Unhealthy. Реальная проверка следующим этапом. |
+| 10. Health Checks PostgreSQL, Kafka, gRPC | Реализовано | /health/live, /health/ready, /health; реальные проверки Healthy, Kafka down → Degraded, Furnace gRPC down → readiness 503 при liveness 200. |
 | 11. Транзакционный Outbox и worker с retry/backoff | Реализовано | История + событие одной транзакцией; SKIP LOCKED, подтверждение Kafka, retry/backoff; EventId уникален в БД модулей; consumer повторяет тот же offset. |
-| 12. Unit/integration tests и стабилизация | В работе | 22 .NET + 3 Python проходят. Реальные API/presets/history/ownership/export и отказ/восстановление Kafka прошли. Исправлено сравнение JSON 1 и 1.0; 4 целевых теста и повторная проверка endpoint прошли. |
+| 12. Unit/integration tests и стабилизация | Реализовано | 22 .NET + 3 Python проходят. Реальные API/presets/history/ownership/export и отказ/восстановление Kafka прошли; без дублей (5 событий/5 записей). UI: вход, шаблон, расчёт, история, сравнение. Исправлено сравнение JSON 1 и 1.0; 4 целевых теста и endpoint прошли. scripts/smoke.py для повторения. Три ExternalApi-теста исключены по указанию пользователя. |
 | 13. Docker Compose: сборка, запуск, миграции, health/gRPC | Реализовано | Все сервисы собраны/запущены в отдельном codex-ctc-check; все миграции применились, health Healthy. Пользовательские volumes сохранены. |
 | 14. Документация API/gRPC и демонстрационные сценарии | Запланировано | Только реально реализованные контракты. |
 | 15. Frontend: шаблоны, история, сравнение, экспорт, связанные расчёты, статус | Реализовано | Инструменты на четырёх рабочих формах и экран сохранённых расчётов; реальная cookie-авторизация, status polling с ограничением. Vite build проходит. |
@@ -37,3 +37,6 @@
 
 
 - 03.10.2026: миграции AuthDB и четырёх расчётных БД сгенерированы и просмотрены; unit-сценарий отказа/восстановления Kafka проходит. PostgreSQL проверка впереди.
+
+- 03.10.2026: итоговая интеграция в отдельном Compose-проекте codex-ctc-check; миграции на свежем PostgreSQL, реальные gRPC/HTTP/Kafka, PDF/XLSX и авторизация работают. При Kafka down расчёт успешен, история Pending; после восстановления Saved, дубликатов нет. Недоступный Furnace даёт readiness 503. Web запускается без зависимости от Kafka в Compose, поскольку события сохраняются в Outbox. Формулы Furnace не изменены.
+- 03.10.2026: удалена устаревшая подсказка фиктивного admin-аккаунта с формы входа. Реальная регистрация и cookie-сессия проверены в API и браузере; CodeGraph синхронизирован после доработок.
