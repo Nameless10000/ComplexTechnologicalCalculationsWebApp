@@ -11,6 +11,9 @@ namespace Web.Controllers;
 [Authorize, ApiController, Route("calculations")]
 public class CalculationsController(AuthDBContext db) : ControllerBase
 {
+    [HttpGet("compare")]
+    public async Task<IActionResult> Compare([FromQuery] Guid leftId, [FromQuery] Guid rightId,
+        [FromServices] Data.Services.CalculationComparisonService service) => Ok(service.Compare(await Find(leftId), await Find(rightId)));
     private int UserId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
     private IQueryable<CalculationRecord> Own => db.CalculationHistory.AsNoTracking().Where(x => x.UserId == UserId);
 
