@@ -40,7 +40,7 @@ public class AglomModeService(
     {
         var calculations = GetCalculationsQueryable();
 
-        var preset = await calculations.FirstOrDefaultAsync();
+        var preset = await calculations.FirstOrDefaultAsync() ?? await GetCalculationsQueryable(0).FirstOrDefaultAsync();
 
         return preset;
     }
@@ -65,7 +65,7 @@ public class AglomModeService(
         return responseFromLib;
     }
 
-    private IQueryable<AglomRequestDB> GetCalculationsQueryable()
+    private IQueryable<AglomRequestDB> GetCalculationsQueryable(int? userId = null)
     {
         return dbContext.AglomRequests
             .Include(x => x.ZolaOfCocksick)
@@ -74,7 +74,7 @@ public class AglomModeService(
             .Include(x => x.ShihtaComponents)
             .Include(x => x.AglomResponse)
             .Include(x => x.StartEnter)
-            .Where(x => x.CreatorID == _currentUserId)
+            .Where(x => x.CreatorID == (userId ?? _currentUserId))
             .OrderByDescending(x => x.CreationDateTime)
             .AsQueryable();
     }

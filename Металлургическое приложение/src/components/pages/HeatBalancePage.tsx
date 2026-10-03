@@ -1,3 +1,4 @@
+import { CalculationTools } from '../CalculationTools';
 import { useState } from "react";
 import {
   Card,
@@ -200,6 +201,7 @@ export function HeatBalancePage() {
 
   return (
     <div className="space-y-6">
+      <CalculationTools module="furnace" inputs={inputs} onLoad={value => { setInputs({ ...inputs, ...value }); }} />
       {/* Заголовок */}
       <div className="flex items-center gap-3 mb-2">
         <Flame className="size-8 text-orange-500" />

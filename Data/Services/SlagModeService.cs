@@ -52,7 +52,7 @@ public class SlagModeService(
     {
         var calculations = GetCalculationsQueryable();
 
-        var preset = await calculations.FirstOrDefaultAsync();
+        var preset = await calculations.FirstOrDefaultAsync() ?? await GetCalculationsQueryable(0).FirstOrDefaultAsync();
 
         return preset;
     }
@@ -76,14 +76,14 @@ public class SlagModeService(
         return responseFromLib;
     }
 
-    private IQueryable<Response> GetCalculationsQueryable()
+    private IQueryable<Response> GetCalculationsQueryable(int? userId = null)
     {
         return dbContext.Responses
             .Include(x => x.Request.CastIron)
             .Include(x => x.Request.Slag)
             .Include(x => x.Request.InputCoke)
             .Include(x => x.Request.Components)
-            .Where(x => x.CreatorID == _currentUserId)
+            .Where(x => x.CreatorID == (userId ?? _currentUserId))
             .OrderByDescending(x => x.CreationDateTime)
             .AsQueryable();
     }

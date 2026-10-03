@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using System.Text.Json;
 using Data.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web.Controllers;
 
+[Authorize]
 public class FurnaceController : Controller
 {
     private readonly FurnaceCalculationService _service;

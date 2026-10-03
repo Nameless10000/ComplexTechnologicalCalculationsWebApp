@@ -16,6 +16,7 @@ interface LayoutProps {
 }
 
 const navItems = [
+  { path: '/calculations', label: 'Сохранённые расчёты', icon: Layers },
   { path: '/gas-dynamic', label: 'Газодинамический режим', icon: Wind },
   { path: '/heat-balance', label: 'Теплообмен в печи', icon: Flame },
   { path: '/mass-balance', label: 'Массовый баланс', icon: Scale },

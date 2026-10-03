@@ -1,10 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using BaseLib.SlagMode.Models;
 using Data.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web.Controllers;
 //[Authorize]
+[Authorize]
 public class SlagModeController : Controller
 {
         private readonly SlagModeService _service;

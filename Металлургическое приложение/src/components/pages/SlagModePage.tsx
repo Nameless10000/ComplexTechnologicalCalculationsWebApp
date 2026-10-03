@@ -1,3 +1,5 @@
+import { featureApi, camelInput } from '../../services/calculation-features';
+import { CalculationTools } from '../CalculationTools';
 import { useState, useEffect } from "react";
 import {
   Card,
@@ -103,6 +105,7 @@ interface RequestData {
 export function SlagModePage() {
 
   useEffect(() => {
+    if (new URLSearchParams(window.location.search).has('calculationId')) return;
         slagModeService.getPreset()
           .then(({data}) => {
             
@@ -110,7 +113,11 @@ export function SlagModePage() {
             setCastIronData(data.request.castIron);
             setSlagData(data.request.slag);
             setChargeComponents(data.request.components);
-          })
+            const sourceId = new URLSearchParams(window.location.search).get('sourceCalculationId');
+            if (sourceId) featureApi.transition(sourceId, { coke: data.request.inputCoke, iron: data.request.castIron, slag: data.request.slag, components: data.request.components })
+              .then(row => { const value=camelInput(row.input); setCokeData(value.coke); setCastIronData(value.iron); setSlagData(value.slag); setChargeComponents(value.components); setCalculationError('Поля перенесены из Aglom. Проверьте расход агломерата, кокс, чугун и шлак перед расчётом.'); })
+              .catch(error => setCalculationError(error.message));
+          }).catch(error => setCalculationError(error.message))
   }, []);
 
   // Состояния для параметров кокса
@@ -310,6 +317,7 @@ export function SlagModePage() {
 
   return (
     <div className="space-y-6">
+      <CalculationTools module="slag-mode" inputs={{ coke: cokeData, iron: castIronData, slag: slagData, components: chargeComponents }} onLoad={value => { if(value.coke) setCokeData(value.coke); if(value.iron) setCastIronData(value.iron); if(value.slag) setSlagData(value.slag); if(value.components) setChargeComponents(value.components); }} />
       <div>
         <div className="flex items-center gap-3 mb-2">
           <Droplets className="size-8 text-primary" />

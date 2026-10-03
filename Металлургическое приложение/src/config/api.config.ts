@@ -30,7 +30,7 @@ export const API_CONFIG = {
       CALCULATE: '/AglomMode/Calculate',
       GET_PRESET: '/AglomMode/GetPreset',
       LOAD_CALCULATION: '/AglomMode/LoadCalculation',
-      GET_HISTORY: '/SlagMode/GetCalculationsHistory',
+      GET_HISTORY: '/AglomMode/GetCalculationsHistory',
     },
     FURNACE: {
       CALCULATE: '/Furnace/Calculate',
@@ -40,13 +40,4 @@ export const API_CONFIG = {
   // Таймауты
   TIMEOUT: 30000, // 30 секунд
   
-  // Тестовые учетные данные (для обхода сервера)
-  TEST_CREDENTIALS: {
-    email: 'admin@mail.ru',
-    password: 'admin',
-    userData: {
-      username: 'Admin',
-      email: 'admin@mail.ru',
-    }
-  }
 };

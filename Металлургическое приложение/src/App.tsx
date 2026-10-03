@@ -8,6 +8,8 @@ import { MassBalancePage } from './components/pages/MassBalancePage';
 import { ReductionPage } from './components/pages/ReductionPage';
 import { SlagModePage } from './components/pages/SlagModePage';
 import { SinterChargePage } from './components/pages/SinterChargePage';
+import { SavedCalculationsPage } from './components/pages/SavedCalculationsPage';
+import { authService } from './services/api.service';
 import { ThemeProvider } from './components/ThemeProvider';
 
 interface User {
@@ -20,12 +22,8 @@ export default function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Проверка сохраненной сессии
-    const savedUser = localStorage.getItem('user');
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
-    }
-    setLoading(false);
+    authService.me().then(userData => { setUser(userData); localStorage.setItem('user', JSON.stringify(userData)); })
+      .catch(() => { localStorage.removeItem('user'); setUser(null); }).finally(() => setLoading(false));
   }, []);
 
   const handleLogin = (userData: User) => {
@@ -33,7 +31,8 @@ export default function App() {
     localStorage.setItem('user', JSON.stringify(userData));
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await authService.logout();
     setUser(null);
     localStorage.removeItem('user');
   };
@@ -67,6 +66,7 @@ export default function App() {
                 <Layout user={user} onLogout={handleLogout}>
                   <Routes>
                     <Route path="/" element={<Navigate to="/gas-dynamic" replace />} />
+                    <Route path="/calculations" element={<SavedCalculationsPage />} />
                     <Route path="/gas-dynamic" element={<GasDynamicPage />} />
                     <Route path="/heat-balance" element={<HeatBalancePage />} />
                     <Route path="/mass-balance" element={<MassBalancePage />} />

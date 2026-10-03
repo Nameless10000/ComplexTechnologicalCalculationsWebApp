@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using BaseLib.Models2;
 using Data.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -5,6 +6,7 @@ using Newtonsoft.Json;
 
 namespace Web.Controllers;
 
+[Authorize]
 public class GasDynamicController : Controller
 {
     private readonly GasDynamicService _service;

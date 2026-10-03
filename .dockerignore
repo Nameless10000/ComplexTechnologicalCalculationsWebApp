@@ -1,0 +1,16 @@
+.git
+.vs
+.idea
+.codegraph
+.codex-tools
+.codex-doc-work
+**/bin
+**/obj
+**/node_modules
+**/build
+**/dist
+**/__pycache__
+Doc
+TestResults
+*.user
+*.log

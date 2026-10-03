@@ -1,0 +1,71 @@
+import { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { featureApi, camelInput } from '../services/calculation-features';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+
+export function CalculationTools({ module, inputs, onLoad }: { module: string; inputs: any; onLoad: (input: any) => void }) {
+  const [presets, setPresets] = useState<any[]>([]);
+  const [selected, setSelected] = useState('');
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [receipt, setReceipt] = useState<any>(null);
+  const loadRef = useRef(onLoad); loadRef.current = onLoad;
+  const refresh = async () => setPresets(await featureApi.presets(module));
+  const run = async (operation: () => Promise<void>) => {
+    setBusy(true); setError(''); setMessage('');
+    try { await operation(); } catch (e: any) { setError(e.message || 'Не удалось выполнить действие.'); } finally { setBusy(false); }
+  };
+  useEffect(() => {
+    let cancelled = false;
+    featureApi.presets(module).then(rows => { if (!cancelled) setPresets(rows); }).catch((e) => { if (!cancelled) setError(e.message); });
+    const id = new URLSearchParams(window.location.search).get('calculationId');
+    if (id) featureApi.calculation(id).then(row => {
+      if (cancelled) return;
+      if (row.module !== module) throw new Error('Расчёт относится к другому модулю.');
+      loadRef.current(module === 'furnace' ? row.input : camelInput(row.input));
+      setMessage('Входные данные загружены. Для нового расчёта нажмите «Выполнить расчёт».');
+    }).catch(e => { if (!cancelled) setError(e.message); });
+    const completed = (event: Event) => { const data = (event as CustomEvent).detail; if (data.module === module) setReceipt(data); };
+    window.addEventListener('calculation-completed', completed);
+    return () => { cancelled = true; window.removeEventListener('calculation-completed', completed); };
+  }, [module]);
+  useEffect(() => {
+    if (!receipt || receipt.status === 'Saved') return;
+    let cancelled = false; let attempts = 0; let timer: ReturnType<typeof setTimeout>;
+    const poll = async () => {
+      try { const row = await featureApi.calculation(receipt.id); if (!cancelled && row.status === 'Saved') { setReceipt({ ...receipt, status: row.status }); return; } }
+      catch { /* Keep the pending status; history can be refreshed explicitly. */ }
+      if (!cancelled && ++attempts < 6) timer = setTimeout(poll, Math.min(30000, 3000 * 2 ** attempts));
+    };
+    timer = setTimeout(poll, 3000);
+    return () => { cancelled = true; clearTimeout(timer); };
+  }, [receipt?.id, receipt?.status]);
+  const save = (update: boolean) => run(async () => {
+    const row = await featureApi.savePreset({ module, name, description, payload: inputs }, update ? selected : undefined);
+    await refresh(); setSelected(row.id); setMessage('Шаблон сохранён.');
+  });
+  return <Card>
+    <CardHeader><CardTitle>Шаблоны и сохранённые расчёты</CardTitle></CardHeader>
+    <CardContent className="space-y-3">
+      <div className="grid gap-3 md:grid-cols-3">
+        <label>Шаблон<select aria-label="Шаблон" value={selected} className="w-full border rounded p-2 bg-background" onChange={e => { setSelected(e.target.value); const row = presets.find(p => p.id === e.target.value); setName(row?.name || ''); setDescription(row?.description || ''); }}><option value="">Новый шаблон</option>{presets.map(row => <option key={row.id} value={row.id}>{row.name}</option>)}</select></label>
+        <label>Название<Input value={name} maxLength={200} onChange={e => setName(e.target.value)} /></label>
+        <label>Описание<Input value={description} maxLength={2000} onChange={e => setDescription(e.target.value)} /></label>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        <Button disabled={busy || !name.trim()} onClick={() => save(false)}>Сохранить новый шаблон</Button>
+        <Button variant="outline" disabled={busy || !selected} onClick={() => run(async () => { const row = presets.find(p => p.id === selected); loadRef.current(module === 'furnace' ? row.payload : camelInput(row.payload)); setMessage('Шаблон загружен.'); })}>Загрузить шаблон</Button>
+        <Button variant="outline" disabled={busy || !selected || !name.trim()} onClick={() => save(true)}>Обновить выбранный</Button>
+        <Button variant="outline" disabled={busy || !selected} onClick={() => run(async () => { await featureApi.deletePreset(selected); setSelected(''); await refresh(); setMessage('Шаблон удалён.'); })}>Удалить шаблон</Button>
+        <Link className="underline p-2" to={`/calculations?module=${module}`}>История, сравнение и экспорт</Link>
+      </div>
+      {receipt && <div className="space-y-1"><p role="status">Расчёт выполнен. История: {receipt.status === 'Saved' ? 'сохранена' : 'обрабатывается асинхронно'}.</p><p className="text-xs text-muted-foreground">CorrelationId: {receipt.correlationId}</p><a className="underline mr-4" href={featureApi.exportUrl(receipt.id, 'pdf')}>Скачать PDF</a><a className="underline" href={featureApi.exportUrl(receipt.id, 'xlsx')}>Скачать Excel</a>{module === 'aglom-mode' && <Link className="underline ml-4" to={`/slag-mode?sourceCalculationId=${receipt.id}`}>Перейти к Slag Mode</Link>}</div>}
+      {message && <p role="status">{message}</p>}{error && <p role="alert" className="text-destructive whitespace-pre-wrap">{error}</p>}
+    </CardContent>
+  </Card>;
+}

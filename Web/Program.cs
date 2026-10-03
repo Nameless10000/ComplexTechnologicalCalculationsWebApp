@@ -17,7 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community; // Educational project.
 
 // Add services to the container.
-builder.Services.AddControllersWithViews(options => options.Filters.Add<ApiResultFilter>());
+builder.Services.AddControllersWithViews(options => options.Filters.Add<ApiResultFilter>()).AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles);
 builder.Services.AddExceptionHandler<ApiExceptionHandler>();
 builder.Services.AddProblemDetails();
 builder.Services.AddHealthChecks()

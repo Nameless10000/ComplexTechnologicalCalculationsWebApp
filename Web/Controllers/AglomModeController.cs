@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using BaseLib.AglomMode.Models;
 using Data.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -5,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Web.Controllers;
 
 //[Authorize]
+[Authorize]
 public class AglomModeController : Controller
 {
     private readonly AglomModeService _service;

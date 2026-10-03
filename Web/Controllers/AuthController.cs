@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Web.Controllers;
 
-[AllowAnonymous]
 public class AuthController : Controller
 {
     private readonly ILogger<AuthController> _logger;
@@ -57,17 +56,22 @@ public class AuthController : Controller
             Email = userAuth.Email,
         };
 
-        user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, userAuth.Password);
-
-        var result = await _userManager.CreateAsync(user);
+        var result = await _userManager.CreateAsync(user, userAuth.Password);
 
         if (result.Succeeded)
         {
-            return Ok();
+            await _signInManager.SignInAsync(user, isPersistent: true);
+            return Ok(new { user = new { username = user.UserName, email = user.Email } });
         }
 
-        return BadRequest(new { message = "Username or password is incorrect" });
+        return BadRequest(new { message = "Проверьте данные регистрации.", errors = result.Errors.Select(x => x.Description) });
     }
+
+    [HttpGet, Authorize]
+    public IActionResult Me() => Ok(new { user = new { username = User.Identity!.Name, email = User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value } });
+
+    [HttpPost]
+    public async Task<IActionResult> Logout() { await _signInManager.SignOutAsync(); return NoContent(); }
 }
 
 public record UserAuthDto(string Email, string Password);

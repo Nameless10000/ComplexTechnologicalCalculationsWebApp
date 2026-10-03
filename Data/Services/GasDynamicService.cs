@@ -41,7 +41,8 @@ public class GasDynamicService(
         var calculations = GetCalculationsQueryable();
 
         var preset = await calculations.FirstOrDefaultAsync(x => x.IsPreset)
-                     ?? await calculations.FirstOrDefaultAsync();
+                     ?? await calculations.FirstOrDefaultAsync()
+                     ?? await GetCalculationsQueryable(0).FirstOrDefaultAsync(x => x.IsPreset);
 
         return preset;
     }
@@ -93,10 +94,10 @@ public class GasDynamicService(
         return true;
     }
 
-    private IQueryable<CalculationModel> GetCalculationsQueryable()
+    private IQueryable<CalculationModel> GetCalculationsQueryable(int? userId = null)
     {
         return dbContext.CalculationModels
-            .Where(x => x.OwnerId == _currentUserId)
+            .Where(x => x.OwnerId == (userId ?? _currentUserId))
             .OrderByDescending(x => x.CreationDateTime)
             .AsQueryable();
     }

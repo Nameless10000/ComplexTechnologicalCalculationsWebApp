@@ -1,3 +1,4 @@
+import { CalculationTools } from '../CalculationTools';
 import { useState, useEffect } from "react";
 import {
   Card,
@@ -176,6 +177,7 @@ const createEmptyComponent = (): ShihtaComponent => ({
 
 export function SinterChargePage() {
       useEffect(() => {
+    if (new URLSearchParams(window.location.search).has('calculationId')) return;
         aglomModeService.getPreset()
           .then(({data}) => {
             setStartEnter(data.startEnter);
@@ -183,7 +185,7 @@ export function SinterChargePage() {
             setZola(data.zolaOfCocksick);
             setFlux(data.fluxAdditions);
             setComponents(data.shihtaComponents);
-          })
+          }).catch(error => setCalculationError(error.message))
   }, []);
 
   const [startEnter, setStartEnter] = useState<StartEnter>(initialStartEnter);
@@ -806,6 +808,7 @@ export function SinterChargePage() {
 
         {/* History Sidebar */}
         <div className="space-y-6">
+      <CalculationTools module="aglom-mode" inputs={{ userId: 0, startEnter, cocksick: coke, zolaOfCocksick: zola, fluxAdditions: flux, shihtaComponents: components }} onLoad={value => { if(value.startEnter) setStartEnter(value.startEnter); if(value.cocksick) setCoke(value.cocksick); if(value.zolaOfCocksick) setZola(value.zolaOfCocksick); if(value.fluxAdditions) setFlux(value.fluxAdditions); if(value.shihtaComponents) setComponents(value.shihtaComponents.map((item: any) => ({ ...item, id: item.id || crypto.randomUUID() }))); }} />
             <CalculationHistory
                 history={history}
                 onSelect={(item) => {

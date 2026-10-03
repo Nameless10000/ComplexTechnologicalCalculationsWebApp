@@ -15,7 +15,7 @@ interface RegisterData extends LoginCredentials {
 }
 
 // Вспомогательная функция для HTTP запросов
-async function fetchWithTimeout(
+export async function fetchWithTimeout(
   url: string,
   options: RequestInit = {},
   timeout = API_CONFIG.TIMEOUT
@@ -24,12 +24,27 @@ async function fetchWithTimeout(
   const id = setTimeout(() => controller.abort(), timeout);
   
   try {
+    const headers = new Headers(options.headers);
+    const sourceId = new URLSearchParams(window.location.search).get('sourceCalculationId');
+    if (sourceId && url.includes('/SlagMode/Calculate')) headers.set('X-Source-Calculation-Id', sourceId);
     const response = await fetch(url, {
       ...options,
+      headers,
       signal: controller.signal,
       credentials: "include"
     });
     clearTimeout(id);
+    if (!response.ok) {
+      const body = await response.json().catch(() => ({}));
+      const details = body.details ? `\n${JSON.stringify(body.details)}` : '';
+      const trace = body.traceId ? `\ntraceId: ${body.traceId}` : '';
+      throw new Error(`${body.message || 'Не удалось выполнить запрос.'}${details}${trace}`);
+    }
+    const calculationId = response.headers.get('X-Calculation-Id');
+    if (calculationId) {
+      const module = url.includes('/Furnace/') ? 'furnace' : url.includes('/AglomMode/') ? 'aglom-mode' : url.includes('/SlagMode/') ? 'slag-mode' : 'gas-dynamic';
+      window.dispatchEvent(new CustomEvent('calculation-completed', { detail: { module, id: calculationId, status: response.headers.get('X-History-Status'), correlationId: response.headers.get('X-Correlation-Id') } }));
+    }
     return response;
   } catch (error) {
     clearTimeout(id);
@@ -37,87 +52,18 @@ async function fetchWithTimeout(
   }
 }
 
-// Сервис авторизации
+// Authentication uses the server cookie; local fallback cannot provide record ownership.
 export const authService = {
-  // Вход в систему
   async login(credentials: LoginCredentials): Promise<User> {
-    // Проверка тестовых учетных данных
-    if (
-      credentials.email === API_CONFIG.TEST_CREDENTIALS.email &&
-      credentials.password === API_CONFIG.TEST_CREDENTIALS.password
-    ) {
-      return API_CONFIG.TEST_CREDENTIALS.userData;
-    }
-    
-    // Реальный запрос к серверу
-    try {
-      const response = await fetchWithTimeout(
-        `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTH.LOGIN}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(credentials),
-        }
-      );
-      
-      if (!response.ok) {
-        throw new Error('Ошибка авторизации');
-      }
-      
-      const data = await response.json();
-      return data.user;
-    } catch (error) {
-      // Если сервер недоступен, показываем ошибку
-      console.error('Server error:', error);
-      throw new Error('Неверные учетные данные');
-    }
+    const response = await fetchWithTimeout(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTH.LOGIN}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(credentials) });
+    return (await response.json()).user;
   },
-  
-  // Регистрация
   async register(data: RegisterData): Promise<User> {
-    try {
-      const response = await fetchWithTimeout(
-        `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTH.REGISTER}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        }
-      );
-      
-      if (!response.ok) {
-        throw new Error('Ошибка регистрации');
-      }
-      
-      const result = await response.json();
-      return result.user;
-    } catch (error) {
-      // Mock регистрация при недоступности сервера
-      console.error('Server error:', error);
-      return {
-        username: data.username,
-        email: data.email,
-      };
-    }
+    const response = await fetchWithTimeout(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTH.REGISTER}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+    return (await response.json()).user;
   },
-  
-  // Выход
-  async logout(): Promise<void> {
-    try {
-      await fetchWithTimeout(
-        `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTH.LOGOUT}`,
-        {
-          method: 'POST',
-        }
-      );
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
-  },
+  async logout(): Promise<void> { await fetchWithTimeout(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTH.LOGOUT}`, { method: 'POST' }); },
+  async me(): Promise<User> { return (await (await fetchWithTimeout(`${API_CONFIG.BASE_URL}/Auth/Me`)).json()).user; }
 };
 
 // Сервис расчетов газодинамики
@@ -143,7 +89,7 @@ export const gasDynamicService = {
       return data;
     } catch (error) {
       console.error('Calculation error:', error);
-      throw new Error('Не удалось выполнить расчет. Проверьте соединение с сервером.');
+      throw error;
     }
   },
 
@@ -167,7 +113,7 @@ export const gasDynamicService = {
       return data;
     } catch (error) {
       console.error('Preset error:', error);
-      throw new Error('Не удалось получить пресет. Проверьте соединение с сервером.');
+      throw error;
     }
   }
 };
@@ -194,7 +140,7 @@ export const slagModeService = {
       return data;
     } catch (error) {
       console.error('Calculation error:', error);
-      throw new Error('Не удалось выполнить расчет. Проверьте соединение с сервером.');
+      throw error;
     }
   },
 
@@ -218,7 +164,7 @@ export const slagModeService = {
       return data;
     } catch (error) {
       console.error('Preset error:', error);
-      throw new Error('Не удалось получить пресет. Проверьте соединение с сервером.');
+      throw error;
     }
   },
 
@@ -247,7 +193,7 @@ export const slagModeService = {
       return data;
     } catch (error) {
       console.error('Preset error:', error);
-      throw new Error('Не удалось получить шихтовые материалы. Проверьте соединение с сервером.');
+      throw error;
     }
   }
 };
@@ -274,7 +220,7 @@ export const aglomModeService = {
       return data;
     } catch (error) {
       console.error('Calculation error:', error);
-      throw new Error('Не удалось выполнить расчет. Проверьте соединение с сервером.');
+      throw error;
     }
   },
 
@@ -298,7 +244,7 @@ export const aglomModeService = {
       return data;
     } catch (error) {
       console.error('Preset error:', error);
-      throw new Error('Не удалось получить пресет. Проверьте соединение с сервером.');
+      throw error;
     }
   }
 };
@@ -325,9 +271,7 @@ export const furnaceService = {
       return data;
     } catch (error) {
       console.error('Calculation error:', error);
-      throw new Error(
-        'Не удалось выполнить расчет. Проверьте соединение с сервером.'
-      );
+      throw error;
     }
   },
 };

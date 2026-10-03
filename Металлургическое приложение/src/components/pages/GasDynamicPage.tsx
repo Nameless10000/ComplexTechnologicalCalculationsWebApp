@@ -1,3 +1,4 @@
+import { CalculationTools } from '../CalculationTools';
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Input } from '../ui/input';
@@ -143,6 +144,7 @@ export function GasDynamicPage() {
   });
 
   useEffect(() => {
+    if (new URLSearchParams(window.location.search).has('calculationId')) return;
     gasDynamicService.getPreset()
       .then(({input, output}) => {
 
@@ -156,7 +158,7 @@ export function GasDynamicPage() {
         setThermalAndPressure(input.blastFurnaceInput.thermalAndPressure);
         setMaterials(input.blastFurnaceInput.materials);
         setProduction(input.blastFurnaceInput.production);
-      })
+      }).catch(error => setCalculationError(error.message))
   }, []);
 
   // Состояния для результатов и UI
@@ -259,6 +261,7 @@ export function GasDynamicPage() {
 
   return (
     <div className="space-y-6">
+      <CalculationTools module="gas-dynamic" inputs={{ aglomInput: { koksContents, aglomContents, okatContents }, blastFurnaceInput: { composition, fuelAndBlast, geometry, thermalAndPressure, materials, production } }} onLoad={value => { if(value.aglomInput) { setKoksContents(value.aglomInput.koksContents); setAglomContents(value.aglomInput.aglomContents); setOkatContents(value.aglomInput.okatContents); } if(value.blastFurnaceInput) { const v=value.blastFurnaceInput; setComposition(v.composition); setFuelAndBlast(v.fuelAndBlast); setGeometry(v.geometry); setThermalAndPressure(v.thermalAndPressure); setMaterials(v.materials); setProduction(v.production); } }} />
       <div>
         <div className="flex items-center gap-3 mb-2">
           <Wind className="size-8 text-primary" />
