@@ -17,9 +17,17 @@ namespace Core.Contexts
     {
         public DbSet<Core.Models.Calculations.CalculationRecord> CalculationHistory { get; set; }
         public DbSet<Core.Models.Calculations.OutboxMessage> CalculationOutbox { get; set; }
+        public DbSet<Core.Models.Calculations.CalculationPreset> CalculationPresets { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            var preset = modelBuilder.Entity<Core.Models.Calculations.CalculationPreset>();
+            preset.Property(x => x.Module).HasMaxLength(32);
+            preset.Property(x => x.Name).HasMaxLength(200);
+            preset.Property(x => x.NormalizedName).HasMaxLength(200);
+            preset.Property(x => x.Description).HasMaxLength(2000);
+            preset.Property(x => x.Payload).HasColumnType("jsonb");
+            preset.HasIndex(x => new { x.UserId, x.Module, x.NormalizedName }).IsUnique();
             var history = modelBuilder.Entity<Core.Models.Calculations.CalculationRecord>();
             history.Property(x => x.Module).HasMaxLength(32);
             history.Property(x => x.RequestId).HasMaxLength(200);

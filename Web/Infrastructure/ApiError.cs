@@ -11,6 +11,7 @@ public sealed record ApiError(string Code, string Message, object? Details, stri
 
     public static (int Status, string Code, string Message) Map(Exception exception) => exception switch
     {
+        Data.Infrastructure.ConflictException => (409, "CONFLICT", exception.Message),
         RpcException { StatusCode: StatusCode.InvalidArgument } rpc => (400, "CALCULATION_VALIDATION_ERROR", rpc.Status.Detail),
         RpcException { StatusCode: StatusCode.NotFound } => (404, "NOT_FOUND", "Расчёт не найден."),
         RpcException { StatusCode: StatusCode.DeadlineExceeded or StatusCode.Unavailable } =>
