@@ -28,3 +28,6 @@
 - 03.10.2026: выполнен git fetch origin; найдена origin/FurnaceService (a8fddbe), создана codex/furnace-review для проверки.
 - 03.10.2026: принято требование атомарных коммитов по завершённым этапам.
 
+
+- 03.10.2026: единый API error pipeline (code/message/details/traceId), ModelState и gRPC status mapping; убрана заглушка Aglom. Закрытые API выделены Category=ExternalApi по уточнению пользователя.
+

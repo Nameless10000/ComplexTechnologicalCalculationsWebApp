@@ -41,16 +41,8 @@ public class SlagModeController : Controller
     [HttpPost]
     public async Task<IActionResult> Calculate([FromBody] RequestData requestModel)
     {
-        try
-        {
-            var calculationResult = await _service.Calculate(requestModel);
-            return Ok(new { data = calculationResult });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, ex.Message);
-            return BadRequest(new { message = ex.Message });
-        }
+        var calculationResult = await _service.Calculate(requestModel);
+        return Ok(new { data = calculationResult });
     }
 
     [HttpGet]

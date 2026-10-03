@@ -15,7 +15,7 @@ namespace Test
     /// </summary>
     public class AglomModeTest (IOptions<ExternalServerDomain> serverAddress)
     {
-        [Fact]
+        [Fact, Trait("Category", "ExternalApi")]
         public void Calculate()
         {
             var _mathLib = new AglomMode(serverAddress);

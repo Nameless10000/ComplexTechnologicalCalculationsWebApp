@@ -21,22 +21,7 @@ public class FurnaceController : Controller
     public async Task<IActionResult> Calculate(
         [FromBody] JsonElement requestModel)
     {
-        try
-        {
-            var requestJson = requestModel.GetRawText();
-
-            var calculationResult =
-                await _service.Calculate(requestJson);
-
-            return Content(
-                calculationResult,
-                "application/json"
-            );
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, ex.Message);
-            return BadRequest(new { message = ex.Message });
-        }
+        var calculationResult = await _service.Calculate(requestModel.GetRawText());
+        return Content(calculationResult, "application/json");
     }
 }

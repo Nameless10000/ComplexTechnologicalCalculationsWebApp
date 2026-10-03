@@ -8,11 +8,14 @@ using Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Web.Seed;
+using Web.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options => options.Filters.Add<ApiResultFilter>());
+builder.Services.AddExceptionHandler<ApiExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 var conStrings = new Dictionary<Type, string>();
 conStrings[typeof(AgloDBContext)] = builder.Configuration.GetConnectionString("AgloConnectionString")!;
@@ -119,12 +122,20 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 var app = builder.Build();
+app.UseExceptionHandler();
+app.UseStatusCodePages(async statusContext =>
+{
+    var context = statusContext.HttpContext;
+    var status = context.Response.StatusCode;
+    var code = status switch { 401 => "UNAUTHORIZED", 403 => "FORBIDDEN", 404 => "NOT_FOUND", _ => "REQUEST_ERROR" };
+    var message = status switch { 401 => "Войдите в систему.", 403 => "Доступ запрещён.", 404 => "Ресурс не найден.", _ => "Не удалось выполнить запрос." };
+    await context.Response.WriteAsJsonAsync(ApiError.Create(context, code, message));
+});
 try
 {
     // Configure the HTTP request pipeline.
     if (!app.Environment.IsDevelopment())
     {
-        app.UseExceptionHandler("/Home/Error");
         // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
         app.UseHsts();
     }
@@ -175,7 +186,8 @@ try
 }
 catch (Exception ex)
 {
-    Debug.WriteLine(ex.Message);
+    app.Logger.LogCritical(ex, "Application startup failed.");
+    throw;
 }
 
 static bool IsApiRequest(HttpRequest request)

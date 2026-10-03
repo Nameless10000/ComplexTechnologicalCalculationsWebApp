@@ -11,7 +11,7 @@ namespace Test
     /// </summary>
     public class SlagModeTest (IOptions<ExternalServerDomain> serverAddress)
     {
-        [Fact]
+        [Fact, Trait("Category", "ExternalApi")]
         public void GetKey()
         {
             var _mathLib = new SlagMode(serverAddress);
@@ -26,7 +26,7 @@ namespace Test
             Assert.Equal(3, res.Length);
         }
 
-        [Fact]
+        [Fact, Trait("Category", "ExternalApi")]
         public void Calculate()
         {
             var _mathLib = new SlagMode(serverAddress);
