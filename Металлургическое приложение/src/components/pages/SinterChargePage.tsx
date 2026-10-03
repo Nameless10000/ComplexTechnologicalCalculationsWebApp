@@ -1,3 +1,4 @@
+import { CalculationPageHeader } from '../CalculationPageHeader';
 import { CalculationTools } from '../CalculationTools';
 import { useState, useEffect } from "react";
 import {
@@ -306,27 +307,12 @@ export function SinterChargePage() {
   );
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500">
-      <div>
-        <div className="flex items-center gap-3 mb-2">
-            <Layers className="size-8 text-primary" />
-            <h1 className="text-3xl font-bold tracking-tight">
-            Агломерационная шихта
-            </h1>
-        </div>
-        <p className="text-muted-foreground">
-          Расчет состава агломерационной шихты и основных показателей
-        </p>
-      </div>
+    <div className="calculation-page space-y-6">
+      <CalculationPageHeader title="Агломерационная шихта" description="Расчёт состава агломерационной шихты и основных показателей" icon={Layers}
+        onCalculate={handleCalculate} isCalculating={isCalculating} error={calculationError} />
+      <CalculationTools module="aglom-mode" inputs={{ userId: 0, startEnter, cocksick: coke, zolaOfCocksick: zola, fluxAdditions: flux, shihtaComponents: components }} onLoad={value => { if(value.startEnter) setStartEnter(value.startEnter); if(value.cocksick) setCoke(value.cocksick); if(value.zolaOfCocksick) setZola(value.zolaOfCocksick); if(value.fluxAdditions) setFlux(value.fluxAdditions); if(value.shihtaComponents) setComponents(value.shihtaComponents.map((item: any) => ({ ...item, id: item.id || crypto.randomUUID() }))); }} />
 
-      {calculationError && (
-        <Alert variant="destructive">
-          <AlertCircle className="size-4" />
-          <AlertDescription>{calculationError}</AlertDescription>
-        </Alert>
-      )}
-
-      <div className="grid gap-6 lg:grid-cols-[1fr_380px]">
+      <div className="calculation-workspace">
         {/* Main Content */}
         <div>
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -340,8 +326,8 @@ export function SinterChargePage() {
 
                 {/* Tab 1: Start Parameters */}
                 <TabsContent value="initial-params" className="space-y-6">
-                    <Card className="border-l-4 border-l-blue-500 shadow-sm">
-                        <CardHeader className="pb-3">
+                    <Card className="overflow-hidden">
+                        <CardHeader>
                         <CardTitle className="text-lg flex items-center gap-2">
                             <Settings className="h-5 w-5" />
                             Начальные параметры
@@ -395,7 +381,7 @@ export function SinterChargePage() {
                 {/* Tab 2: Fluxes */}
                 <TabsContent value="flux" className="space-y-6">
                     <Card className="shadow-sm">
-                        <CardHeader className="pb-3">
+                        <CardHeader>
                         <CardTitle className="text-lg flex items-center gap-2">
                             <Beaker className="h-5 w-5" />
                             Флюсующие добавки
@@ -500,7 +486,7 @@ export function SinterChargePage() {
                 {/* Tab 3: Coke */}
                 <TabsContent value="coke" className="space-y-6">
                     <Card className="shadow-sm">
-                        <CardHeader className="pb-3">
+                        <CardHeader>
                         <CardTitle className="text-lg flex items-center gap-2">
                             <Flame className="h-5 w-5" />
                             Коксовая мелочь
@@ -595,7 +581,7 @@ export function SinterChargePage() {
                             {components.map((comp, index) => (
                                 <Card
                                 key={comp.id}
-                                className="border-l-4 border-l-orange-500 shadow-sm overflow-hidden"
+                                className="overflow-hidden"
                                 >
                                 <Collapsible
                                     open={openComponents[comp.id]}
@@ -758,23 +744,6 @@ export function SinterChargePage() {
                             </div>
                         </ScrollArea>
                         
-                        <div className="pt-4 flex justify-end">
-                            <Button
-                            size="lg"
-                            onClick={handleCalculate}
-                            disabled={isCalculating}
-                            className="shadow-lg hover:shadow-xl transition-all gap-2"
-                            >
-                            {isCalculating ? (
-                                <>Загрузка...</>
-                            ) : (
-                                <>
-                                <Calculator className="h-5 w-5" />
-                                Рассчитать
-                                </>
-                            )}
-                            </Button>
-                        </div>
                     </div>
                 </TabsContent>
 
@@ -807,15 +776,9 @@ export function SinterChargePage() {
         </div>
 
         {/* History Sidebar */}
-        <div className="space-y-6">
-      <CalculationTools module="aglom-mode" inputs={{ userId: 0, startEnter, cocksick: coke, zolaOfCocksick: zola, fluxAdditions: flux, shihtaComponents: components }} onLoad={value => { if(value.startEnter) setStartEnter(value.startEnter); if(value.cocksick) setCoke(value.cocksick); if(value.zolaOfCocksick) setZola(value.zolaOfCocksick); if(value.fluxAdditions) setFlux(value.fluxAdditions); if(value.shihtaComponents) setComponents(value.shihtaComponents.map((item: any) => ({ ...item, id: item.id || crypto.randomUUID() }))); }} />
+        <div className="calculation-history">
             <CalculationHistory
                 history={history}
-                onSelect={(item) => {
-                    // In a real app, this would load the saved state into the form
-                    console.log("Loading history item:", item);
-                }}
-                onDelete={removeFromHistory}
                 onClear={clearHistory}
                 onRemove={removeFromHistory}
             />

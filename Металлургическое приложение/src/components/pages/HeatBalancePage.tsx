@@ -1,3 +1,4 @@
+import { CalculationPageHeader } from '../CalculationPageHeader';
 import { CalculationTools } from '../CalculationTools';
 import { useState } from "react";
 import {
@@ -200,22 +201,12 @@ export function HeatBalancePage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="calculation-page space-y-6">
+      <CalculationPageHeader title="Теплообмен в доменной печи" description="Расчёт теплового баланса и теплообменных процессов" icon={Flame}
+        onCalculate={handleCalculate} isCalculating={isCalculating} error={calculationError} />
       <CalculationTools module="furnace" inputs={inputs} onLoad={value => { setInputs({ ...inputs, ...value }); }} />
-      {/* Заголовок */}
-      <div className="flex items-center gap-3 mb-2">
-        <Flame className="size-8 text-orange-500" />
 
-        <h1 className="text-3xl">
-          Теплообмен в доменной печи
-        </h1>
-      </div>
-
-      <p className="text-muted-foreground">
-        Расчет теплового баланса и теплообменных процессов
-      </p>
-
-      <div className="grid gap-6 lg:grid-cols-[1fr_380px]">
+      <div className="calculation-workspace">
         <div className="space-y-6">
           <Tabs
             value={activeTab}
@@ -282,29 +273,6 @@ export function HeatBalancePage() {
                 </CardContent>
               </Card>
 
-              {/* Ошибка */}
-              {calculationError && (
-                <Card className="border-destructive">
-                  <CardContent className="pt-6">
-                    <p className="text-destructive">
-                      {calculationError}
-                    </p>
-                  </CardContent>
-                </Card>
-              )}
-
-              {/* Кнопка расчета */}
-              <div className="flex justify-end">
-                <Button
-                  size="lg"
-                  onClick={handleCalculate}
-                  disabled={isCalculating}
-                >
-                  {isCalculating
-                    ? "Вычисляем..."
-                    : "Выполнить расчет"}
-                </Button>
-              </div>
             </TabsContent>
 
             {/* ========================================= */}
@@ -345,7 +313,7 @@ export function HeatBalancePage() {
         {/* ИСТОРИЯ РАСЧЕТОВ */}
         {/* ========================================= */}
 
-        <div className="hidden lg:block">
+        <div className="calculation-history">
           <CalculationHistory
             history={history}
             onRemove={(id) =>

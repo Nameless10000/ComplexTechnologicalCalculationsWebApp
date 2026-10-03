@@ -1,3 +1,4 @@
+import { CalculationPageHeader } from '../CalculationPageHeader';
 import { featureApi, camelInput } from '../../services/calculation-features';
 import { CalculationTools } from '../CalculationTools';
 import { useState, useEffect } from "react";
@@ -103,6 +104,7 @@ interface RequestData {
 }
 
 export function SlagModePage() {
+  const [transitionNotice, setTransitionNotice] = useState('');
 
   useEffect(() => {
     if (new URLSearchParams(window.location.search).has('calculationId')) return;
@@ -115,7 +117,7 @@ export function SlagModePage() {
             setChargeComponents(data.request.components);
             const sourceId = new URLSearchParams(window.location.search).get('sourceCalculationId');
             if (sourceId) featureApi.transition(sourceId, { coke: data.request.inputCoke, iron: data.request.castIron, slag: data.request.slag, components: data.request.components })
-              .then(row => { const value=camelInput(row.input); setCokeData(value.coke); setCastIronData(value.iron); setSlagData(value.slag); setChargeComponents(value.components); setCalculationError('Поля перенесены из Aglom. Проверьте расход агломерата, кокс, чугун и шлак перед расчётом.'); })
+              .then(row => { const value=camelInput(row.input); setCokeData(value.coke); setCastIronData(value.iron); setSlagData(value.slag); setChargeComponents(value.components); setTransitionNotice('Поля перенесены из Aglom. Проверьте расход агломерата, кокс, чугун и шлак перед расчётом.'); })
               .catch(error => setCalculationError(error.message));
           }).catch(error => setCalculationError(error.message))
   }, []);
@@ -316,28 +318,12 @@ export function SlagModePage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="calculation-page space-y-6">
+      <CalculationPageHeader title="Шлаковый режим" description="Расчёт состава и свойств доменного шлака" icon={Droplets}
+        onCalculate={handleCalculate} isCalculating={isCalculating} error={calculationError} notice={transitionNotice} />
       <CalculationTools module="slag-mode" inputs={{ coke: cokeData, iron: castIronData, slag: slagData, components: chargeComponents }} onLoad={value => { if(value.coke) setCokeData(value.coke); if(value.iron) setCastIronData(value.iron); if(value.slag) setSlagData(value.slag); if(value.components) setChargeComponents(value.components); }} />
-      <div>
-        <div className="flex items-center gap-3 mb-2">
-          <Droplets className="size-8 text-primary" />
-          <h1 className="text-3xl">Шлаковый режим</h1>
-        </div>
-        <p className="text-muted-foreground">
-          Расчет состава и свойств доменного шлака
-        </p>
-      </div>
 
-      {calculationError && (
-        <Alert variant="destructive">
-          <AlertCircle className="size-4" />
-          <AlertDescription>
-            {calculationError}
-          </AlertDescription>
-        </Alert>
-      )}
-
-      <div className="grid gap-6 lg:grid-cols-[1fr_380px]">
+      <div className="calculation-workspace">
         {/* Основной контент */}
         <div>
           <Tabs
@@ -950,28 +936,10 @@ export function SlagModePage() {
             </TabsContent>
           </Tabs>
 
-          <Separator className="my-6" />
-
-          <div className="flex justify-end gap-4">
-            <Button
-              size="lg"
-              onClick={handleCalculate}
-              disabled={isCalculating}
-            >
-              {isCalculating ? (
-                <>
-                  <Loader2 className="size-4 mr-2 animate-spin" />
-                  Расчет...
-                </>
-              ) : (
-                "Выполнить расчет"
-              )}
-            </Button>
-          </div>
         </div>
 
         {/* Правая колонка: История расчетов */}
-        <div className="hidden lg:block">
+        <div className="calculation-history">
           <CalculationHistory
             history={history}
             onRemove={removeFromHistory}

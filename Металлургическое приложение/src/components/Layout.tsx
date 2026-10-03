@@ -34,7 +34,7 @@ export function Layout({ user, onLogout, children }: LayoutProps) {
   };
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="app-layout flex bg-background">
       {/* Sidebar */}
       <aside className="w-64 border-r border-border bg-card">
         <div className="flex flex-col h-full">
@@ -116,8 +116,8 @@ export function Layout({ user, onLogout, children }: LayoutProps) {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-auto">
-        <div className="container mx-auto p-8">
+      <main className="flex-1 min-w-0 overflow-auto">
+        <div className="container mx-auto p-4 md:p-8">
           {children}
         </div>
       </main>

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { featureApi, camelInput } from '../services/calculation-features';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Card, CardContent } from './ui/card';
 
 export function CalculationTools({ module, inputs, onLoad }: { module: string; inputs: any; onLoad: (input: any) => void }) {
   const [presets, setPresets] = useState<any[]>([]);
@@ -28,7 +28,7 @@ export function CalculationTools({ module, inputs, onLoad }: { module: string; i
       if (cancelled) return;
       if (row.module !== module) throw new Error('Расчёт относится к другому модулю.');
       loadRef.current(module === 'furnace' ? row.input : camelInput(row.input));
-      setMessage('Входные данные загружены. Для нового расчёта нажмите «Выполнить расчёт».');
+      setMessage('Входные данные загружены. Для нового расчёта нажмите «Рассчитать».');
     }).catch(e => { if (!cancelled) setError(e.message); });
     const completed = (event: Event) => { const data = (event as CustomEvent).detail; if (data.module === module) setReceipt(data); };
     window.addEventListener('calculation-completed', completed);
@@ -50,8 +50,10 @@ export function CalculationTools({ module, inputs, onLoad }: { module: string; i
     await refresh(); setSelected(row.id); setMessage('Шаблон сохранён.');
   });
   return <Card>
-    <CardHeader><CardTitle>Шаблоны и сохранённые расчёты</CardTitle></CardHeader>
-    <CardContent className="space-y-3">
+    <CardContent className="space-y-3 pt-6">
+      <details>
+      <summary className="cursor-pointer text-base font-medium">Шаблоны и сохранённые расчёты</summary>
+      <div className="space-y-3 pt-4">
       <div className="grid gap-3 md:grid-cols-3">
         <label>Шаблон<select aria-label="Шаблон" value={selected} className="w-full border rounded p-2 bg-background" onChange={e => { setSelected(e.target.value); const row = presets.find(p => p.id === e.target.value); setName(row?.name || ''); setDescription(row?.description || ''); }}><option value="">Новый шаблон</option>{presets.map(row => <option key={row.id} value={row.id}>{row.name}</option>)}</select></label>
         <label>Название<Input value={name} maxLength={200} onChange={e => setName(e.target.value)} /></label>
@@ -64,6 +66,8 @@ export function CalculationTools({ module, inputs, onLoad }: { module: string; i
         <Button variant="outline" disabled={busy || !selected} onClick={() => run(async () => { await featureApi.deletePreset(selected); setSelected(''); await refresh(); setMessage('Шаблон удалён.'); })}>Удалить шаблон</Button>
         <Link className="underline p-2" to={`/calculations?module=${module}`}>История, сравнение и экспорт</Link>
       </div>
+      </div>
+      </details>
       {receipt && <div className="space-y-1"><p role="status">Расчёт выполнен. История: {receipt.status === 'Saved' ? 'сохранена' : 'обрабатывается асинхронно'}.</p><p className="text-xs text-muted-foreground">CorrelationId: {receipt.correlationId}</p><a className="underline mr-4" href={featureApi.exportUrl(receipt.id, 'pdf')}>Скачать PDF</a><a className="underline" href={featureApi.exportUrl(receipt.id, 'xlsx')}>Скачать Excel</a>{module === 'aglom-mode' && <Link className="underline ml-4" to={`/slag-mode?sourceCalculationId=${receipt.id}`}>Перейти к Slag Mode</Link>}</div>}
       {message && <p role="status">{message}</p>}{error && <p role="alert" className="text-destructive whitespace-pre-wrap">{error}</p>}
     </CardContent>

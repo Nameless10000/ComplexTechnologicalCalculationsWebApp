@@ -5,6 +5,8 @@ import { useCalculationHistory } from '../../hooks/useCalculationHistory';
 import { CalculationHistory } from '../CalculationHistory';
 import { SaveCalculationDialog } from '../SaveCalculationDialog';
 import { useState } from 'react';
+import { CalculationPageHeader } from '../CalculationPageHeader';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '../ui/tabs';
 
 export function MassBalancePage() {
   const { history, addToHistory, removeFromHistory, clearHistory } = useCalculationHistory('mass-balance');
@@ -18,20 +20,15 @@ export function MassBalancePage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <div className="flex items-center gap-3 mb-2">
-          <Scale className="size-8 text-blue-500" />
-          <h1 className="text-3xl">Массовый баланс доменной плавки</h1>
-        </div>
-        <p className="text-muted-foreground">
-          Расчет материальных потоков и баланса масс
-        </p>
-      </div>
+    <div className="calculation-page space-y-6">
+      <CalculationPageHeader icon={Scale} title="Массовый баланс доменной плавки"
+        description="Расчёт материальных потоков и баланса масс" />
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_380px]">
+      <div className="calculation-workspace">
         <div className="space-y-6">
-          <div className="grid gap-6 md:grid-cols-2">
+          <Tabs defaultValue="inputs" className="w-full">
+            <TabsList><TabsTrigger value="inputs">Входные данные</TabsTrigger><TabsTrigger value="results">Результаты</TabsTrigger></TabsList>
+            <TabsContent value="inputs">
             <Card>
               <CardHeader>
                 <CardTitle>Входные параметры</CardTitle>
@@ -45,7 +42,8 @@ export function MassBalancePage() {
                 </div>
               </CardContent>
             </Card>
-
+            </TabsContent>
+            <TabsContent value="results">
             <Card>
               <CardHeader>
                 <CardTitle>Выходные параметры</CardTitle>
@@ -59,14 +57,11 @@ export function MassBalancePage() {
                 </div>
               </CardContent>
             </Card>
-          </div>
-
-          <div className="flex justify-end">
-            <Button size="lg">Выполнить расчет</Button>
-          </div>
+            </TabsContent>
+          </Tabs>
         </div>
 
-        <div className="hidden lg:block">
+        <div className="calculation-history">
           <CalculationHistory
             history={history}
             onRemove={removeFromHistory}

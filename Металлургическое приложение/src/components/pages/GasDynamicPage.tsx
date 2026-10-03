@@ -1,3 +1,4 @@
+import { CalculationPageHeader } from '../CalculationPageHeader';
 import { CalculationTools } from '../CalculationTools';
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
@@ -237,6 +238,7 @@ export function GasDynamicPage() {
       });
 
       setCalculationResults(response.data);
+      setActiveTab('results');
     } catch (error: any) {
       setCalculationError(error.message || 'Произошла ошибка при расчете.');
     } finally {
@@ -260,26 +262,12 @@ export function GasDynamicPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="calculation-page space-y-6">
+      <CalculationPageHeader title="Газодинамический режим доменной плавки" description="Расчёт газодинамических параметров доменного процесса" icon={Wind}
+        onCalculate={handleCalculate} isCalculating={isCalculating} error={calculationError} />
       <CalculationTools module="gas-dynamic" inputs={{ aglomInput: { koksContents, aglomContents, okatContents }, blastFurnaceInput: { composition, fuelAndBlast, geometry, thermalAndPressure, materials, production } }} onLoad={value => { if(value.aglomInput) { setKoksContents(value.aglomInput.koksContents); setAglomContents(value.aglomInput.aglomContents); setOkatContents(value.aglomInput.okatContents); } if(value.blastFurnaceInput) { const v=value.blastFurnaceInput; setComposition(v.composition); setFuelAndBlast(v.fuelAndBlast); setGeometry(v.geometry); setThermalAndPressure(v.thermalAndPressure); setMaterials(v.materials); setProduction(v.production); } }} />
-      <div>
-        <div className="flex items-center gap-3 mb-2">
-          <Wind className="size-8 text-primary" />
-          <h1 className="text-3xl">Газодинамический режим доменной плавки</h1>
-        </div>
-        <p className="text-muted-foreground">
-          Расчет газодинамических параметров доменного процесса
-        </p>
-      </div>
 
-      {calculationError && (
-        <Alert variant="destructive">
-          <AlertCircle className="size-4" />
-          <AlertDescription>{calculationError}</AlertDescription>
-        </Alert>
-      )}
-
-      <div className="grid gap-6 lg:grid-cols-[1fr_380px]">
+      <div className="calculation-workspace">
         {/* Основной контент */}
         <div>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -942,19 +930,6 @@ export function GasDynamicPage() {
                 </CardContent>
               </Card>
 
-              <div className="flex justify-end gap-4">
-                <Button variant="outline" size="lg">Сбросить</Button>
-                <Button onClick={handleCalculate} size="lg" disabled={isCalculating}>
-                  {isCalculating ? (
-                    <>
-                      <Loader2 className="size-4 mr-2 animate-spin" />
-                      Выполняется расчет...
-                    </>
-                  ) : (
-                    'Выполнить расчет'
-                  )}
-                </Button>
-              </div>
             </TabsContent>
 
             {/* Вкладка 3: Результаты */}
@@ -973,7 +948,7 @@ export function GasDynamicPage() {
         </div>
 
         {/* Панель истории расчетов */}
-        <div className="hidden lg:block">
+        <div className="calculation-history">
           <CalculationHistory
             history={history}
             onRemove={removeFromHistory}

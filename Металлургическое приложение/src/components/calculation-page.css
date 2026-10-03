@@ -1,0 +1,48 @@
+.app-layout { height: 100dvh; overflow: hidden; }
+.app-layout > main { min-width: 0; overflow: auto; }
+.app-layout > aside { flex-shrink: 0; overflow: auto; }
+
+.calculation-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+
+.calculation-page .calculation-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.calculation-workspace > * { min-width: 0; }
+
+.calculation-page [data-slot="tabs-list"] {
+  display: flex;
+  width: 100%;
+  height: auto;
+  flex-wrap: wrap;
+}
+
+.calculation-page [data-slot="tabs-trigger"] {
+  min-height: 2.5rem;
+  height: auto;
+  white-space: normal;
+}
+
+.calculation-page [data-slot="tabs-content"] { margin-top: 1rem; }
+
+.calculation-page [data-slot="card-title"] { font-size: 1rem; font-weight: 500; }
+
+@media (min-width: 1400px) {
+  .calculation-page .calculation-workspace { grid-template-columns: minmax(0, 1fr) 340px; }
+}
