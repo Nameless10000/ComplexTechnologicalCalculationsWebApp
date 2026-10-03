@@ -1,0 +1,87 @@
+# Технологические расчёты
+
+ASP.NET Core 8, PostgreSQL, Kafka, четыре расчётных gRPC-сервиса и React/Vite frontend. Формулы FurnaceService сохранены из ветки FurnaceService; замечания для автора находятся в [FURNACE_REVIEW_COMMENT.md](FURNACE_REVIEW_COMMENT.md). План и результаты проверок — [WORK_LOG.md](WORK_LOG.md), исходный аудит — [ARCHITECTURE_AUDIT.md](ARCHITECTURE_AUDIT.md).
+
+## Запуск
+
+```powershell
+docker compose up -d --build
+docker compose ps
+docker compose logs --tail 50 web history-writer
+```
+
+Frontend: http://localhost:3000, Web API: http://localhost:5000. В браузере запросы идут через `/api` nginx. Создайте пользователя через «Регистрация»: вход и права на данные используют серверную cookie, фиктивного обхода авторизации нет.
+
+Миграции восьми БД применяются Web при запуске; стандартные входные наборы Aglom/Slag/GasDynamic создаются существующими seeders. Нужен работающий Docker Desktop с Linux containers. Порты: PostgreSQL 15432, Kafka 9092, Web 5000, frontend 3000, gRPC 5101–5104.
+
+Для расчётов Aglom/Slag нужны закрытые REST API команды. В `compose.yaml` заданы `ExternalServer__AglomDomain`, `ExternalServer__Domain`, `Authorization__UserName/Password`; настройте адреса/учётные данные вашей среды. Проверка gRPC доступности этих модулей сама по себе не вызывает закрытые REST API. Furnace и GasDynamic можно демонстрировать локально.
+
+## Демонстрация функций
+
+1. Войдите и откройте «Теплообмен в печи». Сохраните входные данные как именованный шаблон с описанием, измените поле и загрузите шаблон обратно. Шаблон также можно обновить или удалить.
+2. Выполните расчёт. Над формой появятся correlationId, статус асинхронного сохранения истории и ссылки PDF/Excel. История сначала `Pending`, после обработки worker-ом — `Saved`; вычисленный результат доступен сразу. Автоматическое обновление ограничено шестью запросами; далее используйте «Обновить историю».
+3. Измените `coke_rate`, выполните ещё один расчёт. На экране «Сохранённые расчёты» выберите модуль и две записи; «Сравнить A и B» показывает различия входов и результатов. Разница — B − A, процент — `(B − A) / A × 100`; при A = 0 процент не определён. JSON `1` и `1.0` эквивалентны. Можно загрузить входы любой записи без автоматического запуска вычисления.
+4. Скачайте PDF или Excel. Отчёт содержит модуль, дату UTC, пользователя, ID, correlationId, входы и результаты. Экспорт и сравнение доступны только владельцу записей.
+5. После доступного расчёта Aglom нажмите «Перейти к Slag Mode». Из единственной строки «Итог» переносятся известные доли Fe/S/CaO/SiO2/Al2O3/MgO/MnO/TiO2 в компонент `Agglomerate23`. Расход агломерата сохраняется из целевого шаблона: `ReportComponentOfShihta` имеет другую единицу измерения. Проверьте расход, кокс, чугун и шлак перед запуском. Новый расчёт хранит `sourceCalculationId`.
+6. «Состояние сервисов» показывает Web/БД/Kafka/gRPC. Неправильные вводы возвращают сообщение, детали и traceId, сохраняя единый формат ошибок.
+
+## API
+
+Пути ниже относительно Web API; в браузере добавляется `/api`. Расчётные endpoints сохраняют прежние успешные тела ответа.
+
+| Метод / путь | Назначение |
+| --- | --- |
+| POST `/Auth/SignUp` | `{username,email,password}`; регистрация и вход |
+| POST `/Auth/Authorize` | `{email,password}`; email или имя пользователя |
+| GET `/Auth/Me`, POST `/Auth/Logout` | Текущий пользователь / выход |
+| POST `/Furnace/Calculate`, `/GasDynamic/Calculate`, `/AglomMode/Calculate`, `/SlagMode/Calculate` | Вычисление; обязательна авторизация |
+| GET `/presets?module=furnace` | Свои шаблоны, до 200 записей |
+| POST `/presets` | `{module,name,description,payload}`; ответ 201 |
+| GET/PUT/DELETE `/presets/{id}` | Свой шаблон / обновить тем же DTO / удалить |
+| GET `/calculations?module=furnace&skip=0&take=50` | Своя история; take 1–100 |
+| GET `/calculations/{id}` | Входы, результаты, метаданные и статус |
+| GET `/calculations/compare?leftId={a}&rightId={b}` | Свои записи одного модуля; `inputs` и `results` |
+| POST `/calculations/{id}/transition/slag-mode` | Тело — необязательный целевой JSON; ответ с `input`, `mappedFields`, `sourceCalculationId` |
+| GET `/calculations/{id}/export?format=pdf` | PDF; `format=xlsx` для Excel |
+| GET `/health/live` | Web запущен; без зависимостей |
+| GET `/health/ready`, `/health` | БД/Kafka/gRPC; Healthy/Degraded → 200, Unhealthy → 503 |
+
+Идентификаторы модулей: `aglom-mode`, `slag-mode`, `gas-dynamic`, `furnace`. Название шаблона уникально внутри пользователя и модуля без учёта регистра; длина 1–200 символов, описание до 2000. JSON шаблона допускает неполный ввод; полная валидация выполняется перед вычислением.
+
+Ошибки: `{ "code": "...", "message": "...", "details": null, "traceId": "..." }`. Валидация — 400, отсутствующая/чужая запись — 404, конфликт имени — 409, недоступный расчётный сервис — 503. Некорректные диапазоны, отрицательные значения, обязательные поля, конечность чисел и суммы долей проверяются API и gRPC. Furnace отклоняет вводы, при которых существующие формулы делят на ноль.
+
+Успешный расчёт добавляет headers `X-Calculation-Id`, `X-Correlation-Id`, `X-History-Status: Pending`. Для связи этапов передайте `X-Source-Calculation-Id`; исходная запись должна принадлежать текущему пользователю. Frontend отправляет header при переходе из Aglom.
+
+## gRPC и история
+
+Общий контракт: [Contracts/Protos/calculation.proto](Contracts/Protos/calculation.proto). JSON остаётся в поле 1. В запрос добавлены request_id/module/correlation_id, в ответ — request_id/module/status/error_code/error_message/correlation_id. Современный клиент получает `Succeeded` или `Failed`; старый клиент без request_id получает прежний JSON при успехе и gRPC status при ошибке. `CheckHealth` возвращает `Serving` и module. Python stubs генерируются из общего proto при сборке контейнера.
+
+Общая история и Outbox находятся в AuthDB; история + событие сохраняются одной транзакцией. Worker Web каждые 3 секунды выбирает до 20 событий с `FOR UPDATE SKIP LOCKED`, ожидает подтверждение Kafka, при ошибке сохраняет attempts/lastError и повторяет с задержкой до 60 секунд. При отказе Kafka Web продолжает вычисления и записывает Pending; health становится Degraded. Web не зависит от готовности Kafka при запуске Compose.
+
+CalculationHistoryWriter записывает событие в существующую БД модуля и ставит Saved в общей истории. Уникальный HistoryEventId предотвращает повторные записи; Kafka offset подтверждается после сохранения. Ошибка обработки повторяет тот же event до успешной записи. Это доставка как минимум один раз с защитой от дублей, а не распределённая транзакция между Kafka и БД. Непригодное событие может задержать обработку своей партиции; Dead Letter Queue пока не добавлена.
+
+## Проверки
+
+```powershell
+dotnet build ComplexTechnologicalCalculationsWebApp.sln
+dotnet test Test/Test.csproj --no-restore --filter "Category!=ExternalApi"
+cd FurnaceService
+python -m pip install -r requirements.txt
+python -m unittest discover -s tests -v
+```
+
+Три существующих теста `ExternalApi` требуют закрытые API команды и исключены из локального прогона по решению заказчика. Формулы Furnace приняты как заданные; проверки не доказывают физическую корректность методики.
+
+Повторяемая интеграционная проверка (создаёт тестовых пользователей и записи):
+
+```powershell
+docker compose -p codex-ctc-check up -d --build
+python scripts/smoke.py --compose-project codex-ctc-check --kafka-outage
+docker compose -p codex-ctc-check down
+```
+
+Режим `--kafka-outage` останавливает и запускает Kafka только явно указанного тестового Compose-проекта. Для уже работающей среды без отключения брокера: `python scripts/smoke.py --base-url http://localhost:3000/api`. Не запускайте одновременно два Compose-проекта с теми же портами. `down` сохраняет volumes.
+
+Проверено 03.10.2026: solution и контейнеры собираются; 22 локальных .NET-теста и 3 Python-теста проходят. На свежем PostgreSQL применены все миграции; проверены авторизация, пресеты, ownership, сравнение, PDF/XLSX, настоящий Furnace gRPC, асинхронная история и восстановление после отказа Kafka без дублей. Проверены readiness 503 при остановленном Furnace и liveness 200. Переход Aglom → Slag проверен на сохранённом fixture; закрытые REST API не вызывались. В браузере проверены вход, именованный шаблон, расчёт, история и сравнение.
+
+Для навигации по коду установлен и используется npm CodeGraph: [CODEGRAPH.md](CODEGRAPH.md).
