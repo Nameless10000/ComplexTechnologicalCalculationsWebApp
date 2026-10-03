@@ -114,6 +114,8 @@ services:
     build:
       context: .
       dockerfile: Web/Dockerfile
+    volumes:
+      - web-data-protection:/root/.aspnet/DataProtection-Keys
     depends_on:
       postgres:
         condition: service_healthy
@@ -159,3 +161,4 @@ services:
 volumes:
   postgres-data:
   kafka-data:
+  web-data-protection:
