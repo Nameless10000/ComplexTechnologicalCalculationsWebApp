@@ -15,6 +15,13 @@ public class CalculationsController(AuthDBContext db) : ControllerBase
     public async Task<IActionResult> Compare([FromQuery] Guid leftId, [FromQuery] Guid rightId,
         [FromServices] Data.Services.CalculationComparisonService service) => Ok(service.Compare(await Find(leftId), await Find(rightId)));
     private int UserId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    [HttpGet("{id:guid}/export")]
+    public async Task<IActionResult> Export(Guid id, [FromQuery] string format,
+        [FromServices] Data.Services.CalculationReportExporterService exporter)
+    {
+        var row = await Find(id);
+        return File(exporter.Export(row, format), format == "pdf" ? "application/pdf" : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"{row.Module}-{row.Id}.{format}");
+    }
     [HttpPost("{id:guid}/transition/slag-mode")]
     public async Task<IActionResult> Transition(Guid id,
         [FromBody(EmptyBodyBehavior = Microsoft.AspNetCore.Mvc.ModelBinding.EmptyBodyBehavior.Allow)] JsonElement? existing,

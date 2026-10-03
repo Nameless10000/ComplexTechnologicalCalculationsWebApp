@@ -12,6 +12,7 @@ using Web.Infrastructure;
 using Data.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
+QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community; // Educational project.
 
 // Add services to the container.
 builder.Services.AddControllersWithViews(options => options.Filters.Add<ApiResultFilter>());

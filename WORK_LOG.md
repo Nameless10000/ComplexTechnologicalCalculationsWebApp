@@ -15,7 +15,7 @@
 | 6. Presets: модель, миграции, CRUD, ownership | Реализовано | /presets CRUD, имя/описание/JSON; уникальность имени внутри пользователя и модуля, ownership. Один целевой тест прошёл. |
 | 7. Сравнение сохранённых расчётов | Реализовано | /calculations/compare: различия входов/результатов, B−A и %, нулевая база → null. Только собственные расчёты одного типа; 4 теста прошли. |
 | 8. Связанные расчёты Aglom → Slag | Реализовано | Mapper итогового состава и endpoint transition/slag-mode; сохраняет целевой расход и остальные вводы, не запускает расчёт. Два теста прошли. UI следующим этапом. |
-| 9. PDF/Excel export | Запланировано | Пользователь, дата, модуль, ID, входы и результаты. |
+| 9. PDF/Excel export | Реализовано | /calculations/{id}/export?format=pdf|xlsx. Пользователь, дата UTC, модуль, ID, входы, результаты и correlationId. Реальные PDF/XLSX проверены целевым тестом. |
 | 10. Health Checks PostgreSQL, Kafka, gRPC | Запланировано | Liveness/readiness и тесты отказов. |
 | 11. Транзакционный Outbox и worker с retry/backoff | Реализовано | История + событие одной транзакцией; SKIP LOCKED, подтверждение Kafka, retry/backoff; EventId уникален в БД модулей; consumer повторяет тот же offset. |
 | 12. Unit/integration tests и стабилизация | Запланировано | Существующий xUnit; реальные БД/Kafka по доступности среды. |
