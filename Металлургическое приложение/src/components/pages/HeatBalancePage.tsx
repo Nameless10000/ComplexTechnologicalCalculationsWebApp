@@ -204,7 +204,7 @@ export function HeatBalancePage() {
     <div className="calculation-page space-y-6">
       <CalculationPageHeader title="Теплообмен в доменной печи" description="Расчёт теплового баланса и теплообменных процессов" icon={Flame}
         onCalculate={handleCalculate} isCalculating={isCalculating} error={calculationError} />
-      <CalculationTools module="furnace" inputs={inputs} onLoad={value => { setInputs({ ...inputs, ...value }); }} />
+      <CalculationTools output={calculationResults} onRestoreOutput={setCalculationResults} activeTab={activeTab} onRestoreTab={setActiveTab} module="furnace" inputs={inputs} onLoad={value => { setInputs({ ...inputs, ...value }); }} />
 
       <div className="calculation-workspace">
         <div className="space-y-6">

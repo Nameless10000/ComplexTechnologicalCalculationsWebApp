@@ -1,3 +1,4 @@
+import { readCalculationDraft } from '../../services/calculation-draft';
 import { CalculationPageHeader } from '../CalculationPageHeader';
 import { CalculationTools } from '../CalculationTools';
 import { useState, useEffect } from "react";
@@ -178,7 +179,7 @@ const createEmptyComponent = (): ShihtaComponent => ({
 
 export function SinterChargePage() {
       useEffect(() => {
-    if (new URLSearchParams(window.location.search).has('calculationId')) return;
+    if (new URLSearchParams(window.location.search).has('calculationId') || readCalculationDraft('aglom-mode')) return;
         aglomModeService.getPreset()
           .then(({data}) => {
             setStartEnter(data.startEnter);
@@ -310,7 +311,7 @@ export function SinterChargePage() {
     <div className="calculation-page space-y-6">
       <CalculationPageHeader title="Агломерационная шихта" description="Расчёт состава агломерационной шихты и основных показателей" icon={Layers}
         onCalculate={handleCalculate} isCalculating={isCalculating} error={calculationError} />
-      <CalculationTools module="aglom-mode" inputs={{ userId: 0, startEnter, cocksick: coke, zolaOfCocksick: zola, fluxAdditions: flux, shihtaComponents: components }} onLoad={value => { if(value.startEnter) setStartEnter(value.startEnter); if(value.cocksick) setCoke(value.cocksick); if(value.zolaOfCocksick) setZola(value.zolaOfCocksick); if(value.fluxAdditions) setFlux(value.fluxAdditions); if(value.shihtaComponents) setComponents(value.shihtaComponents.map((item: any) => ({ ...item, id: item.id || crypto.randomUUID() }))); }} />
+      <CalculationTools output={calculationResults} onRestoreOutput={setCalculationResults} activeTab={activeTab} onRestoreTab={setActiveTab} module="aglom-mode" inputs={{ userId: 0, startEnter, cocksick: coke, zolaOfCocksick: zola, fluxAdditions: flux, shihtaComponents: components }} onLoad={value => { if(value.startEnter) setStartEnter(value.startEnter); if(value.cocksick) setCoke(value.cocksick); if(value.zolaOfCocksick) setZola(value.zolaOfCocksick); if(value.fluxAdditions) setFlux(value.fluxAdditions); if(value.shihtaComponents) setComponents(value.shihtaComponents.map((item: any) => ({ ...item, id: item.id || crypto.randomUUID() }))); }} />
 
       <div className="calculation-workspace">
         {/* Main Content */}

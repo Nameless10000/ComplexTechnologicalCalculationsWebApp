@@ -1,3 +1,4 @@
+import { readCalculationDraft } from '../../services/calculation-draft';
 import { CalculationPageHeader } from '../CalculationPageHeader';
 import { featureApi, camelInput } from '../../services/calculation-features';
 import { CalculationTools } from '../CalculationTools';
@@ -107,8 +108,10 @@ export function SlagModePage() {
   const [transitionNotice, setTransitionNotice] = useState('');
 
   useEffect(() => {
-    if (new URLSearchParams(window.location.search).has('calculationId')) return;
-        slagModeService.getPreset()
+    const params = new URLSearchParams(window.location.search);
+    const draft = readCalculationDraft('slag-mode');
+    if (params.has('calculationId') || (draft && !params.has('sourceCalculationId'))) return;
+        (draft ? Promise.resolve({ data: { request: { inputCoke: draft.inputs.coke, castIron: draft.inputs.iron, slag: draft.inputs.slag, components: draft.inputs.components } } }) : slagModeService.getPreset())
           .then(({data}) => {
             
             setCokeData(data.request.inputCoke);
@@ -321,7 +324,7 @@ export function SlagModePage() {
     <div className="calculation-page space-y-6">
       <CalculationPageHeader title="Шлаковый режим" description="Расчёт состава и свойств доменного шлака" icon={Droplets}
         onCalculate={handleCalculate} isCalculating={isCalculating} error={calculationError} notice={transitionNotice} />
-      <CalculationTools module="slag-mode" inputs={{ coke: cokeData, iron: castIronData, slag: slagData, components: chargeComponents }} onLoad={value => { if(value.coke) setCokeData(value.coke); if(value.iron) setCastIronData(value.iron); if(value.slag) setSlagData(value.slag); if(value.components) setChargeComponents(value.components); }} />
+      <CalculationTools output={calculationResults} onRestoreOutput={setCalculationResults} activeTab={activeTab} onRestoreTab={setActiveTab} module="slag-mode" inputs={{ coke: cokeData, iron: castIronData, slag: slagData, components: chargeComponents }} onLoad={value => { if(value.coke) setCokeData(value.coke); if(value.iron) setCastIronData(value.iron); if(value.slag) setSlagData(value.slag); if(value.components) setChargeComponents(value.components); }} />
 
       <div className="calculation-workspace">
         {/* Основной контент */}

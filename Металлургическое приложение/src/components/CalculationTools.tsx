@@ -1,11 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { featureApi, camelInput } from '../services/calculation-features';
+import { readCalculationDraft, writeCalculationDraft } from '../services/calculation-draft';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Card, CardContent } from './ui/card';
 
-export function CalculationTools({ module, inputs, onLoad }: { module: string; inputs: any; onLoad: (input: any) => void }) {
+export function CalculationTools({ module, inputs, onLoad, output, onRestoreOutput, activeTab, onRestoreTab, onReceipt }: {
+  module: string; inputs: any; onLoad: (input: any) => void;
+  output: any; onRestoreOutput: (output: any) => void;
+  activeTab: string; onRestoreTab: (tab: string) => void; onReceipt?: (receipt: any) => void;
+}) {
   const [presets, setPresets] = useState<any[]>([]);
   const [selected, setSelected] = useState('');
   const [name, setName] = useState('');
@@ -14,7 +19,15 @@ export function CalculationTools({ module, inputs, onLoad }: { module: string; i
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
   const [receipt, setReceipt] = useState<any>(null);
+  const [ready, setReady] = useState(false);
+  const [storageError, setStorageError] = useState(false);
+  const sourceRef = useRef<string | null>(null);
+  const callbacks = useRef({ onLoad, onRestoreOutput, onRestoreTab, onReceipt });
+  callbacks.current = { onLoad, onRestoreOutput, onRestoreTab, onReceipt };
   const loadRef = useRef(onLoad); loadRef.current = onLoad;
+  const snapshot = useRef<any>(null);
+  snapshot.current = { version: 1, inputs, output, activeTab, receipt, sourceCalculationId: sourceRef.current };
+  const readyRef = useRef(ready); readyRef.current = ready;
   const refresh = async () => setPresets(await featureApi.presets(module));
   const run = async (operation: () => Promise<void>) => {
     setBusy(true); setError(''); setMessage('');
@@ -23,12 +36,31 @@ export function CalculationTools({ module, inputs, onLoad }: { module: string; i
   useEffect(() => {
     let cancelled = false;
     featureApi.presets(module).then(rows => { if (!cancelled) setPresets(rows); }).catch((e) => { if (!cancelled) setError(e.message); });
-    const id = new URLSearchParams(window.location.search).get('calculationId');
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('calculationId');
+    const sourceId = params.get('sourceCalculationId');
+    const draft = readCalculationDraft(module);
+    sourceRef.current = sourceId || (!id ? draft?.sourceCalculationId : null) || null;
+    if (!id && draft) {
+      loadRef.current(draft.inputs);
+      if (!sourceId) {
+        callbacks.current.onRestoreOutput(draft.output);
+        callbacks.current.onRestoreTab(draft.activeTab);
+        setReceipt(draft.receipt);
+      }
+      setMessage('Данные восстановлены из этого браузера. Изменения сохраняются автоматически.');
+    }
+    if (!id) setReady(true);
     if (id) featureApi.calculation(id).then(row => {
       if (cancelled) return;
       if (row.module !== module) throw new Error('Расчёт относится к другому модулю.');
       loadRef.current(module === 'furnace' ? row.input : camelInput(row.input));
-      setMessage('Входные данные загружены. Для нового расчёта нажмите «Рассчитать».');
+      callbacks.current.onRestoreOutput(module === 'furnace' ? row.output : camelInput(row.output));
+      callbacks.current.onRestoreTab('results');
+      setReceipt({ id: row.id, module: row.module, status: row.status, correlationId: row.correlationId });
+      sourceRef.current = row.sourceCalculationId;
+      setMessage('Сохранённый расчёт открыт. Для нового расчёта нажмите «Рассчитать».');
+      setReady(true);
     }).catch(e => { if (!cancelled) setError(e.message); });
     const completed = (event: Event) => { const data = (event as CustomEvent).detail; if (data.module === module) setReceipt(data); };
     window.addEventListener('calculation-completed', completed);
@@ -45,6 +77,17 @@ export function CalculationTools({ module, inputs, onLoad }: { module: string; i
     timer = setTimeout(poll, 3000);
     return () => { cancelled = true; clearTimeout(timer); };
   }, [receipt?.id, receipt?.status]);
+  useEffect(() => { callbacks.current.onReceipt?.(receipt); }, [receipt]);
+  useEffect(() => {
+    if (!ready) return;
+    const timer = setTimeout(() => setStorageError(!writeCalculationDraft(module, snapshot.current)), 300);
+    return () => clearTimeout(timer);
+  }, [module, ready, inputs, output, activeTab, receipt]);
+  useEffect(() => {
+    const flush = () => { if (readyRef.current) writeCalculationDraft(module, snapshot.current); };
+    window.addEventListener('pagehide', flush);
+    return () => { flush(); window.removeEventListener('pagehide', flush); };
+  }, [module]);
   const save = (update: boolean) => run(async () => {
     const row = await featureApi.savePreset({ module, name, description, payload: inputs }, update ? selected : undefined);
     await refresh(); setSelected(row.id); setMessage('Шаблон сохранён.');
@@ -69,6 +112,7 @@ export function CalculationTools({ module, inputs, onLoad }: { module: string; i
       </div>
       </details>
       {receipt && <div className="space-y-1"><p role="status">Расчёт выполнен. История: {receipt.status === 'Saved' ? 'сохранена' : 'обрабатывается асинхронно'}.</p><p className="text-xs text-muted-foreground">CorrelationId: {receipt.correlationId}</p><a className="underline mr-4" href={featureApi.exportUrl(receipt.id, 'pdf')}>Скачать PDF</a><a className="underline" href={featureApi.exportUrl(receipt.id, 'xlsx')}>Скачать Excel</a>{module === 'aglom-mode' && <Link className="underline ml-4" to={`/slag-mode?sourceCalculationId=${receipt.id}`}>Перейти к Slag Mode</Link>}</div>}
+      {storageError && <p role="alert" className="text-destructive">Браузер не разрешил сохранить данные. Проверьте доступ к локальному хранилищу.</p>}
       {message && <p role="status">{message}</p>}{error && <p role="alert" className="text-destructive whitespace-pre-wrap">{error}</p>}
     </CardContent>
   </Card>;

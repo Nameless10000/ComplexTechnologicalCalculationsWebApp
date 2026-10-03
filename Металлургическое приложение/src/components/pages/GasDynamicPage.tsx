@@ -1,3 +1,4 @@
+import { readCalculationDraft } from '../../services/calculation-draft';
 import { CalculationPageHeader } from '../CalculationPageHeader';
 import { CalculationTools } from '../CalculationTools';
 import { useEffect, useState } from 'react';
@@ -145,7 +146,7 @@ export function GasDynamicPage() {
   });
 
   useEffect(() => {
-    if (new URLSearchParams(window.location.search).has('calculationId')) return;
+    if (new URLSearchParams(window.location.search).has('calculationId') || readCalculationDraft('gas-dynamic')) return;
     gasDynamicService.getPreset()
       .then(({input, output}) => {
 
@@ -265,7 +266,7 @@ export function GasDynamicPage() {
     <div className="calculation-page space-y-6">
       <CalculationPageHeader title="Газодинамический режим доменной плавки" description="Расчёт газодинамических параметров доменного процесса" icon={Wind}
         onCalculate={handleCalculate} isCalculating={isCalculating} error={calculationError} />
-      <CalculationTools module="gas-dynamic" inputs={{ aglomInput: { koksContents, aglomContents, okatContents }, blastFurnaceInput: { composition, fuelAndBlast, geometry, thermalAndPressure, materials, production } }} onLoad={value => { if(value.aglomInput) { setKoksContents(value.aglomInput.koksContents); setAglomContents(value.aglomInput.aglomContents); setOkatContents(value.aglomInput.okatContents); } if(value.blastFurnaceInput) { const v=value.blastFurnaceInput; setComposition(v.composition); setFuelAndBlast(v.fuelAndBlast); setGeometry(v.geometry); setThermalAndPressure(v.thermalAndPressure); setMaterials(v.materials); setProduction(v.production); } }} />
+      <CalculationTools output={calculationResults} onRestoreOutput={setCalculationResults} activeTab={activeTab} onRestoreTab={setActiveTab} module="gas-dynamic" inputs={{ aglomInput: { koksContents, aglomContents, okatContents }, blastFurnaceInput: { composition, fuelAndBlast, geometry, thermalAndPressure, materials, production } }} onLoad={value => { if(value.aglomInput) { setKoksContents(value.aglomInput.koksContents); setAglomContents(value.aglomInput.aglomContents); setOkatContents(value.aglomInput.okatContents); } if(value.blastFurnaceInput) { const v=value.blastFurnaceInput; setComposition(v.composition); setFuelAndBlast(v.fuelAndBlast); setGeometry(v.geometry); setThermalAndPressure(v.thermalAndPressure); setMaterials(v.materials); setProduction(v.production); } }} />
 
       <div className="calculation-workspace">
         {/* Основной контент */}

@@ -1,3 +1,4 @@
+import { readCalculationDraft } from './calculation-draft';
 import { API_CONFIG } from '../config/api.config';
 
 interface User {
@@ -25,8 +26,10 @@ export async function fetchWithTimeout(
   
   try {
     const headers = new Headers(options.headers);
-    const sourceId = new URLSearchParams(window.location.search).get('sourceCalculationId');
-    if (sourceId && url.includes('/SlagMode/Calculate')) headers.set('X-Source-Calculation-Id', sourceId);
+    const module = url.includes('/Furnace/') ? 'furnace' : url.includes('/AglomMode/') ? 'aglom-mode' : url.includes('/SlagMode/') ? 'slag-mode' : 'gas-dynamic';
+    const params = new URLSearchParams(window.location.search);
+    const sourceId = params.get('sourceCalculationId') || (!params.has('calculationId') ? readCalculationDraft(module)?.sourceCalculationId : null);
+    if (sourceId && options.method === 'POST' && /\/Calculate(?:$|\?)/i.test(url)) headers.set('X-Source-Calculation-Id', sourceId);
     const response = await fetch(url, {
       ...options,
       headers,
