@@ -26,6 +26,8 @@ public sealed class CalculationComparisonService
             if (a?.Type is JTokenType.Integer or JTokenType.Float && b?.Type is JTokenType.Integer or JTokenType.Float)
             {
                 var av = a.Value<double>(); var bv = b.Value<double>();
+                // JSON 1 and 1.0 represent the same input despite different token types.
+                if (hasLeft && hasRight && av == bv) continue;
                 var difference = bv - av;
                 if (double.IsFinite(difference)) delta = difference;
                 if (av != 0 && double.IsFinite(difference / av * 100)) percentage = difference / av * 100;

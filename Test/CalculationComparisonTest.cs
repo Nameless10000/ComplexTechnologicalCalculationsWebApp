@@ -22,6 +22,8 @@ public class CalculationComparisonTest
         var service = new CalculationComparisonService();
         var left = new CalculationRecord { Module = "furnace" };
         Assert.Empty(service.Compare(left, left).Inputs);
+        Assert.Empty(service.Compare(new CalculationRecord { Module = "furnace", RequestJson = "{\"x\":1}" },
+            new CalculationRecord { Module = "furnace", RequestJson = "{\"x\":1.0}" }).Inputs);
         Assert.Throws<ArgumentException>(() => service.Compare(left, new CalculationRecord { Module = "slag-mode" }));
     }
 }

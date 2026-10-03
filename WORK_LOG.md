@@ -18,8 +18,8 @@
 | 9. PDF/Excel export | Реализовано | /calculations/{id}/export?format=pdf|xlsx. Пользователь, дата UTC, модуль, ID, входы, результаты и correlationId. Реальные PDF/XLSX проверены целевым тестом. |
 | 10. Health Checks PostgreSQL, Kafka, gRPC | Реализовано | /health/live, /health/ready, /health; JSON с состояниями. Kafka unavailable → Degraded (Outbox), БД/gRPC unavailable → Unhealthy. Реальная проверка следующим этапом. |
 | 11. Транзакционный Outbox и worker с retry/backoff | Реализовано | История + событие одной транзакцией; SKIP LOCKED, подтверждение Kafka, retry/backoff; EventId уникален в БД модулей; consumer повторяет тот же offset. |
-| 12. Unit/integration tests и стабилизация | Запланировано | Существующий xUnit; реальные БД/Kafka по доступности среды. |
-| 13. Docker Compose: сборка, запуск, миграции, health/gRPC | Запланировано | Не удалять пользовательские volumes. |
+| 12. Unit/integration tests и стабилизация | В работе | 22 .NET + 3 Python проходят. Реальные API/presets/history/ownership/export и отказ/восстановление Kafka прошли. Исправлено сравнение JSON 1 и 1.0; 4 целевых теста и повторная проверка endpoint прошли. |
+| 13. Docker Compose: сборка, запуск, миграции, health/gRPC | Реализовано | Все сервисы собраны/запущены в отдельном codex-ctc-check; все миграции применились, health Healthy. Пользовательские volumes сохранены. |
 | 14. Документация API/gRPC и демонстрационные сценарии | Запланировано | Только реально реализованные контракты. |
 | 15. Frontend: шаблоны, история, сравнение, экспорт, связанные расчёты, статус | Реализовано | Инструменты на четырёх рабочих формах и экран сохранённых расчётов; реальная cookie-авторизация, status polling с ограничением. Vite build проходит. |
 
