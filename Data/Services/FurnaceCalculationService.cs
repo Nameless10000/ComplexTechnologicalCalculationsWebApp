@@ -9,7 +9,7 @@ namespace Data.Services;
 public class FurnaceCalculationService(
     IHttpContextAccessor httpContextAccessor,
     FurnaceService.FurnaceServiceClient calculatorClient,
-    CalculationHistoryProducerService historyProducer)
+    CalculationHistoryStoreService historyStore)
 {
     private HttpContext? _httpContext => httpContextAccessor.HttpContext;
 
@@ -26,7 +26,7 @@ public class FurnaceCalculationService(
         CalculationGrpcMetadata.EnsureSuccess(grpcResponse);
         var responseJson = grpcResponse.Json;
 
-        await historyProducer.PublishAsync(new CalculationHistoryEvent
+        await historyStore.SaveAsync(new CalculationHistoryEvent
         {
             Module = CalculationModules.Furnace,
             UserId = _currentUserId,

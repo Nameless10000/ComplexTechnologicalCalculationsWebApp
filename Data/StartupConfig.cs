@@ -86,6 +86,7 @@ public static class StartupConfig
 
         services.AddTransient<SimpleLoggerService>();
         services.AddSingleton<Services.CalculationHistoryProducerService>();
+        services.AddSingleton<IHistoryEventPublisher>(provider => provider.GetRequiredService<Services.CalculationHistoryProducerService>());
         
         
         return services;

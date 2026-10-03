@@ -17,7 +17,7 @@ public class SlagModeService(
     IHttpContextAccessor httpContextAccessor,
     IMapper mapper,
     SlagCalculator.SlagCalculatorClient calculatorClient,
-    CalculationHistoryProducerService historyProducer)
+    CalculationHistoryStoreService historyStore)
 {
     private HttpContext _httpContext => httpContextAccessor.HttpContext;
     private int _currentUserId => int.Parse(_httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "0");
@@ -64,7 +64,7 @@ public class SlagModeService(
         CalculationGrpcMetadata.EnsureSuccess(grpcResponse);
         var responseFromLib = JsonConvert.DeserializeObject<ResponseData>(grpcResponse.Json) ?? new ResponseData();
 
-        await historyProducer.PublishAsync(new CalculationHistoryEvent
+        await historyStore.SaveAsync(new CalculationHistoryEvent
         {
             Module = CalculationModules.SlagMode,
             UserId = _currentUserId,

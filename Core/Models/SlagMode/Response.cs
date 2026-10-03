@@ -1,10 +1,14 @@
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Models.SlagMode;
 
+[Index(nameof(HistoryEventId), IsUnique = true)]
 public class Response : Entity
 {
+    public Guid? HistoryEventId { get; set; }
+
         [DisplayName("Основность шлака CaO / SiO2")]
         public double SlagBasicity1 { get; set; }
 

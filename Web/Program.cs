@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Web.Seed;
 using Web.Infrastructure;
+using Data.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +36,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.ConfigureDataBaseContexts(conStrings);
 builder.Services.ConfigureKafka(builder.Configuration);
 builder.Services.ScanServices();
+builder.Services.AddScoped<OutboxDispatcher>();
+builder.Services.AddHostedService<OutboxWorker>();
 builder.Services.ScanRepos();
 builder.Services.ConfigMapper();
 
@@ -146,7 +149,8 @@ try
         x.AllowAnyHeader()
             .AllowAnyMethod()
             .WithOrigins("http://localhost:3000")
-            .AllowCredentials();
+            .AllowCredentials()
+            .WithExposedHeaders("X-Calculation-Id", "X-Correlation-Id", "X-History-Status");
     });
 
     using var scope = app.Services.CreateScope();

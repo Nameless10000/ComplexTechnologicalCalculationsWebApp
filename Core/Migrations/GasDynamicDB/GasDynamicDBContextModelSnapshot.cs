@@ -42,6 +42,9 @@ namespace Core.Migrations.GasDynamicDB
                     b.Property<DateTime?>("DeletedDateTime")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid?>("HistoryEventId")
+                        .HasColumnType("uuid");
+
                     b.Property<bool>("IsPreset")
                         .HasColumnType("boolean");
 
@@ -63,6 +66,9 @@ namespace Core.Migrations.GasDynamicDB
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("HistoryEventId")
+                        .IsUnique();
 
                     b.ToTable("CalculationModels");
                 });

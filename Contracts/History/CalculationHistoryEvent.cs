@@ -10,6 +10,8 @@ public static class CalculationModules
 
 public sealed class CalculationHistoryEvent
 {
+    public Guid Id { get; set; }
+    public string CorrelationId { get; set; } = "";
     public string Module { get; set; } = string.Empty;
 
     public int UserId { get; set; }

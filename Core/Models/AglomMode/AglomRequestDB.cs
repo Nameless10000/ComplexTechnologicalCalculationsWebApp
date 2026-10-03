@@ -1,4 +1,5 @@
-﻿using Console;
+using Microsoft.EntityFrameworkCore;
+using Console;
 using Core.Models.SlagMode;
 using System;
 using System.Collections.Generic;
@@ -9,8 +10,11 @@ using System.Threading.Tasks;
 
 namespace Core.Models.AglomMode
 {
-    public class AglomRequestDB : Entity
+    [Index(nameof(HistoryEventId), IsUnique = true)]
+public class AglomRequestDB : Entity
     {
+    public Guid? HistoryEventId { get; set; }
+
         [ForeignKey(nameof(ZolaOfCocksick))]
         public int ZolaOfCocksickID { get; set; }
         [ForeignKey(nameof(Cocksick))]

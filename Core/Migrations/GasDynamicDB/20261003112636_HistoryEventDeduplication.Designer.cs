@@ -3,17 +3,20 @@ using System;
 using Core.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Core.Migrations.FurnaceDB
+namespace Core.Migrations.GasDynamicDB
 {
-    [DbContext(typeof(FurnaceDBContext))]
-    partial class FurnaceDBContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(GasDynamicDBContext))]
+    [Migration("20261003112636_HistoryEventDeduplication")]
+    partial class HistoryEventDeduplication
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +25,7 @@ namespace Core.Migrations.FurnaceDB
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Core.Models.Furnace.FurnaceCalculationModel", b =>
+            modelBuilder.Entity("Core.Models.GasDynamic.CalculationModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace Data.Services;
 
-public sealed class CalculationHistoryProducerService : IDisposable
+public sealed class CalculationHistoryProducerService : IHistoryEventPublisher, IDisposable
 {
     private readonly IProducer<string, string> _producer;
     private readonly KafkaOptions _options;
@@ -16,7 +16,9 @@ public sealed class CalculationHistoryProducerService : IDisposable
         _options = options.Value;
         _producer = new ProducerBuilder<string, string>(new ProducerConfig
         {
-            BootstrapServers = _options.BootstrapServers
+            BootstrapServers = _options.BootstrapServers,
+            EnableIdempotence = true,
+            MessageTimeoutMs = 5000
         }).Build();
     }
 

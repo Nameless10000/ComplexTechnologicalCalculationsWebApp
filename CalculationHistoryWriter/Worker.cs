@@ -11,6 +11,7 @@ using Core.Models.SlagMode;
 using Core.Models.Furnace;
 using Data.Infrastructure;
 using Microsoft.Extensions.Options;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace CalculationHistoryWriter;
@@ -49,8 +50,13 @@ public class Worker(
                     continue;
                 }
 
-                await SaveHistoryAsync(historyEvent, stoppingToken);
-                consumer.Commit(result);
+                // Retry this exact event before consuming/committing later offsets.
+                while (!stoppingToken.IsCancellationRequested)
+                {
+                    try { await SaveHistoryAsync(historyEvent, stoppingToken); consumer.Commit(result); break; }
+                    catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested) { throw; }
+                    catch (Exception ex) { logger.LogError(ex, "History save failed; retrying the same event."); await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken); }
+                }
             }
             catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
             {
@@ -70,6 +76,9 @@ public class Worker(
     {
         using var scope = scopeFactory.CreateScope();
         var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
+        var historyDb = scope.ServiceProvider.GetRequiredService<AuthDBContext>();
+        var record = historyEvent.Id == Guid.Empty ? null : await historyDb.CalculationHistory.FindAsync([historyEvent.Id], cancellationToken);
+        if (record?.Status == "Saved") return;
 
         switch (historyEvent.Module)
         {
@@ -86,9 +95,9 @@ public class Worker(
                 await SaveFurnaceAsync(scope.ServiceProvider, historyEvent, cancellationToken);
                 break;
             default:
-                logger.LogWarning("Unknown calculation module '{Module}'.", historyEvent.Module);
-                break;
+                throw new InvalidOperationException($"Unknown calculation module: {historyEvent.Module}");
         }
+        if (record is not null) { record.Status = "Saved"; await historyDb.SaveChangesAsync(cancellationToken); }
     }
 
     private static async Task SaveAglomModeAsync(
@@ -98,12 +107,14 @@ public class Worker(
         CancellationToken cancellationToken)
     {
         var dbContext = serviceProvider.GetRequiredService<AgloDBContext>();
+        if (historyEvent.Id != Guid.Empty && await dbContext.AglomRequests.AnyAsync(x => x.HistoryEventId == historyEvent.Id, cancellationToken)) return;
         var requestModel = JsonConvert.DeserializeObject<AglomRequestData>(historyEvent.RequestJson)!;
         var responseModel = JsonConvert.DeserializeObject<AglomResponseData>(historyEvent.ResponseJson)!;
 
         var request = mapper.Map<AglomRequestData, AglomRequestDB>(requestModel);
         var response = mapper.Map<AglomResponseData, AglomResponseDB>(responseModel);
 
+        request.HistoryEventId = historyEvent.Id == Guid.Empty ? null : historyEvent.Id;
         request.AglomResponse = response;
         request.CreatorID = historyEvent.UserId;
         request.CreationDateTime = historyEvent.CreationDateTime;
@@ -120,8 +131,10 @@ public class Worker(
         CancellationToken cancellationToken)
     {
         var dbContext = serviceProvider.GetRequiredService<GasDynamicDBContext>();
+        if (historyEvent.Id != Guid.Empty && await dbContext.CalculationModels.AnyAsync(x => x.HistoryEventId == historyEvent.Id, cancellationToken)) return;
         var calculation = new CalculationModel
         {
+            HistoryEventId = historyEvent.Id == Guid.Empty ? null : historyEvent.Id,
             OwnerId = historyEvent.UserId,
             CreatorID = historyEvent.UserId,
             CreationDateTime = historyEvent.CreationDateTime,
@@ -140,12 +153,14 @@ public class Worker(
         CancellationToken cancellationToken)
     {
         var dbContext = serviceProvider.GetRequiredService<SlagModeDBContext>();
+        if (historyEvent.Id != Guid.Empty && await dbContext.Responses.AnyAsync(x => x.HistoryEventId == historyEvent.Id, cancellationToken)) return;
         var requestModel = JsonConvert.DeserializeObject<RequestData>(historyEvent.RequestJson)!;
         var responseModel = JsonConvert.DeserializeObject<ResponseData>(historyEvent.ResponseJson)!;
 
         var request = mapper.Map<RequestData, Request>(requestModel);
         var response = mapper.Map<ResponseData, Response>(responseModel);
 
+        response.HistoryEventId = historyEvent.Id == Guid.Empty ? null : historyEvent.Id;
         response.Request = request;
         response.CreatorID = historyEvent.UserId;
         response.CreationDateTime = historyEvent.CreationDateTime;
@@ -163,9 +178,11 @@ public class Worker(
     {
         var dbContext =
             serviceProvider.GetRequiredService<FurnaceDBContext>();
+        if (historyEvent.Id != Guid.Empty && await dbContext.CalculationModels.AnyAsync(x => x.HistoryEventId == historyEvent.Id, cancellationToken)) return;
 
         var calculation = new FurnaceCalculationModel
         {
+            HistoryEventId = historyEvent.Id == Guid.Empty ? null : historyEvent.Id,
             OwnerId = historyEvent.UserId,
             CreatorID = historyEvent.UserId,
             CreationDateTime = historyEvent.CreationDateTime,
