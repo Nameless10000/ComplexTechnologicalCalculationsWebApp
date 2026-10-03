@@ -1,3 +1,5 @@
+import { useLocation } from 'react-router-dom';
+import { CalculationNextStage } from '../CalculationNextStage';
 import { readCalculationDraft } from '../../services/calculation-draft';
 import { CalculationPageHeader } from '../CalculationPageHeader';
 import { featureApi, camelInput } from '../../services/calculation-features';
@@ -105,25 +107,34 @@ interface RequestData {
 }
 
 export function SlagModePage() {
+  const [initializing, setInitializing] = useState(true);
+  const [calculationReceipt, setCalculationReceipt] = useState<any>(null);
+  const { search } = useLocation();
   const [transitionNotice, setTransitionNotice] = useState('');
 
   useEffect(() => {
+    let cancelled = false;
+    setInitializing(true);
+    setTransitionNotice('');
     const params = new URLSearchParams(window.location.search);
     const draft = readCalculationDraft('slag-mode');
-    if (params.has('calculationId') || (draft && !params.has('sourceCalculationId'))) return;
+    if (params.has('sourceCalculationId')) { setCalculationResults(null); setActiveTab('components'); }
+    if (params.has('calculationId') || (draft && !params.has('sourceCalculationId'))) { setInitializing(false); return; }
         (draft ? Promise.resolve({ data: { request: { inputCoke: draft.inputs.coke, castIron: draft.inputs.iron, slag: draft.inputs.slag, components: draft.inputs.components } } }) : slagModeService.getPreset())
-          .then(({data}) => {
+          .then(async ({data}) => {
+            if (cancelled) return;
             
             setCokeData(data.request.inputCoke);
             setCastIronData(data.request.castIron);
             setSlagData(data.request.slag);
             setChargeComponents(data.request.components);
             const sourceId = new URLSearchParams(window.location.search).get('sourceCalculationId');
-            if (sourceId) featureApi.transition(sourceId, { coke: data.request.inputCoke, iron: data.request.castIron, slag: data.request.slag, components: data.request.components })
-              .then(row => { const value=camelInput(row.input); setCokeData(value.coke); setCastIronData(value.iron); setSlagData(value.slag); setChargeComponents(value.components); setTransitionNotice('Поля перенесены из Aglom. Проверьте расход агломерата, кокс, чугун и шлак перед расчётом.'); })
-              .catch(error => setCalculationError(error.message));
-          }).catch(error => setCalculationError(error.message))
-  }, []);
+            if (sourceId) await featureApi.transition(sourceId, { coke: data.request.inputCoke, iron: data.request.castIron, slag: data.request.slag, components: data.request.components })
+              .then(row => { if (cancelled) return; const value=camelInput(row.input); setCokeData(value.coke); setCastIronData(value.iron); setSlagData(value.slag); setChargeComponents(value.components); setTransitionNotice('Поля перенесены из Aglom. Проверьте расход агломерата, кокс, чугун и шлак перед расчётом.'); })
+              .catch(error => { if (!cancelled) setCalculationError(error.message); });
+          }).catch(error => { if (!cancelled) setCalculationError(error.message); }).finally(() => { if (!cancelled) setInitializing(false); });
+    return () => { cancelled = true; };
+  }, [search]);
 
   // Состояния для параметров кокса
   const [cokeData, setCokeData] = useState<InputCokeForCalcs>({
@@ -251,6 +262,7 @@ export function SlagModePage() {
       // Моковые данные для результатов (соответствующие модели ResponseData)
       
       setCalculationResults(response.data);
+      setActiveTab("results");
     } catch (error: any) {
       setCalculationError(
         error.message || "Произошла ошибка при расчете.",
@@ -324,7 +336,7 @@ export function SlagModePage() {
     <div className="calculation-page space-y-6">
       <CalculationPageHeader title="Шлаковый режим" description="Расчёт состава и свойств доменного шлака" icon={Droplets}
         onCalculate={handleCalculate} isCalculating={isCalculating} error={calculationError} notice={transitionNotice} />
-      <CalculationTools output={calculationResults} onRestoreOutput={setCalculationResults} activeTab={activeTab} onRestoreTab={setActiveTab} module="slag-mode" inputs={{ coke: cokeData, iron: castIronData, slag: slagData, components: chargeComponents }} onLoad={value => { if(value.coke) setCokeData(value.coke); if(value.iron) setCastIronData(value.iron); if(value.slag) setSlagData(value.slag); if(value.components) setChargeComponents(value.components); }} />
+      <CalculationTools initializing={initializing} onReceipt={setCalculationReceipt} output={calculationResults} onRestoreOutput={setCalculationResults} activeTab={activeTab} onRestoreTab={setActiveTab} module="slag-mode" inputs={{ coke: cokeData, iron: castIronData, slag: slagData, components: chargeComponents }} onLoad={value => { if(value.coke) setCokeData(value.coke); if(value.iron) setCastIronData(value.iron); if(value.slag) setSlagData(value.slag); if(value.components) setChargeComponents(value.components); }} />
 
       <div className="calculation-workspace">
         {/* Основной контент */}
@@ -880,6 +892,7 @@ export function SlagModePage() {
 
             {/* Вкладка 4: Результаты */}
             <TabsContent value="results" className="space-y-6">
+              {calculationResults && <CalculationNextStage module="slag-mode" receipt={calculationReceipt} />}
               {!calculationResults && !isCalculating && (
                 <Card>
                   <CardContent className="pt-6">

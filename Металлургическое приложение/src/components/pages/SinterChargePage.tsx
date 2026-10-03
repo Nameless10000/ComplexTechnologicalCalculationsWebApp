@@ -1,3 +1,4 @@
+import { CalculationNextStage } from '../CalculationNextStage';
 import { readCalculationDraft } from '../../services/calculation-draft';
 import { CalculationPageHeader } from '../CalculationPageHeader';
 import { CalculationTools } from '../CalculationTools';
@@ -178,8 +179,10 @@ const createEmptyComponent = (): ShihtaComponent => ({
 });
 
 export function SinterChargePage() {
+  const [initializing, setInitializing] = useState(true);
+  const [calculationReceipt, setCalculationReceipt] = useState<any>(null);
       useEffect(() => {
-    if (new URLSearchParams(window.location.search).has('calculationId') || readCalculationDraft('aglom-mode')) return;
+    if (new URLSearchParams(window.location.search).has('calculationId') || readCalculationDraft('aglom-mode')) { setInitializing(false); return; }
         aglomModeService.getPreset()
           .then(({data}) => {
             setStartEnter(data.startEnter);
@@ -187,7 +190,7 @@ export function SinterChargePage() {
             setZola(data.zolaOfCocksick);
             setFlux(data.fluxAdditions);
             setComponents(data.shihtaComponents);
-          }).catch(error => setCalculationError(error.message))
+          }).catch(error => setCalculationError(error.message)).finally(() => setInitializing(false))
   }, []);
 
   const [startEnter, setStartEnter] = useState<StartEnter>(initialStartEnter);
@@ -253,7 +256,7 @@ export function SinterChargePage() {
   const generateResultsSummary = (results: AglomResponseData): string => {
       if (!results || !results.components.length) return "Нет данных";
       const total = results.components[results.components.length - 1];
-      return `Агломерат: Fe=${total.reportFe.toFixed(2)}%, Основность=${total.reportCaO_SiO2.toFixed(2)}, S=${total.reportS.toFixed(3)}%`;
+      return `Агломерат: Fe=${total.reportFe.toFixed(2)}%, Основность=${total.reportCaO_SiO2?.toFixed(2)}, S=${total.reportS.toFixed(3)}%`;
   };
 
   const handleSaveToHistory = (note: string) => {
@@ -311,7 +314,7 @@ export function SinterChargePage() {
     <div className="calculation-page space-y-6">
       <CalculationPageHeader title="Агломерационная шихта" description="Расчёт состава агломерационной шихты и основных показателей" icon={Layers}
         onCalculate={handleCalculate} isCalculating={isCalculating} error={calculationError} />
-      <CalculationTools output={calculationResults} onRestoreOutput={setCalculationResults} activeTab={activeTab} onRestoreTab={setActiveTab} module="aglom-mode" inputs={{ userId: 0, startEnter, cocksick: coke, zolaOfCocksick: zola, fluxAdditions: flux, shihtaComponents: components }} onLoad={value => { if(value.startEnter) setStartEnter(value.startEnter); if(value.cocksick) setCoke(value.cocksick); if(value.zolaOfCocksick) setZola(value.zolaOfCocksick); if(value.fluxAdditions) setFlux(value.fluxAdditions); if(value.shihtaComponents) setComponents(value.shihtaComponents.map((item: any) => ({ ...item, id: item.id || crypto.randomUUID() }))); }} />
+      <CalculationTools initializing={initializing} onReceipt={setCalculationReceipt} output={calculationResults} onRestoreOutput={setCalculationResults} activeTab={activeTab} onRestoreTab={setActiveTab} module="aglom-mode" inputs={{ userId: 0, startEnter, cocksick: coke, zolaOfCocksick: zola, fluxAdditions: flux, shihtaComponents: components }} onLoad={value => { if(value.startEnter) setStartEnter(value.startEnter); if(value.cocksick) setCoke(value.cocksick); if(value.zolaOfCocksick) setZola(value.zolaOfCocksick); if(value.fluxAdditions) setFlux(value.fluxAdditions); if(value.shihtaComponents) setComponents(value.shihtaComponents.map((item: any) => ({ ...item, id: item.id || crypto.randomUUID() }))); }} />
 
       <div className="calculation-workspace">
         {/* Main Content */}
@@ -750,6 +753,7 @@ export function SinterChargePage() {
 
                 {/* Tab 5: Results */}
                 <TabsContent value="results" className="space-y-6">
+              {calculationResults && <CalculationNextStage module="aglom-mode" receipt={calculationReceipt} />}
                     {calculationResults ? (
                         <div className="space-y-4">
                             <SinterChargeResults results={calculationResults} />

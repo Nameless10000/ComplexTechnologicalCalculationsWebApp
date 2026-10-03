@@ -31,6 +31,15 @@ public class CalculationsController(AuthDBContext db) : ControllerBase
         return Ok(new { transition.SourceCalculationId, targetModule = "slag-mode", input = JsonDocument.Parse(transition.Input.ToString()).RootElement.Clone(), transition.MappedFields,
             message = "Проверьте расход агломерата, кокс, чугун и шлак перед запуском расчёта." });
     }
+    [HttpPost("{id:guid}/transition/furnace")]
+    public async Task<IActionResult> FurnaceTransition(Guid id,
+        [FromBody(EmptyBodyBehavior = Microsoft.AspNetCore.Mvc.ModelBinding.EmptyBodyBehavior.Allow)] JsonElement? existing,
+        [FromServices] Data.Services.FurnaceTransitionService service)
+    {
+        var transition = service.Map(await Find(id), existing.HasValue ? Newtonsoft.Json.Linq.JObject.Parse(existing.Value.GetRawText()) : null);
+        return Ok(new { transition.SourceCalculationId, targetModule = "furnace", input = JsonDocument.Parse(transition.Input.ToString()).RootElement.Clone(), transition.MappedFields,
+            message = "Проверьте перенесённые значения и остальные параметры теплового баланса перед расчётом." });
+    }
     private IQueryable<CalculationRecord> Own => db.CalculationHistory.AsNoTracking().Where(x => x.UserId == UserId);
 
     [HttpGet]

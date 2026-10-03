@@ -19,7 +19,7 @@ export const featureApi = {
   history: (module: string, skip = 0) => request(`/calculations?module=${encodeURIComponent(module)}&skip=${skip}&take=50`),
   calculation: (id: string) => request(`/calculations/${id}`),
   compare: (left: string, right: string) => request(`/calculations/compare?leftId=${left}&rightId=${right}`),
-  transition: (id: string, input: any) => request(`/calculations/${id}/transition/slag-mode`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(input) }),
+  transition: (id: string, input: any, target = 'slag-mode') => request(`/calculations/${id}/transition/${target}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(input) }),
   exportUrl: (id: string, format: string) => `${API_CONFIG.BASE_URL}/calculations/${id}/export?format=${format}`,
   health: async () => (await fetch(`${API_CONFIG.BASE_URL}/health/ready`, { credentials: 'include' })).json(),
 };

@@ -1,16 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { featureApi, camelInput } from '../services/calculation-features';
 import { readCalculationDraft, writeCalculationDraft } from '../services/calculation-draft';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Card, CardContent } from './ui/card';
 
-export function CalculationTools({ module, inputs, onLoad, output, onRestoreOutput, activeTab, onRestoreTab, onReceipt }: {
+export function CalculationTools({ module, inputs, onLoad, output, onRestoreOutput, activeTab, onRestoreTab, onReceipt, initializing = false }: {
   module: string; inputs: any; onLoad: (input: any) => void;
   output: any; onRestoreOutput: (output: any) => void;
-  activeTab: string; onRestoreTab: (tab: string) => void; onReceipt?: (receipt: any) => void;
+  activeTab: string; onRestoreTab: (tab: string) => void; onReceipt?: (receipt: any) => void; initializing?: boolean;
 }) {
+  const { search } = useLocation();
   const [presets, setPresets] = useState<any[]>([]);
   const [selected, setSelected] = useState('');
   const [name, setName] = useState('');
@@ -27,7 +28,7 @@ export function CalculationTools({ module, inputs, onLoad, output, onRestoreOutp
   const loadRef = useRef(onLoad); loadRef.current = onLoad;
   const snapshot = useRef<any>(null);
   snapshot.current = { version: 1, inputs, output, activeTab, receipt, sourceCalculationId: sourceRef.current };
-  const readyRef = useRef(ready); readyRef.current = ready;
+  const readyRef = useRef(ready && !initializing); readyRef.current = ready && !initializing;
   const refresh = async () => setPresets(await featureApi.presets(module));
   const run = async (operation: () => Promise<void>) => {
     setBusy(true); setError(''); setMessage('');
@@ -35,6 +36,7 @@ export function CalculationTools({ module, inputs, onLoad, output, onRestoreOutp
   };
   useEffect(() => {
     let cancelled = false;
+    setReady(false); setReceipt(null); setError(''); setMessage('');
     featureApi.presets(module).then(rows => { if (!cancelled) setPresets(rows); }).catch((e) => { if (!cancelled) setError(e.message); });
     const params = new URLSearchParams(window.location.search);
     const id = params.get('calculationId');
@@ -50,7 +52,16 @@ export function CalculationTools({ module, inputs, onLoad, output, onRestoreOutp
       }
       setMessage('Данные восстановлены из этого браузера. Изменения сохраняются автоматически.');
     }
-    if (!id) setReady(true);
+    if (sourceId && module === 'furnace') {
+      callbacks.current.onRestoreOutput(null);
+      callbacks.current.onRestoreTab('inputs');
+      featureApi.transition(sourceId, draft?.inputs || snapshot.current.inputs, 'furnace').then(row => {
+        if (cancelled) return;
+        loadRef.current(row.input);
+        setMessage(`${row.message} Перенесены: ${row.mappedFields.join(', ')}.`);
+        setReady(true);
+      }).catch(e => { if (!cancelled) setError(e.message); });
+    } else if (!id) setReady(true);
     if (id) featureApi.calculation(id).then(row => {
       if (cancelled) return;
       if (row.module !== module) throw new Error('Расчёт относится к другому модулю.');
@@ -65,7 +76,7 @@ export function CalculationTools({ module, inputs, onLoad, output, onRestoreOutp
     const completed = (event: Event) => { const data = (event as CustomEvent).detail; if (data.module === module) setReceipt(data); };
     window.addEventListener('calculation-completed', completed);
     return () => { cancelled = true; window.removeEventListener('calculation-completed', completed); };
-  }, [module]);
+  }, [module, search]);
   useEffect(() => {
     if (!receipt || receipt.status === 'Saved') return;
     let cancelled = false; let attempts = 0; let timer: ReturnType<typeof setTimeout>;
@@ -79,10 +90,10 @@ export function CalculationTools({ module, inputs, onLoad, output, onRestoreOutp
   }, [receipt?.id, receipt?.status]);
   useEffect(() => { callbacks.current.onReceipt?.(receipt); }, [receipt]);
   useEffect(() => {
-    if (!ready) return;
+    if (!ready || initializing) return;
     const timer = setTimeout(() => setStorageError(!writeCalculationDraft(module, snapshot.current)), 300);
     return () => clearTimeout(timer);
-  }, [module, ready, inputs, output, activeTab, receipt]);
+  }, [module, ready, initializing, inputs, output, activeTab, receipt]);
   useEffect(() => {
     const flush = () => { if (readyRef.current) writeCalculationDraft(module, snapshot.current); };
     window.addEventListener('pagehide', flush);

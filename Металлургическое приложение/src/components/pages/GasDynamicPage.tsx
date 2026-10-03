@@ -1,3 +1,4 @@
+import { CalculationNextStage } from '../CalculationNextStage';
 import { readCalculationDraft } from '../../services/calculation-draft';
 import { CalculationPageHeader } from '../CalculationPageHeader';
 import { CalculationTools } from '../CalculationTools';
@@ -106,6 +107,8 @@ interface ProductionParameters {
 }
 
 export function GasDynamicPage() {
+  const [initializing, setInitializing] = useState(true);
+  const [calculationReceipt, setCalculationReceipt] = useState<any>(null);
   // Состояния для массивов
   const [koksContents, setKoksContents] = useState<KoksContent[]>([
     { minFractionSize: 0, fractionPercentage: 0 }
@@ -146,7 +149,7 @@ export function GasDynamicPage() {
   });
 
   useEffect(() => {
-    if (new URLSearchParams(window.location.search).has('calculationId') || readCalculationDraft('gas-dynamic')) return;
+    if (new URLSearchParams(window.location.search).has('calculationId') || readCalculationDraft('gas-dynamic')) { setInitializing(false); return; }
     gasDynamicService.getPreset()
       .then(({input, output}) => {
 
@@ -160,7 +163,7 @@ export function GasDynamicPage() {
         setThermalAndPressure(input.blastFurnaceInput.thermalAndPressure);
         setMaterials(input.blastFurnaceInput.materials);
         setProduction(input.blastFurnaceInput.production);
-      }).catch(error => setCalculationError(error.message))
+      }).catch(error => setCalculationError(error.message)).finally(() => setInitializing(false))
   }, []);
 
   // Состояния для результатов и UI
@@ -266,7 +269,7 @@ export function GasDynamicPage() {
     <div className="calculation-page space-y-6">
       <CalculationPageHeader title="Газодинамический режим доменной плавки" description="Расчёт газодинамических параметров доменного процесса" icon={Wind}
         onCalculate={handleCalculate} isCalculating={isCalculating} error={calculationError} />
-      <CalculationTools output={calculationResults} onRestoreOutput={setCalculationResults} activeTab={activeTab} onRestoreTab={setActiveTab} module="gas-dynamic" inputs={{ aglomInput: { koksContents, aglomContents, okatContents }, blastFurnaceInput: { composition, fuelAndBlast, geometry, thermalAndPressure, materials, production } }} onLoad={value => { if(value.aglomInput) { setKoksContents(value.aglomInput.koksContents); setAglomContents(value.aglomInput.aglomContents); setOkatContents(value.aglomInput.okatContents); } if(value.blastFurnaceInput) { const v=value.blastFurnaceInput; setComposition(v.composition); setFuelAndBlast(v.fuelAndBlast); setGeometry(v.geometry); setThermalAndPressure(v.thermalAndPressure); setMaterials(v.materials); setProduction(v.production); } }} />
+      <CalculationTools initializing={initializing} onReceipt={setCalculationReceipt} output={calculationResults} onRestoreOutput={setCalculationResults} activeTab={activeTab} onRestoreTab={setActiveTab} module="gas-dynamic" inputs={{ aglomInput: { koksContents, aglomContents, okatContents }, blastFurnaceInput: { composition, fuelAndBlast, geometry, thermalAndPressure, materials, production } }} onLoad={value => { if(value.aglomInput) { setKoksContents(value.aglomInput.koksContents); setAglomContents(value.aglomInput.aglomContents); setOkatContents(value.aglomInput.okatContents); } if(value.blastFurnaceInput) { const v=value.blastFurnaceInput; setComposition(v.composition); setFuelAndBlast(v.fuelAndBlast); setGeometry(v.geometry); setThermalAndPressure(v.thermalAndPressure); setMaterials(v.materials); setProduction(v.production); } }} />
 
       <div className="calculation-workspace">
         {/* Основной контент */}
@@ -935,6 +938,7 @@ export function GasDynamicPage() {
 
             {/* Вкладка 3: Результаты */}
             <TabsContent value="results" className="space-y-6">
+              {calculationResults && <CalculationNextStage module="gas-dynamic" receipt={calculationReceipt} />}
               {calculationResults && (
                 <div className="flex justify-end mb-4">
                   <Button onClick={() => setSaveDialogOpen(true)} variant="outline">
