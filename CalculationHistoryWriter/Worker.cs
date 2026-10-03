@@ -8,6 +8,7 @@ using Core.Contexts;
 using Core.Models.AglomMode;
 using Core.Models.GasDynamic;
 using Core.Models.SlagMode;
+using Core.Models.Furnace;
 using Data.Infrastructure;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -81,6 +82,9 @@ public class Worker(
             case CalculationModules.SlagMode:
                 await SaveSlagModeAsync(scope.ServiceProvider, mapper, historyEvent, cancellationToken);
                 break;
+            case CalculationModules.Furnace:
+                await SaveFurnaceAsync(scope.ServiceProvider, historyEvent, cancellationToken);
+                break;
             default:
                 logger.LogWarning("Unknown calculation module '{Module}'.", historyEvent.Module);
                 break;
@@ -149,6 +153,30 @@ public class Worker(
         request.CreationDateTime = historyEvent.CreationDateTime;
 
         await dbContext.Responses.AddAsync(response, cancellationToken);
+        await dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    private static async Task SaveFurnaceAsync(
+        IServiceProvider serviceProvider,
+        CalculationHistoryEvent historyEvent,
+        CancellationToken cancellationToken)
+    {
+        var dbContext =
+            serviceProvider.GetRequiredService<FurnaceDBContext>();
+
+        var calculation = new FurnaceCalculationModel
+        {
+            OwnerId = historyEvent.UserId,
+            CreatorID = historyEvent.UserId,
+            CreationDateTime = historyEvent.CreationDateTime,
+            SerializedInput = historyEvent.RequestJson,
+            SerializedOutput = historyEvent.ResponseJson
+        };
+
+        await dbContext.CalculationModels.AddAsync(
+            calculation,
+            cancellationToken);
+
         await dbContext.SaveChangesAsync(cancellationToken);
     }
 }

@@ -12,6 +12,7 @@ var conStrings = new Dictionary<Type, string>
     [typeof(GasDynamicDBContext)] = builder.Configuration.GetConnectionString("GasDynamicConnectionString")!,
     [typeof(MatBalDBContext)] = builder.Configuration.GetConnectionString("MatBalConnectionString")!,
     [typeof(SlagModeDBContext)] = builder.Configuration.GetConnectionString("SlagModeConnectionString")!,
+    [typeof(FurnaceDBContext)] = builder.Configuration.GetConnectionString("FurnaceConnectionString")!,
     [typeof(TBalDBContext)] = builder.Configuration.GetConnectionString("TBalConnectionString")!,
     [typeof(TModeDBContext)] = builder.Configuration.GetConnectionString("TModeConnectionString")!
 };

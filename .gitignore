@@ -24,6 +24,8 @@ TestResults/
 *.DotSettings.user
 
 # Dependencies
+.codex-tools/
+.codegraph/
 node_modules/
 venv/
 .venv/
