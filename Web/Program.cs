@@ -123,6 +123,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 var app = builder.Build();
 app.UseExceptionHandler();
+app.Use((context, next) => { context.Request.EnableBuffering(); return next(context); });
 app.UseStatusCodePages(async statusContext =>
 {
     var context = statusContext.HttpContext;

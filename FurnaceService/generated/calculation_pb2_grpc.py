@@ -5,7 +5,7 @@ import warnings
 
 from generated import calculation_pb2 as calculation__pb2
 
-GRPC_GENERATED_VERSION = '1.83.1'
+GRPC_GENERATED_VERSION = '1.75.1'
 GRPC_VERSION = grpc.__version__
 _version_not_supported = False
 
@@ -18,14 +18,14 @@ except ImportError:
 if _version_not_supported:
     raise RuntimeError(
         f'The grpc package installed is at version {GRPC_VERSION},'
-        + ' but the generated code in calculation_pb2_grpc.py depends on'
+        + f' but the generated code in calculation_pb2_grpc.py depends on'
         + f' grpcio>={GRPC_GENERATED_VERSION}.'
         + f' Please upgrade your grpc module to grpcio>={GRPC_GENERATED_VERSION}'
         + f' or downgrade your generated code using grpcio-tools<={GRPC_VERSION}.'
     )
 
 
-class AglomCalculatorStub:
+class AglomCalculatorStub(object):
     """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
@@ -41,7 +41,7 @@ class AglomCalculatorStub:
                 _registered_method=True)
 
 
-class AglomCalculatorServicer:
+class AglomCalculatorServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def Calculate(self, request, context):
@@ -66,7 +66,7 @@ def add_AglomCalculatorServicer_to_server(servicer, server):
 
 
  # This class is part of an EXPERIMENTAL API.
-class AglomCalculator:
+class AglomCalculator(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
@@ -97,7 +97,7 @@ class AglomCalculator:
             _registered_method=True)
 
 
-class GasDynamicCalculatorStub:
+class GasDynamicCalculatorStub(object):
     """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
@@ -113,7 +113,7 @@ class GasDynamicCalculatorStub:
                 _registered_method=True)
 
 
-class GasDynamicCalculatorServicer:
+class GasDynamicCalculatorServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def Calculate(self, request, context):
@@ -138,7 +138,7 @@ def add_GasDynamicCalculatorServicer_to_server(servicer, server):
 
 
  # This class is part of an EXPERIMENTAL API.
-class GasDynamicCalculator:
+class GasDynamicCalculator(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
@@ -169,7 +169,7 @@ class GasDynamicCalculator:
             _registered_method=True)
 
 
-class SlagCalculatorStub:
+class SlagCalculatorStub(object):
     """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
@@ -185,7 +185,7 @@ class SlagCalculatorStub:
                 _registered_method=True)
 
 
-class SlagCalculatorServicer:
+class SlagCalculatorServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def Calculate(self, request, context):
@@ -210,7 +210,7 @@ def add_SlagCalculatorServicer_to_server(servicer, server):
 
 
  # This class is part of an EXPERIMENTAL API.
-class SlagCalculator:
+class SlagCalculator(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
@@ -241,7 +241,7 @@ class SlagCalculator:
             _registered_method=True)
 
 
-class FurnaceServiceStub:
+class FurnaceServiceStub(object):
     """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
@@ -257,7 +257,7 @@ class FurnaceServiceStub:
                 _registered_method=True)
 
 
-class FurnaceServiceServicer:
+class FurnaceServiceServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def Calculate(self, request, context):
@@ -282,7 +282,7 @@ def add_FurnaceServiceServicer_to_server(servicer, server):
 
 
  # This class is part of an EXPERIMENTAL API.
-class FurnaceService:
+class FurnaceService(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod

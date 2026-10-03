@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using BaseLib.Models2;
 using Contracts.Grpc;
+using Data.Infrastructure;
 using Contracts.History;
 using Core.Contexts;
 using Core.Models.GasDynamic;
@@ -48,7 +49,8 @@ public class GasDynamicService(
     public async Task<ResponseModelV2> Calculate(RequestModelV2 requestModel)
     {
         var requestJson = JsonConvert.SerializeObject(requestModel);
-        var grpcResponse = await calculatorClient.CalculateAsync(new CalculationRequest { Json = requestJson });
+        var grpcResponse = await calculatorClient.CalculateAsync(CalculationGrpcMetadata.Request(requestJson, "gas-dynamic", httpContextAccessor.HttpContext), deadline: DateTime.UtcNow.AddSeconds(25), cancellationToken: httpContextAccessor.HttpContext?.RequestAborted ?? default);
+        CalculationGrpcMetadata.EnsureSuccess(grpcResponse);
         var response = JsonConvert.DeserializeObject<ResponseModelV2>(grpcResponse.Json) ?? new ResponseModelV2();
 
         await historyProducer.PublishAsync(new CalculationHistoryEvent

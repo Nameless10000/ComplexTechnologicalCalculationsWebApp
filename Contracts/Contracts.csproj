@@ -19,4 +19,6 @@
     </PackageReference>
   </ItemGroup>
 
+<ItemGroup><ProjectReference Include="..\BaseLib\BaseLib.csproj" /></ItemGroup>
 </Project>
+ 

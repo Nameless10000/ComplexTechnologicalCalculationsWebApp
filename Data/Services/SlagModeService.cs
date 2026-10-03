@@ -2,6 +2,7 @@ using System.Security.Claims;
 using AutoMapper;
 using BaseLib.SlagMode.Models;
 using Contracts.Grpc;
+using Data.Infrastructure;
 using Contracts.History;
 using Core.Contexts;
 using Core.Models.SlagMode;
@@ -59,7 +60,8 @@ public class SlagModeService(
     public async Task<ResponseData> Calculate(RequestData requestModel)
     {
         var requestJson = JsonConvert.SerializeObject(requestModel);
-        var grpcResponse = await calculatorClient.CalculateAsync(new CalculationRequest { Json = requestJson });
+        var grpcResponse = await calculatorClient.CalculateAsync(CalculationGrpcMetadata.Request(requestJson, "slag-mode", httpContextAccessor.HttpContext), deadline: DateTime.UtcNow.AddSeconds(25), cancellationToken: httpContextAccessor.HttpContext?.RequestAborted ?? default);
+        CalculationGrpcMetadata.EnsureSuccess(grpcResponse);
         var responseFromLib = JsonConvert.DeserializeObject<ResponseData>(grpcResponse.Json) ?? new ResponseData();
 
         await historyProducer.PublishAsync(new CalculationHistoryEvent

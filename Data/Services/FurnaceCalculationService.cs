@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Contracts.Grpc;
+using Data.Infrastructure;
 using Contracts.History;
 using Microsoft.AspNetCore.Http;
 
@@ -20,11 +21,9 @@ public class FurnaceCalculationService(
     public async Task<string> Calculate(string requestJson)
     {
         var grpcResponse = await calculatorClient.CalculateAsync(
-            new CalculationRequest
-            {
-                Json = requestJson
-            });
+            CalculationGrpcMetadata.Request(requestJson, "furnace", httpContextAccessor.HttpContext), deadline: DateTime.UtcNow.AddSeconds(25), cancellationToken: httpContextAccessor.HttpContext?.RequestAborted ?? default);
 
+        CalculationGrpcMetadata.EnsureSuccess(grpcResponse);
         var responseJson = grpcResponse.Json;
 
         await historyProducer.PublishAsync(new CalculationHistoryEvent

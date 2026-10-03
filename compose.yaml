@@ -82,8 +82,8 @@ services:
 
   furnace-service:
     build:
-      context: ./FurnaceService
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: FurnaceService/Dockerfile
     environment:
       PYTHONUNBUFFERED: "1"
     ports:

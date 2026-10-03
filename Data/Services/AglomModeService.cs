@@ -1,5 +1,6 @@
 using BaseLib.AglomMode.Models;
 using Contracts.Grpc;
+using Data.Infrastructure;
 using Contracts.History;
 using Core.Contexts;
 using Core.Models.AglomMode;
@@ -48,7 +49,8 @@ public class AglomModeService(
     {
         requestModel.UserId = _currentUserId;
         var requestJson = JsonConvert.SerializeObject(requestModel);
-        var grpcResponse = await calculatorClient.CalculateAsync(new CalculationRequest { Json = requestJson });
+        var grpcResponse = await calculatorClient.CalculateAsync(CalculationGrpcMetadata.Request(requestJson, "aglom-mode", httpContextAccessor.HttpContext), deadline: DateTime.UtcNow.AddSeconds(25), cancellationToken: httpContextAccessor.HttpContext?.RequestAborted ?? default);
+        CalculationGrpcMetadata.EnsureSuccess(grpcResponse);
         var responseFromLib = JsonConvert.DeserializeObject<AglomResponseData>(grpcResponse.Json) ?? new AglomResponseData();
 
         await historyProducer.PublishAsync(new CalculationHistoryEvent

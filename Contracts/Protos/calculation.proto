@@ -22,8 +22,17 @@ service FurnaceService {
 
 message CalculationRequest {
   string json = 1;
+  string request_id = 2;
+  string module = 3;
+  string correlation_id = 4;
 }
 
 message CalculationReply {
   string json = 1;
+  string request_id = 2;
+  string module = 3;
+  string status = 4;
+  string error_code = 5;
+  string error_message = 6;
+  string correlation_id = 7;
 }

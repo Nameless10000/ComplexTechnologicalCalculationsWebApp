@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using BaseLib.Validation;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Web.Infrastructure;
@@ -15,6 +16,18 @@ public sealed class ApiResultFilter : IAsyncAlwaysRunResultFilter, IAsyncActionF
             context.Result = new BadRequestObjectResult(ApiError.Create(context.HttpContext,
                 "VALIDATION_ERROR", "Проверьте входные данные.", details));
             return;
+        }
+        if (string.Equals(context.RouteData.Values["action"]?.ToString(), "Calculate", StringComparison.OrdinalIgnoreCase))
+        {
+            var module = context.RouteData.Values["controller"]?.ToString() switch
+            { "AglomMode" => "aglom-mode", "SlagMode" => "slag-mode", "GasDynamic" => "gas-dynamic", _ => null };
+            if (module is not null)
+            {
+                context.HttpContext.Request.Body.Position = 0;
+                using var reader = new StreamReader(context.HttpContext.Request.Body, leaveOpen: true);
+                var json = await reader.ReadToEndAsync(context.HttpContext.RequestAborted);
+                CalculationInputValidator.Validate(module, json);
+            }
         }
         await next();
     }
