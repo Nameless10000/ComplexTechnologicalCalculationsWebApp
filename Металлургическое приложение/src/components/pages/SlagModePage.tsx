@@ -892,7 +892,7 @@ export function SlagModePage() {
 
             {/* Вкладка 4: Результаты */}
             <TabsContent value="results" className="space-y-6">
-              {calculationResults && <CalculationNextStage module="slag-mode" receipt={calculationReceipt} />}
+              <CalculationNextStage module="slag-mode" receipt={calculationReceipt} hasResult={!!calculationResults} />
               {!calculationResults && !isCalculating && (
                 <Card>
                   <CardContent className="pt-6">

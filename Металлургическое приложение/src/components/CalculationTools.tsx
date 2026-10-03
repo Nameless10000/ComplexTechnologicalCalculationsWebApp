@@ -1,3 +1,4 @@
+import { CalculationExportActions } from './CalculationExportActions';
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { featureApi, camelInput } from '../services/calculation-features';
@@ -122,7 +123,7 @@ export function CalculationTools({ module, inputs, onLoad, output, onRestoreOutp
       </div>
       </div>
       </details>
-      {receipt && <div className="space-y-1"><p role="status">Расчёт выполнен. История: {receipt.status === 'Saved' ? 'сохранена' : 'обрабатывается асинхронно'}.</p><p className="text-xs text-muted-foreground">CorrelationId: {receipt.correlationId}</p><a className="underline mr-4" href={featureApi.exportUrl(receipt.id, 'pdf')}>Скачать PDF</a><a className="underline" href={featureApi.exportUrl(receipt.id, 'xlsx')}>Скачать Excel</a>{module === 'aglom-mode' && <Link className="underline ml-4" to={`/slag-mode?sourceCalculationId=${receipt.id}`}>Перейти к Slag Mode</Link>}</div>}
+      {receipt && <div className="space-y-1"><p role="status">Расчёт выполнен. История: {receipt.status === 'Saved' ? 'сохранена' : 'обрабатывается асинхронно'}.</p><p className="text-xs text-muted-foreground">CorrelationId: {receipt.correlationId}</p><CalculationExportActions id={receipt.id} /></div>}
       {storageError && <p role="alert" className="text-destructive">Браузер не разрешил сохранить данные. Проверьте доступ к локальному хранилищу.</p>}
       {message && <p role="status">{message}</p>}{error && <p role="alert" className="text-destructive whitespace-pre-wrap">{error}</p>}
     </CardContent>

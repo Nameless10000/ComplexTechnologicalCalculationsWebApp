@@ -753,7 +753,7 @@ export function SinterChargePage() {
 
                 {/* Tab 5: Results */}
                 <TabsContent value="results" className="space-y-6">
-              {calculationResults && <CalculationNextStage module="aglom-mode" receipt={calculationReceipt} />}
+              <CalculationNextStage module="aglom-mode" receipt={calculationReceipt} hasResult={!!calculationResults} />
                     {calculationResults ? (
                         <div className="space-y-4">
                             <SinterChargeResults results={calculationResults} />

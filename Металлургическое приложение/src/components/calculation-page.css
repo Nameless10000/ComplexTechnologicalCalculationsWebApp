@@ -26,6 +26,16 @@
 
 .calculation-workspace > * { min-width: 0; }
 
+.calculation-result-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.calculation-result-actions [data-slot="button"] { gap: 0.5rem; }
+
 .calculation-page [data-slot="tabs-list"] {
   display: flex;
   width: 100%;

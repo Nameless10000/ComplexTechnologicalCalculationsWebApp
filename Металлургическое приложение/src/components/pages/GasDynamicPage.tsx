@@ -938,7 +938,7 @@ export function GasDynamicPage() {
 
             {/* Вкладка 3: Результаты */}
             <TabsContent value="results" className="space-y-6">
-              {calculationResults && <CalculationNextStage module="gas-dynamic" receipt={calculationReceipt} />}
+              <CalculationNextStage module="gas-dynamic" receipt={calculationReceipt} hasResult={!!calculationResults} />
               {calculationResults && (
                 <div className="flex justify-end mb-4">
                   <Button onClick={() => setSaveDialogOpen(true)} variant="outline">
